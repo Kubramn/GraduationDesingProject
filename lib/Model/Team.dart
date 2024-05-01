@@ -7,7 +7,7 @@ class Team{
   String teamLeaderUsername ;
   int? budget;
 
-  Team(this.teamID, this.teamName, this.teamLeader){
+  Team(this.teamID, this.teamName, this.teamLeaderUsername){
     teamCollection.doc(teamID).set({
       "teamid":teamID,
       "teamname":teamName,
