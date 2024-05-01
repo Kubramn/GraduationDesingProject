@@ -1,6 +1,6 @@
 {
-    "name": "bitirme",
-    "short_name": "bitirme",
+    "name": "graduation_design_project",
+    "short_name": "graduation_design_project",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
