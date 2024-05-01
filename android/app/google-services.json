@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "214288023465",
+    "firebase_url": "https://flutter-74058-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "flutter-74058",
+    "storage_bucket": "flutter-74058.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:214288023465:android:f485f8c6a227dac70fceb8",
+        "android_client_info": {
+          "package_name": "com.example.bitirme"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCUFYGbwK-JRNm7NdWFXUXQNa0Wucf5lpU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
