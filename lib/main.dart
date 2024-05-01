@@ -1,3 +1,4 @@
+import 'package:bitirme/pages/wrapper.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:bitirme/pages/finance_page.dart';
@@ -19,7 +20,7 @@ class Klas extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: LoginPage(),
+      home: Wrapper(),
     );
   }
 }
