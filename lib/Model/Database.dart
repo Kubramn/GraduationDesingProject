@@ -7,4 +7,3 @@ RegisterNewEmployee(String name, String surname,String username,String password,
 CreateNewTeam(String teamID, String teamName, String teamLeader){
   Team(teamID, teamName, teamLeader);
 }
-//kk
