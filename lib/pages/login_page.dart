@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -12,8 +13,8 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController passwordController = TextEditingController();
 
   login() async {
-    //await FirebaseAuth.instance.signInWithEmailAndPassword(
-    //email: emailController.text, password: passwordController.text);
+    await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: emailController.text, password: passwordController.text);
   }
 
   @override
@@ -84,7 +85,7 @@ class _LoginPageState extends State<LoginPage> {
                   height: 20,
                 ),
                 ElevatedButton(
-                  onPressed: (() => login),
+                  onPressed: (() => login()),
                   child: Text(
                     "Log In",
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
