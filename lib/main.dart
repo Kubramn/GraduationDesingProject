@@ -1,6 +1,9 @@
 import 'package:bitirme/pages/auth_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:bitirme/pages/finance_page.dart';
+import 'package:bitirme/pages/login_page.dart';
+
 import 'firebase_options.dart';
 
 Future<void> main() async {
