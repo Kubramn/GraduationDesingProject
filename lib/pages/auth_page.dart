@@ -1,18 +1,16 @@
 import 'package:bitirme/pages/finance_page.dart';
 import 'package:bitirme/pages/login_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-class Wrapper extends StatefulWidget {
-  const Wrapper({super.key});
+class AuthPage extends StatefulWidget {
+  const AuthPage({super.key});
 
   @override
-  State<Wrapper> createState() => _WrapperState();
+  State<AuthPage> createState() => _AuthPageState();
 }
 
-class _WrapperState extends State<Wrapper> {
+class _AuthPageState extends State<AuthPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
