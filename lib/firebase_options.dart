@@ -23,20 +23,11 @@ class DefaultFirebaseOptions {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for ios - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return macos;
       case TargetPlatform.windows:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return windows;
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -62,10 +53,41 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCUFYGbwK-JRNm7NdWFXUXQNa0Wucf5lpU',
-    appId: '1:214288023465:android:f485f8c6a227dac70fceb8',
+    appId: '1:214288023465:android:8fd03b9cfd231eac0fceb8',
     messagingSenderId: '214288023465',
     projectId: 'flutter-74058',
     databaseURL: 'https://flutter-74058-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'flutter-74058.appspot.com',
+  );
+
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyDlAXu_3fWg3WuYIB9DcaI1UvFnBaYQ4bU',
+    appId: '1:214288023465:ios:e8431b582ab4a9b00fceb8',
+    messagingSenderId: '214288023465',
+    projectId: 'flutter-74058',
+    databaseURL: 'https://flutter-74058-default-rtdb.europe-west1.firebasedatabase.app',
+    storageBucket: 'flutter-74058.appspot.com',
+    iosBundleId: 'com.example.graduationDesignProject',
+  );
+
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyDlAXu_3fWg3WuYIB9DcaI1UvFnBaYQ4bU',
+    appId: '1:214288023465:ios:e8431b582ab4a9b00fceb8',
+    messagingSenderId: '214288023465',
+    projectId: 'flutter-74058',
+    databaseURL: 'https://flutter-74058-default-rtdb.europe-west1.firebasedatabase.app',
+    storageBucket: 'flutter-74058.appspot.com',
+    iosBundleId: 'com.example.graduationDesignProject',
+  );
+
+  static const FirebaseOptions windows = FirebaseOptions(
+    apiKey: 'AIzaSyBBHXXb-uJZgIbe2mDrw2GB9e41046ZOiI',
+    appId: '1:214288023465:web:d1bc4719a79c03e60fceb8',
+    messagingSenderId: '214288023465',
+    projectId: 'flutter-74058',
+    authDomain: 'flutter-74058.firebaseapp.com',
+    databaseURL: 'https://flutter-74058-default-rtdb.europe-west1.firebasedatabase.app',
+    storageBucket: 'flutter-74058.appspot.com',
+    measurementId: 'G-MXF10WMNYS',
   );
 }
