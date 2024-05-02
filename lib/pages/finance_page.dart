@@ -22,7 +22,7 @@ class _FinancePageState extends State<FinancePage> {
         },
         items: [
           Icon(
-            Icons.home,
+            Icons.shopping_cart,
             color: Color.fromARGB(255, 187, 168, 255),
           ),
           Icon(
