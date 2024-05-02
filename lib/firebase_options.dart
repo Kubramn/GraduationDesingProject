@@ -55,8 +55,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '214288023465',
     projectId: 'flutter-74058',
     authDomain: 'flutter-74058.firebaseapp.com',
-    databaseURL:
-        'https://flutter-74058-default-rtdb.europe-west1.firebasedatabase.app',
+    databaseURL: 'https://flutter-74058-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'flutter-74058.appspot.com',
     measurementId: 'G-QS7LCMHWYE',
   );
@@ -66,8 +65,7 @@ class DefaultFirebaseOptions {
     appId: '1:214288023465:android:f485f8c6a227dac70fceb8',
     messagingSenderId: '214288023465',
     projectId: 'flutter-74058',
-    databaseURL:
-        'https://flutter-74058-default-rtdb.europe-west1.firebasedatabase.app',
+    databaseURL: 'https://flutter-74058-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'flutter-74058.appspot.com',
   );
 }
