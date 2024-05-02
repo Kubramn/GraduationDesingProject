@@ -1,9 +1,6 @@
-import 'package:bitirme/pages/wrapper.dart';
+import 'package:bitirme/pages/auth_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:bitirme/pages/finance_page.dart';
-import 'package:bitirme/pages/login_page.dart';
-
 import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -20,7 +17,7 @@ class Klas extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Wrapper(),
+      home: AuthPage(),
     );
   }
 }
