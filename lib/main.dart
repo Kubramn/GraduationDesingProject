@@ -12,10 +12,7 @@ import 'firebase_options.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final cameras = await availableCameras();
-  LeaderInvoice.firstCamera = CameraDescription(
-      name: "name",
-      lensDirection: CameraLensDirection.back,
-      sensorOrientation: 100);
+  LeaderInvoice.firstCamera = cameras.first;
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -29,7 +26,7 @@ class ExpenseManagementApplication extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: MemberNavBar(),
+      home: LeaderNavBar(),
       theme: ThemeData(highlightColor: Colors.amber),
     );
   }

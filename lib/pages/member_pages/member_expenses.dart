@@ -32,7 +32,7 @@ class _MemberExpensesState extends State<MemberExpenses> {
       status: "previous",
       price: 80,
       date: DateTime.now(),
-      description: "Ayşe Hanım müziksiz odaklanamıyormuş.",
+      description: ".",
     ).createExpense();
   }
 
