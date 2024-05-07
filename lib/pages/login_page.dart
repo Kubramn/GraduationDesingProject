@@ -1,3 +1,7 @@
+import 'package:bitirme/pages/finance_pages/finance_navbar.dart';
+import 'package:bitirme/pages/leader_pages/leader_navbar.dart';
+import 'package:bitirme/pages/member_pages/member_navbar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -12,12 +16,50 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
+  void route() {
+    User? user = FirebaseAuth.instance.currentUser;
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(user!.uid)
+        .get()
+        .then((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
+        if (documentSnapshot.get("role") == "Member") {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MemberNavBar(),
+            ),
+          );
+        } else if (documentSnapshot.get("role") == "Leader") {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => LeaderNavBar(),
+            ),
+          );
+        } else if (documentSnapshot.get("role") == "Finance") {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => FinanceNavBar(),
+            ),
+          );
+        }
+      } else {
+        print('Document does not exist on the database');
+      }
+    });
+  }
+
   void login() async {
     showDialog(
       context: context,
       builder: (context) {
-        return Center(
-          child: CircularProgressIndicator(),
+        return const Center(
+          child: CircularProgressIndicator(
+            color: Color.fromARGB(255, 255, 255, 255),
+          ),
         );
       },
     );
@@ -28,6 +70,8 @@ class _LoginPageState extends State<LoginPage> {
         password: passwordController.text,
       );
       Navigator.pop(context);
+      //Navigator.of(context).pop;
+      route();
     } on FirebaseAuthException catch (e) {
       Navigator.pop(context);
       print("***************************${e.code}***************************");
@@ -84,6 +128,7 @@ class _LoginPageState extends State<LoginPage> {
                   height: 30,
                 ),
                 TextField(
+                  autofocus: true,
                   keyboardType: TextInputType.emailAddress,
                   controller: emailController,
                   decoration: InputDecoration(
@@ -101,6 +146,7 @@ class _LoginPageState extends State<LoginPage> {
                   height: 20,
                 ),
                 TextField(
+                  autofocus: true,
                   keyboardType: TextInputType.text,
                   controller: passwordController,
                   obscureText: true,
