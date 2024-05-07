@@ -128,6 +128,7 @@ class _LoginPageState extends State<LoginPage> {
                   height: 30,
                 ),
                 TextField(
+                  autofocus: true,
                   keyboardType: TextInputType.emailAddress,
                   controller: emailController,
                   decoration: InputDecoration(
@@ -145,6 +146,7 @@ class _LoginPageState extends State<LoginPage> {
                   height: 20,
                 ),
                 TextField(
+                  autofocus: true,
                   keyboardType: TextInputType.text,
                   controller: passwordController,
                   obscureText: true,

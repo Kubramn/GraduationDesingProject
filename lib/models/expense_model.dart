@@ -4,7 +4,7 @@ class ExpenseModel {
   String id;
   String title;
   String status;
-  double price;
+  int price;
   DateTime date;
   String description;
 
