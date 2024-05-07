@@ -1,25 +1,27 @@
-import 'package:bitirme/models/team.dart';
-import 'package:bitirme/models/user.dart';
+/* import 'package:bitirme/models/team.dart';
+import 'package:bitirme/models/user_model.dart';
 
 registerNewEmployee(
   String name,
   String surname,
   String email,
   String password,
-  String jobname,
+  String role,
+  String job,
   String companyname,
   String department,
-  String teamid,
+  String teamID,
 ) {
-  Employee(
+  UserModel(
     name: name,
     surname: surname,
     email: email,
     password: password,
-    jobname: jobname,
-    companyname: companyname,
+    role: role,
+    job: job,
+    company: companyname,
     department: department,
-    teamid: teamid,
+    teamID: teamID,
   );
 }
 
@@ -34,3 +36,4 @@ createNewTeam(
     teamLeader,
   );
 }
+ */

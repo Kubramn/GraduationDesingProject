@@ -1,4 +1,4 @@
-import "package:bitirme/models/user.dart";
+import "package:bitirme/models/user_model.dart";
 import "package:cloud_firestore/cloud_firestore.dart";
 
 class Team {

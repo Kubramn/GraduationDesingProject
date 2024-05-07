@@ -30,6 +30,7 @@ class ExpenseManagementApplication extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: MemberNavBar(),
+      theme: ThemeData(highlightColor: Colors.amber),
     );
   }
 }
