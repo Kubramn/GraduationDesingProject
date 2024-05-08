@@ -1,6 +1,7 @@
 import 'package:bitirme/pages/auth_page.dart';
 import 'package:bitirme/pages/leader_pages/leader_invoice.dart';
 import 'package:bitirme/pages/leader_pages/leader_navbar.dart';
+import 'package:bitirme/pages/member_pages/member_expenses.dart';
 import 'package:bitirme/pages/member_pages/member_navbar.dart';
 import 'package:camera/camera.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -26,7 +27,7 @@ class ExpenseManagementApplication extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: LeaderNavBar(),
+      home: LoginPage(),
       theme: ThemeData(highlightColor: Colors.amber),
     );
   }

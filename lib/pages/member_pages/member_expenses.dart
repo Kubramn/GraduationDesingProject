@@ -17,23 +17,42 @@ class MemberExpenses extends StatefulWidget {
 
 class _MemberExpensesState extends State<MemberExpenses> {
   Stream<List<ExpenseModel>> fetchExpenses(String status) {
-    return FirebaseFirestore.instance
-        .collection('expenses')
-        .where("status", isEqualTo: status)
-        .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) => ExpenseModel.fromJson(doc.data()))
-            .toList());
+    if (status == "previous") {
+      return FirebaseFirestore.instance
+          .collection('expenses')
+          .where(
+            Filter.or(
+              Filter("status", isEqualTo: "accepted"),
+              Filter("status", isEqualTo: "denied"),
+            ),
+          )
+          .snapshots()
+          .map((snapshot) => snapshot.docs
+              .map((doc) => ExpenseModel.fromJson(doc.data()))
+              .toList());
+    } else if (status == "waiting") {
+      return FirebaseFirestore.instance
+          .collection('expenses')
+          .where("status", isEqualTo: "waiting")
+          .snapshots()
+          .map((snapshot) => snapshot.docs
+              .map((doc) => ExpenseModel.fromJson(doc.data()))
+              .toList());
+    } else {
+      return const Stream<List<ExpenseModel>>.empty();
+    }
   }
 
   void addExpense() {
     ExpenseModel(
       title: "Kulaklık",
-      status: "previous",
-      price: 80,
+      status: "accepted",
+      price: 100,
       date: DateTime.now(),
-      description: ".",
-    ).createExpense();
+      description: "description description description",
+      userEmail: "atakan@gmail.com",
+      teamName: "team1",
+    );
   }
 
   @override

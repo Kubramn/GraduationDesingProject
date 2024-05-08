@@ -1,11 +1,23 @@
+import 'package:bitirme/pages/login_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class MemberProfile extends StatelessWidget {
+class MemberProfile extends StatefulWidget {
   const MemberProfile({super.key});
 
+  @override
+  State<MemberProfile> createState() => _MemberProfileState();
+}
+
+class _MemberProfileState extends State<MemberProfile> {
   void logout() {
     FirebaseAuth.instance.signOut();
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const LoginPage(),
+      ),
+    );
   }
 
   @override

@@ -20,25 +20,25 @@ class _LoginPageState extends State<LoginPage> {
     User? user = FirebaseAuth.instance.currentUser;
     FirebaseFirestore.instance
         .collection('users')
-        .doc(user!.uid)
+        .doc(user!.email)
         .get()
         .then((DocumentSnapshot documentSnapshot) {
       if (documentSnapshot.exists) {
-        if (documentSnapshot.get("role") == "Member") {
+        if (documentSnapshot.get("role") == "member") {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
               builder: (context) => MemberNavBar(),
             ),
           );
-        } else if (documentSnapshot.get("role") == "Leader") {
+        } else if (documentSnapshot.get("role") == "leader") {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
               builder: (context) => LeaderNavBar(),
             ),
           );
-        } else if (documentSnapshot.get("role") == "Finance") {
+        } else if (documentSnapshot.get("role") == "finance") {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
