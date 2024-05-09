@@ -1,4 +1,3 @@
-import 'package:bitirme/pages/auth_page.dart';
 import 'package:bitirme/pages/leader_pages/leader_invoice.dart';
 import 'package:bitirme/pages/leader_pages/leader_navbar.dart';
 import 'package:bitirme/pages/member_pages/member_expenses.dart';
@@ -18,7 +17,7 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(ExpenseManagementApplication());
+  runApp(const ExpenseManagementApplication());
 }
 
 class ExpenseManagementApplication extends StatelessWidget {
@@ -28,7 +27,6 @@ class ExpenseManagementApplication extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: LoginPage(),
-      theme: ThemeData(highlightColor: Colors.amber),
     );
   }
 }

@@ -43,16 +43,7 @@ class UserModel {
         teamName: json["teamName"],
       );
 
-  Future createUser(
-    String name,
-    String surname,
-    String email,
-    String password,
-    String role,
-    String job,
-    String department,
-    String teamName,
-  ) async {
+  Future createUser() async {
     final newUser = FirebaseFirestore.instance.collection('users').doc(email);
     final user = UserModel(
       name: name,
