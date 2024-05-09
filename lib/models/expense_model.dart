@@ -7,6 +7,8 @@ class ExpenseModel {
   int price;
   DateTime date;
   String description;
+  String userEmail;
+  String teamName;
 
   ExpenseModel({
     this.id = "",
@@ -15,6 +17,8 @@ class ExpenseModel {
     required this.price,
     required this.date,
     required this.description,
+    required this.userEmail,
+    required this.teamName,
   });
 
   Map<String, dynamic> toJson() => {
@@ -24,6 +28,8 @@ class ExpenseModel {
         "price": price,
         "date": date,
         "description": description,
+        "userEmail": userEmail,
+        "teamName": teamName,
       };
 
   static ExpenseModel fromJson(Map<String, dynamic> json) => ExpenseModel(
@@ -33,6 +39,8 @@ class ExpenseModel {
         price: json["price"],
         date: (json["date"] as Timestamp).toDate(),
         description: json["description"],
+        userEmail: json["userEmail"],
+        teamName: json["teamName"],
       );
 
   Future createExpense() async {
@@ -44,6 +52,8 @@ class ExpenseModel {
       price: price,
       date: date,
       description: description,
+      userEmail: userEmail,
+      teamName: teamName,
     );
     await newExpense.set(expense.toJson());
   }

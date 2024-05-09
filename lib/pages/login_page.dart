@@ -20,7 +20,7 @@ class _LoginPageState extends State<LoginPage> {
     User? user = FirebaseAuth.instance.currentUser;
     FirebaseFirestore.instance
         .collection('users')
-        .doc(user!.uid)
+        .doc(user!.email)
         .get()
         .then((DocumentSnapshot documentSnapshot) {
       if (documentSnapshot.exists) {
@@ -58,7 +58,7 @@ class _LoginPageState extends State<LoginPage> {
       builder: (context) {
         return const Center(
           child: CircularProgressIndicator(
-            color: Color.fromARGB(255, 255, 255, 255),
+            color: Colors.white,
           ),
         );
       },
@@ -88,8 +88,15 @@ class _LoginPageState extends State<LoginPage> {
     showDialog(
       context: context,
       builder: (context) {
-        return const AlertDialog(
-          title: Text("Wrong password or email!"),
+        return AlertDialog(
+          title: const Text("Wrong password or email!"),
+          actions: [
+            TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text("Close"))
+          ],
         );
       },
     );
@@ -100,7 +107,7 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       body: Container(
         height: double.maxFinite,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,

@@ -1,11 +1,6 @@
-import 'dart:math';
-
 import 'package:bitirme/models/expense_model.dart';
-import 'package:bitirme/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 
 class MemberExpenses extends StatefulWidget {
@@ -17,22 +12,41 @@ class MemberExpenses extends StatefulWidget {
 
 class _MemberExpensesState extends State<MemberExpenses> {
   Stream<List<ExpenseModel>> fetchExpenses(String status) {
-    return FirebaseFirestore.instance
-        .collection('expenses')
-        .where("status", isEqualTo: status)
-        .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) => ExpenseModel.fromJson(doc.data()))
-            .toList());
+    if (status == "previous") {
+      return FirebaseFirestore.instance
+          .collection('expenses')
+          .where(
+            Filter.or(
+              Filter("status", isEqualTo: "accepted"),
+              Filter("status", isEqualTo: "denied"),
+            ),
+          )
+          .snapshots()
+          .map((snapshot) => snapshot.docs
+              .map((doc) => ExpenseModel.fromJson(doc.data()))
+              .toList());
+    } else if (status == "waiting") {
+      return FirebaseFirestore.instance
+          .collection('expenses')
+          .where("status", isEqualTo: "waiting")
+          .snapshots()
+          .map((snapshot) => snapshot.docs
+              .map((doc) => ExpenseModel.fromJson(doc.data()))
+              .toList());
+    } else {
+      return const Stream<List<ExpenseModel>>.empty();
+    }
   }
 
   void addExpense() {
     ExpenseModel(
       title: "Kulaklık",
-      status: "previous",
-      price: 80,
+      status: "accepted",
+      price: 100,
       date: DateTime.now(),
-      description: ".",
+      description: "description description description",
+      userEmail: "atakan@gmail.com",
+      teamName: "team1",
     ).createExpense();
   }
 
@@ -48,7 +62,7 @@ class _MemberExpensesState extends State<MemberExpenses> {
             child: Column(
               children: [
                 SizedBox(
-                  height: 50,
+                  height: 40,
                 ),
                 TabBar(
                   labelColor: Colors.white,
@@ -60,7 +74,15 @@ class _MemberExpensesState extends State<MemberExpenses> {
                   indicatorColor: Colors.transparent,
                   indicatorSize: TabBarIndicatorSize.tab,
                   dividerColor: Colors.transparent,
-                  //splashFactory: NoSplash.splashFactory,
+                  splashBorderRadius: BorderRadius.circular(15),
+                  splashFactory: NoSplash.splashFactory,
+                  overlayColor: MaterialStateProperty.resolveWith<Color?>(
+                    (Set<MaterialState> states) {
+                      return states.contains(MaterialState.focused)
+                          ? null
+                          : Colors.black12;
+                    },
+                  ),
                   indicator: BoxDecoration(
                     color: Colors.black,
                     borderRadius: BorderRadius.circular(15),
@@ -74,8 +96,12 @@ class _MemberExpensesState extends State<MemberExpenses> {
                     ),
                   ],
                 ),
+                Divider(
+                  height: 25,
+                  color: Colors.black26,
+                ),
                 Container(
-                  height: 600,
+                  height: 650,
                   child: TabBarView(children: [
                     StreamBuilder<List<ExpenseModel>>(
                       stream: fetchExpenses("previous"),
@@ -85,7 +111,12 @@ class _MemberExpensesState extends State<MemberExpenses> {
                           return ListView.builder(
                               itemCount: expenses.length,
                               itemBuilder: (context, index) {
-                                return expenseTile(expenses[index]);
+                                return Column(
+                                  children: [
+                                    expenseTile(expenses[index]),
+                                    SizedBox(height: 10),
+                                  ],
+                                );
                               });
                         } else if (snapshot.hasError) {
                           return Center(child: Text('NO DATA!'));
@@ -148,6 +179,11 @@ class _MemberExpensesState extends State<MemberExpenses> {
               ),
               //subtitle: Text(expense.description),
               trailing: IconButton(
+                icon: Icon(
+                  Icons.search,
+                  color: Colors.white,
+                  size: 30,
+                ),
                 style: IconButton.styleFrom(backgroundColor: Colors.white38),
                 onPressed: () {
                   showDialog(
@@ -163,10 +199,7 @@ class _MemberExpensesState extends State<MemberExpenses> {
                           },
                           child: Text(
                             "Close",
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 20,
-                            ),
+                            style: TextStyle(color: Colors.black, fontSize: 20),
                           ),
                         )
                       ],
@@ -176,24 +209,18 @@ class _MemberExpensesState extends State<MemberExpenses> {
                             attribute: "Title: ",
                             value: expense.title,
                           ),
-                          SizedBox(
-                            height: 10,
-                          ),
+                          const SizedBox(height: 10),
                           Attribute(
                             attribute: "Description: ",
                             value: expense.description,
                           ),
-                          SizedBox(
-                            height: 10,
-                          ),
+                          const SizedBox(height: 10),
                           Attribute(
                             attribute: "Date: ",
                             value:
-                                "${DateFormat('MMMM d, yyyy').format(expense.date)}",
+                                DateFormat('MMMM d, yyyy').format(expense.date),
                           ),
-                          SizedBox(
-                            height: 10,
-                          ),
+                          const SizedBox(height: 10),
                           Attribute(
                             attribute: "Price: ",
                             value: expense.price.toString(),
@@ -203,11 +230,6 @@ class _MemberExpensesState extends State<MemberExpenses> {
                     ),
                   );
                 },
-                icon: Icon(
-                  Icons.search,
-                  color: Colors.white,
-                  size: 30,
-                ),
               ),
             ),
           ),

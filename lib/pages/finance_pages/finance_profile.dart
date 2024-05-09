@@ -1,11 +1,23 @@
+import 'package:bitirme/pages/login_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class FinanceProfile extends StatelessWidget {
+class FinanceProfile extends StatefulWidget {
   const FinanceProfile({super.key});
 
+  @override
+  State<FinanceProfile> createState() => _FinanceProfileState();
+}
+
+class _FinanceProfileState extends State<FinanceProfile> {
   void logout() {
     FirebaseAuth.instance.signOut();
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const LoginPage(),
+      ),
+    );
   }
 
   @override

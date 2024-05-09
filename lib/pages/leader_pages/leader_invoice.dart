@@ -1,10 +1,6 @@
 import 'dart:io';
-
 import 'package:camera/camera.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
 
 class LeaderInvoice extends StatefulWidget {
@@ -18,7 +14,7 @@ class LeaderInvoice extends StatefulWidget {
 class _LeaderInvoiceState extends State<LeaderInvoice> {
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
-  late File _selectedImage;
+  //late File _selectedImage;
   bool toggle = false;
 
   @override
