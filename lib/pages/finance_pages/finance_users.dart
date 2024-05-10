@@ -1,15 +1,17 @@
 import 'package:bitirme/models/user_model.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class FinanceRegister extends StatefulWidget {
-  const FinanceRegister({super.key});
+class FinanceUsers extends StatefulWidget {
+  const FinanceUsers({super.key});
 
   @override
-  State<FinanceRegister> createState() => _FinanceRegisterState();
+  State<FinanceUsers> createState() => _FinanceUsersState();
 }
 
-class _FinanceRegisterState extends State<FinanceRegister> {
+class _FinanceUsersState extends State<FinanceUsers> {
+  UserModel? _selectedUser;
+
   TextEditingController nameController = TextEditingController();
   TextEditingController surnameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
@@ -19,86 +21,117 @@ class _FinanceRegisterState extends State<FinanceRegister> {
   TextEditingController roleController = TextEditingController();
   TextEditingController teamNameController = TextEditingController();
 
-  //String? _selectedRole;
-
   Icon roleIcon = Icon(Icons.contacts);
 
-  void register() async {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return const Center(
-          child: CircularProgressIndicator(
-            color: Colors.white,
-          ),
-        );
-      },
-    );
+  Stream<List<UserModel>> fetchUsers() {
+    return FirebaseFirestore.instance.collection('users').snapshots().map(
+        (snapshot) => snapshot.docs
+            .map((doc) => UserModel.fromJson(doc.data()))
+            .toList());
+  }
 
+  Future<void> updateUser(String? email) async {
     try {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: emailController.text,
-        password: passwordController.text,
-      );
-      Navigator.pop(context); //Navigator.of(context).pop;
+      DocumentSnapshot<Map<String, dynamic>> snapshot =
+          await FirebaseFirestore.instance.collection("users").doc(email).get();
 
-      print("------------------REGISTERED------------------");
-      UserModel(
-        name: nameController.text,
-        surname: surnameController.text,
-        email: emailController.text,
-        password: passwordController.text,
-        role: roleController.text,
-        job: jobController.text,
-        department: departmentController.text,
-        teamName: teamNameController.text,
-      ).createUser();
-      nameController.clear();
-      surnameController.clear();
-      emailController.clear();
-      passwordController.clear();
-      roleController.clear();
-      jobController.clear();
-      departmentController.clear();
-      teamNameController.clear();
-    } on FirebaseAuthException catch (e) {
-      Navigator.pop(context);
-
-      print("------------------EEERRROOORRR------------------");
-      print(e);
+      if (snapshot.exists) {
+        await FirebaseFirestore.instance.collection("users").doc(email).update({
+          "name": nameController.text,
+          "surname": surnameController.text,
+          "email": emailController.text,
+          "password": passwordController.text,
+          "role": roleController.text,
+          "job": jobController.text,
+          "department": departmentController.text,
+          "teamName": teamNameController.text,
+        });
+        print("User data updated successfully!");
+      } else {
+        print("User not found!");
+      }
+    } catch (e) {
+      print("Error fetching or updating user data: $e");
     }
   }
 
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
-    //double screenWidth = MediaQuery.of(context).size.width;
+    double screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 0, 191, 255),
-      appBar: AppBar(
-        toolbarHeight: screenHeight * 0.08,
-        centerTitle: true,
-        title: Text("Register a User"),
-        titleTextStyle: TextStyle(
-            fontSize: 40,
-            color: Color.fromARGB(255, 107, 190, 218),
-            fontWeight: FontWeight.bold),
-        backgroundColor: Color.fromARGB(200, 255, 255, 255),
-      ),
+      backgroundColor: Colors.amber,
       body: Padding(
-        padding: EdgeInsets.all(30),
+        padding: const EdgeInsets.all(30),
         child: SingleChildScrollView(
           child: Column(
             children: [
-              Text(
-                "Registerfh",
-                style: TextStyle(
-                    fontSize: 40,
-                    color: Color.fromARGB(255, 68, 149, 163),
-                    fontWeight: FontWeight.bold),
+              SizedBox(height: screenHeight * 0.05),
+              StreamBuilder<List<UserModel>>(
+                stream: fetchUsers(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    final users = snapshot.data!;
+                    return DropdownMenu<UserModel>(
+                      width: screenWidth - 60,
+                      leadingIcon: Icon(Icons.person_search),
+                      trailingIcon: Icon(Icons.keyboard_arrow_down),
+                      selectedTrailingIcon: Icon(Icons.keyboard_arrow_up),
+                      inputDecorationTheme: InputDecorationTheme(
+                        filled: true,
+                        fillColor: Colors.white,
+                        hintStyle: TextStyle(
+                            color: Colors.black38, fontWeight: FontWeight.w500),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            borderSide: BorderSide.none),
+                      ),
+                      hintText: "Select a user to edit or delete...",
+                      menuStyle: MenuStyle(
+                        shape: MaterialStatePropertyAll(RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20))),
+                        alignment: Alignment.bottomLeft,
+                        surfaceTintColor:
+                            MaterialStatePropertyAll(Colors.transparent),
+                        backgroundColor: MaterialStatePropertyAll(Colors.white),
+                      ),
+                      onSelected: (user) {
+                        setState(() {
+                          _selectedUser = user;
+                        });
+                        nameController.text = _selectedUser?.name ?? "";
+                        surnameController.text = _selectedUser?.surname ?? "";
+                        emailController.text = _selectedUser?.email ?? "";
+                        passwordController.text = _selectedUser?.password ?? "";
+                        roleController.text = _selectedUser?.role ?? "";
+                        jobController.text = _selectedUser?.job ?? "";
+                        departmentController.text =
+                            _selectedUser?.department ?? "";
+                        teamNameController.text = _selectedUser?.teamName ?? "";
+                      },
+                      dropdownMenuEntries: users.map((UserModel user) {
+                        return DropdownMenuEntry<UserModel>(
+                          leadingIcon: Icon(Icons.person_outline),
+                          label: user.email,
+                          value: user,
+                        );
+                      }).toList(),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('NO DATA!'));
+                  } else {
+                    return Center(child: Text('NO DATA!'));
+                  }
+                },
               ),
-              SizedBox(height: 30),
+              Divider(
+                height: 70,
+                color: Colors.white,
+                thickness: 1.5,
+                indent: 5,
+                endIndent: 5,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -285,18 +318,42 @@ class _FinanceRegisterState extends State<FinanceRegister> {
                 ),
               ),
               SizedBox(height: 30),
-              ElevatedButton(
-                onPressed: (() => register()),
-                child: Text(
-                  "Register",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              SizedBox(
+                height: 60,
+                width: screenWidth - 60,
+                child: ElevatedButton(
+                  onPressed: (() => updateUser(_selectedUser?.email)),
+                  child: Text(
+                    "Update",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color.fromARGB(255, 88, 171, 186),
+                    foregroundColor: Colors.white,
+                    //fixedSize: ,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
                 ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color.fromARGB(255, 88, 171, 186),
-                  foregroundColor: Colors.white,
-                  fixedSize: Size(500, 60),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
+              ),
+              SizedBox(height: 30),
+              SizedBox(
+                height: 60,
+                width: screenWidth - 60,
+                child: ElevatedButton(
+                  onPressed: (() => {}),
+                  child: Text(
+                    "Delete",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    foregroundColor: Colors.white,
+                    //fixedSize: ,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
                   ),
                 ),
               ),

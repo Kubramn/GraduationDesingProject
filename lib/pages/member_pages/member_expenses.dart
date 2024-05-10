@@ -52,104 +52,109 @@ class _MemberExpensesState extends State<MemberExpenses> {
 
   @override
   Widget build(BuildContext context) {
+    double screenHeight = MediaQuery.of(context).size.height;
+    //double screenWidth = MediaQuery.of(context).size.width;
+
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: Color.fromARGB(255, 0, 90, 175),
         body: Padding(
           padding: const EdgeInsets.all(30),
-          child: Center(
-            child: Column(
-              children: [
-                SizedBox(
-                  height: 40,
+          child: Column(
+            children: [
+              SizedBox(height: screenHeight * 0.05),
+              TabBar(
+                labelColor: Colors.white,
+                labelStyle: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
                 ),
-                TabBar(
-                  labelColor: Colors.white,
-                  labelStyle: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+                unselectedLabelColor: Colors.black38,
+                indicatorColor: Colors.transparent,
+                indicatorSize: TabBarIndicatorSize.tab,
+                dividerColor: Colors.transparent,
+                splashBorderRadius: BorderRadius.circular(15),
+                splashFactory: NoSplash.splashFactory,
+                overlayColor: MaterialStateProperty.resolveWith<Color?>(
+                  (Set<MaterialState> states) {
+                    return states.contains(MaterialState.focused)
+                        ? null
+                        : Colors.black12;
+                  },
+                ),
+                indicator: BoxDecoration(
+                  color: Colors.black,
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                tabs: [
+                  Tab(
+                    text: "Previous",
                   ),
-                  unselectedLabelColor: Colors.black38,
-                  indicatorColor: Colors.transparent,
-                  indicatorSize: TabBarIndicatorSize.tab,
-                  dividerColor: Colors.transparent,
-                  splashBorderRadius: BorderRadius.circular(15),
-                  splashFactory: NoSplash.splashFactory,
-                  overlayColor: MaterialStateProperty.resolveWith<Color?>(
-                    (Set<MaterialState> states) {
-                      return states.contains(MaterialState.focused)
-                          ? null
-                          : Colors.black12;
+                  Tab(
+                    text: "Waiting",
+                  ),
+                ],
+              ),
+              SizedBox(height: 25),
+              Divider(
+                height: 20,
+                color: Colors.white,
+                thickness: 1.5,
+                indent: 5,
+                endIndent: 5,
+              ),
+              Container(
+                height: 600,
+                child: TabBarView(children: [
+                  StreamBuilder<List<ExpenseModel>>(
+                    stream: fetchExpenses("previous"),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        final expenses = snapshot.data!;
+                        return ListView.builder(
+                            itemCount: expenses.length,
+                            itemBuilder: (context, index) {
+                              return Column(
+                                children: [
+                                  expenseTile(expenses[index]),
+                                  SizedBox(height: 10),
+                                ],
+                              );
+                            });
+                      } else if (snapshot.hasError) {
+                        return Center(child: Text('NO DATA!'));
+                      } else {
+                        return Center(
+                            child:
+                                CircularProgressIndicator(color: Colors.white));
+                      }
                     },
                   ),
-                  indicator: BoxDecoration(
-                    color: Colors.black,
-                    borderRadius: BorderRadius.circular(15),
+                  StreamBuilder<List<ExpenseModel>>(
+                    stream: fetchExpenses("waiting"),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        final expenses = snapshot.data!;
+                        return ListView.builder(
+                            itemCount: expenses.length,
+                            itemBuilder: (context, index) {
+                              return expenseTile(expenses[index]);
+                            });
+                      } else if (snapshot.hasError) {
+                        return Center(child: Text('NO DATA!'));
+                      } else {
+                        return Center(child: Text('NO DATA!'));
+                      }
+                    },
                   ),
-                  tabs: [
-                    Tab(
-                      text: "Previous",
-                    ),
-                    Tab(
-                      text: "Waiting",
-                    ),
-                  ],
-                ),
-                Divider(
-                  height: 25,
-                  color: Colors.black26,
-                ),
-                Container(
-                  height: 650,
-                  child: TabBarView(children: [
-                    StreamBuilder<List<ExpenseModel>>(
-                      stream: fetchExpenses("previous"),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          final expenses = snapshot.data!;
-                          return ListView.builder(
-                              itemCount: expenses.length,
-                              itemBuilder: (context, index) {
-                                return Column(
-                                  children: [
-                                    expenseTile(expenses[index]),
-                                    SizedBox(height: 10),
-                                  ],
-                                );
-                              });
-                        } else if (snapshot.hasError) {
-                          return Center(child: Text('NO DATA!'));
-                        } else {
-                          return Center(child: Text('NO DATA!'));
-                        }
-                      },
-                    ),
-                    StreamBuilder<List<ExpenseModel>>(
-                      stream: fetchExpenses("waiting"),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          final expenses = snapshot.data!;
-                          return ListView.builder(
-                              itemCount: expenses.length,
-                              itemBuilder: (context, index) {
-                                return expenseTile(expenses[index]);
-                              });
-                        } else if (snapshot.hasError) {
-                          return Center(child: Text('NO DATA!'));
-                        } else {
-                          return Center(child: Text('NO DATA!'));
-                        }
-                      },
-                    ),
-                  ]),
-                ),
-                ElevatedButton(
-                  onPressed: () => addExpense(),
-                  child: Text("ADD EXPENSE"),
-                ),
-              ],
-            ),
+                ]),
+              ),
+              ElevatedButton(
+                onPressed: () => addExpense(),
+                child: Text("ADD EXPENSE"),
+              ),
+            ],
           ),
         ),
       ),
