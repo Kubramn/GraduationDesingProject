@@ -46,6 +46,15 @@ class _FinanceUsersState extends State<FinanceUsers> {
           "department": departmentController.text,
           "teamName": teamNameController.text,
         });
+        nameController.clear();
+        surnameController.clear();
+        emailController.clear();
+        passwordController.clear();
+        roleController.clear();
+        jobController.clear();
+        departmentController.clear();
+        teamNameController.clear();
+
         print("User data updated successfully!");
       } else {
         print("User not found!");
@@ -61,7 +70,7 @@ class _FinanceUsersState extends State<FinanceUsers> {
     double screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      backgroundColor: Colors.amber,
+      backgroundColor: Color.fromARGB(255, 229, 229, 225),
       body: Padding(
         padding: const EdgeInsets.all(30),
         child: SingleChildScrollView(
@@ -89,12 +98,12 @@ class _FinanceUsersState extends State<FinanceUsers> {
                       ),
                       hintText: "Select a user to edit or delete...",
                       menuStyle: MenuStyle(
-                        shape: MaterialStatePropertyAll(RoundedRectangleBorder(
+                        shape: WidgetStatePropertyAll(RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20))),
                         alignment: Alignment.bottomLeft,
-                        surfaceTintColor:
-                            MaterialStatePropertyAll(Colors.transparent),
-                        backgroundColor: MaterialStatePropertyAll(Colors.white),
+                        surfaceTintColor: WidgetStatePropertyAll(
+                            Color.fromARGB(255, 157, 203, 201)),
+                        backgroundColor: WidgetStatePropertyAll(Colors.white),
                       ),
                       onSelected: (user) {
                         setState(() {
@@ -121,13 +130,17 @@ class _FinanceUsersState extends State<FinanceUsers> {
                   } else if (snapshot.hasError) {
                     return Center(child: Text('NO DATA!'));
                   } else {
-                    return Center(child: Text('NO DATA!'));
+                    return Center(
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                      ),
+                    );
                   }
                 },
               ),
               Divider(
                 height: 70,
-                color: Colors.white,
+                color: Color.fromARGB(255, 49, 102, 101),
                 thickness: 1.5,
                 indent: 5,
                 endIndent: 5,
@@ -224,12 +237,12 @@ class _FinanceUsersState extends State<FinanceUsers> {
                     width: 185,
                     controller: roleController,
                     menuStyle: MenuStyle(
-                      shape: MaterialStatePropertyAll(RoundedRectangleBorder(
+                      shape: WidgetStatePropertyAll(RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15))),
                       alignment: Alignment.bottomLeft,
                       surfaceTintColor:
-                          MaterialStatePropertyAll(Colors.transparent),
-                      backgroundColor: MaterialStatePropertyAll(Colors.white),
+                          WidgetStatePropertyAll(Colors.transparent),
+                      backgroundColor: WidgetStatePropertyAll(Colors.white),
                     ),
                     onSelected: (_) {
                       setState(() {});
@@ -325,11 +338,11 @@ class _FinanceUsersState extends State<FinanceUsers> {
                   onPressed: (() => updateUser(_selectedUser?.email)),
                   child: Text(
                     "Update",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                   ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color.fromARGB(255, 88, 171, 186),
-                    foregroundColor: Colors.white,
+                    backgroundColor: Color.fromARGB(255, 49, 102, 101),
+                    foregroundColor: Color.fromARGB(255, 157, 203, 201),
                     //fixedSize: ,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
@@ -345,11 +358,11 @@ class _FinanceUsersState extends State<FinanceUsers> {
                   onPressed: (() => {}),
                   child: Text(
                     "Delete",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                   ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red,
-                    foregroundColor: Colors.white,
+                    backgroundColor: Color.fromARGB(255, 49, 102, 101),
+                    foregroundColor: Colors.red,
                     //fixedSize: ,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),

@@ -72,33 +72,16 @@ class _FinanceRegisterState extends State<FinanceRegister> {
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
-    //double screenWidth = MediaQuery.of(context).size.width;
+    double screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 0, 191, 255),
-      appBar: AppBar(
-        toolbarHeight: screenHeight * 0.08,
-        centerTitle: true,
-        title: Text("Register a User"),
-        titleTextStyle: TextStyle(
-            fontSize: 40,
-            color: Color.fromARGB(255, 107, 190, 218),
-            fontWeight: FontWeight.bold),
-        backgroundColor: Color.fromARGB(200, 255, 255, 255),
-      ),
+      backgroundColor: Color.fromARGB(255, 229, 229, 225),
       body: Padding(
         padding: EdgeInsets.all(30),
         child: SingleChildScrollView(
           child: Column(
             children: [
-              Text(
-                "Registerfh",
-                style: TextStyle(
-                    fontSize: 40,
-                    color: Color.fromARGB(255, 68, 149, 163),
-                    fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 30),
+              SizedBox(height: 100),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -289,11 +272,11 @@ class _FinanceRegisterState extends State<FinanceRegister> {
                 onPressed: (() => register()),
                 child: Text(
                   "Register",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                 ),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color.fromARGB(255, 88, 171, 186),
-                  foregroundColor: Colors.white,
+                  backgroundColor: Color.fromARGB(255, 68, 60, 95),
+                  foregroundColor: Color.fromARGB(255, 187, 179, 203),
                   fixedSize: Size(500, 60),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),

@@ -15,7 +15,7 @@ class _LeaderInvoiceState extends State<LeaderInvoice> {
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
   //late File _selectedImage;
-  bool toggle = false;
+  bool _flashToggle = false;
 
   @override
   void initState() {
@@ -32,12 +32,12 @@ class _LeaderInvoiceState extends State<LeaderInvoice> {
       if (_controller.value.flashMode == FlashMode.off) {
         await _controller.setFlashMode(FlashMode.torch);
         setState(() {
-          toggle = true;
+          _flashToggle = true;
         });
       } else {
         await _controller.setFlashMode(FlashMode.off);
         setState(() {
-          toggle = false;
+          _flashToggle = false;
         });
       }
     }
@@ -65,25 +65,29 @@ class _LeaderInvoiceState extends State<LeaderInvoice> {
 
   @override
   Widget build(BuildContext context) {
+    double screenHeight = MediaQuery.of(context).size.height;
+    double screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
+      backgroundColor: Color.fromARGB(255, 229, 229, 225),
       body: Center(
         child: Column(
           children: [
             SizedBox(
-              height: 80,
+              height: screenHeight * 0.07,
             ),
             FutureBuilder<void>(
               future: _initializeControllerFuture,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
                   return Container(
-                    height: 520, //620
-                    width: 400,
+                    height: screenHeight * 0.63, //620
+                    width: screenWidth * 0.9,
                     decoration: BoxDecoration(
                       borderRadius:
                           BorderRadius.circular(30), // Set border radius here
                       border: Border.all(
-                        color: Colors.black,
+                        color: Color.fromARGB(255, 157, 203, 201),
                         width: 8,
                       ),
                     ),
@@ -98,29 +102,31 @@ class _LeaderInvoiceState extends State<LeaderInvoice> {
               },
             ),
             SizedBox(
-              height: 25,
+              height: screenHeight * 0.025,
             ),
             Stack(
               alignment: Alignment.center,
               //mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(right: 250),
+                  padding: EdgeInsets.only(right: screenWidth * 0.55),
                   child: Container(
                     alignment: Alignment.center,
                     height: 80,
                     width: 80,
                     decoration: BoxDecoration(
-                      color: Colors.black,
+                      color: Color.fromARGB(255, 49, 102, 101),
                       borderRadius: BorderRadius.circular(100),
                     ),
                     child: IconButton(
                       icon: Icon(
-                        toggle
+                        _flashToggle
                             ? Icons.flashlight_on_outlined
                             : Icons.flashlight_off_outlined,
                         size: 45,
-                        color: toggle ? Colors.yellow : Colors.white,
+                        color: _flashToggle
+                            ? Colors.yellow
+                            : Color.fromARGB(255, 157, 203, 201),
                       ),
                       highlightColor: Colors.yellow,
                       onPressed: _toggleFlashlight,
@@ -132,16 +138,16 @@ class _LeaderInvoiceState extends State<LeaderInvoice> {
                   height: 120,
                   width: 120,
                   decoration: BoxDecoration(
-                    color: Colors.black,
+                    color: Color.fromARGB(255, 49, 102, 101),
                     borderRadius: BorderRadius.circular(100),
                   ),
                   child: IconButton(
                     icon: Icon(
                       Icons.camera_alt_outlined,
                       size: 80,
-                      color: Colors.white,
+                      color: Color.fromARGB(255, 157, 203, 201),
                     ),
-                    highlightColor: Colors.white,
+                    highlightColor: Color.fromARGB(255, 157, 203, 201),
                     onPressed: () async {
                       try {
                         await _initializeControllerFuture;
@@ -161,22 +167,22 @@ class _LeaderInvoiceState extends State<LeaderInvoice> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 250),
+                  padding: EdgeInsets.only(left: screenWidth * 0.55),
                   child: Container(
                     alignment: Alignment.center,
                     height: 80,
                     width: 80,
                     decoration: BoxDecoration(
-                      color: Colors.black,
+                      color: Color.fromARGB(255, 49, 102, 101),
                       borderRadius: BorderRadius.circular(100),
                     ),
                     child: IconButton(
                       icon: Icon(
                         Icons.photo_outlined,
                         size: 50,
-                        color: Colors.white,
+                        color: Color.fromARGB(255, 157, 203, 201),
                       ),
-                      highlightColor: Colors.white,
+                      highlightColor: Color.fromARGB(255, 157, 203, 201),
                       onPressed: _selectImageFromLibrary,
                     ),
                   ),
