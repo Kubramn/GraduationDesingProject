@@ -14,7 +14,6 @@ class _FinanceUsersState extends State<FinanceUsers> {
 
   TextEditingController nameController = TextEditingController();
   TextEditingController surnameController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController jobController = TextEditingController();
   TextEditingController departmentController = TextEditingController();
@@ -39,7 +38,6 @@ class _FinanceUsersState extends State<FinanceUsers> {
         await FirebaseFirestore.instance.collection("users").doc(email).update({
           "name": nameController.text,
           "surname": surnameController.text,
-          "email": emailController.text,
           "password": passwordController.text,
           "role": roleController.text,
           "job": jobController.text,
@@ -48,7 +46,6 @@ class _FinanceUsersState extends State<FinanceUsers> {
         });
         nameController.clear();
         surnameController.clear();
-        emailController.clear();
         passwordController.clear();
         roleController.clear();
         jobController.clear();
@@ -111,7 +108,6 @@ class _FinanceUsersState extends State<FinanceUsers> {
                         });
                         nameController.text = _selectedUser?.name ?? "";
                         surnameController.text = _selectedUser?.surname ?? "";
-                        emailController.text = _selectedUser?.email ?? "";
                         passwordController.text = _selectedUser?.password ?? "";
                         roleController.text = _selectedUser?.role ?? "";
                         jobController.text = _selectedUser?.job ?? "";
@@ -128,7 +124,7 @@ class _FinanceUsersState extends State<FinanceUsers> {
                       }).toList(),
                     );
                   } else if (snapshot.hasError) {
-                    return Center(child: Text('NO DATA!'));
+                    return Center(child: Text("ERROR!"));
                   } else {
                     return Center(
                       child: CircularProgressIndicator(
@@ -184,22 +180,7 @@ class _FinanceUsersState extends State<FinanceUsers> {
                   ),
                 ],
               ),
-              SizedBox(height: 20),
-              TextField(
-                keyboardType: TextInputType.emailAddress,
-                controller: emailController,
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                      borderSide: BorderSide.none,
-                      borderRadius: BorderRadius.circular(20)),
-                  hintText: "Email",
-                  hintStyle: TextStyle(color: Colors.black38),
-                  prefixIcon: Icon(Icons.email_outlined),
-                ),
-              ),
-              SizedBox(height: 20),
+              SizedBox(height: 40),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -275,7 +256,7 @@ class _FinanceUsersState extends State<FinanceUsers> {
                   )
                 ],
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 40),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -315,7 +296,7 @@ class _FinanceUsersState extends State<FinanceUsers> {
                   ),
                 ],
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 40),
               TextField(
                 keyboardType: TextInputType.text,
                 controller: teamNameController,
@@ -330,14 +311,14 @@ class _FinanceUsersState extends State<FinanceUsers> {
                   prefixIcon: Icon(Icons.groups_outlined),
                 ),
               ),
-              SizedBox(height: 30),
+              SizedBox(height: 40),
               SizedBox(
                 height: 60,
                 width: screenWidth - 60,
                 child: ElevatedButton(
                   onPressed: (() => updateUser(_selectedUser?.email)),
                   child: Text(
-                    "Update",
+                    "Update User",
                     style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                   ),
                   style: ElevatedButton.styleFrom(
@@ -350,14 +331,14 @@ class _FinanceUsersState extends State<FinanceUsers> {
                   ),
                 ),
               ),
-              SizedBox(height: 30),
+              SizedBox(height: 40),
               SizedBox(
                 height: 60,
                 width: screenWidth - 60,
                 child: ElevatedButton(
                   onPressed: (() => {}),
                   child: Text(
-                    "Delete",
+                    "Delete User",
                     style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                   ),
                   style: ElevatedButton.styleFrom(

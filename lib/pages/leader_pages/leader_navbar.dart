@@ -1,6 +1,6 @@
+import 'package:bitirme/pages/expenses_page.dart';
+import 'package:bitirme/pages/invoice_page.dart';
 import 'package:bitirme/pages/leader_pages/leader_dashboard.dart';
-import 'package:bitirme/pages/leader_pages/leader_expenses.dart';
-import 'package:bitirme/pages/leader_pages/leader_invoice.dart';
 import 'package:bitirme/pages/leader_pages/leader_requests.dart';
 import 'package:bitirme/pages/login_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -36,8 +36,8 @@ class _LeaderNavBarState extends State<LeaderNavBar> {
 
   final List _screens = const [
     LeaderDashboard(),
-    LeaderExpenses(),
-    LeaderInvoice(),
+    ExpensesPage(),
+    InvoicePage(),
     LeaderRequests(),
   ];
 

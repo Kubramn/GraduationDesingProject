@@ -1,6 +1,6 @@
+import 'package:bitirme/pages/expenses_page.dart';
+import 'package:bitirme/pages/invoice_page.dart';
 import 'package:bitirme/pages/login_page.dart';
-import 'package:bitirme/pages/member_pages/member_expenses.dart';
-import 'package:bitirme/pages/member_pages/member_invoice.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
@@ -33,8 +33,8 @@ class _MemberNavBarState extends State<MemberNavBar> {
   }
 
   final List _screens = const [
-    MemberExpenses(),
-    MemberInvoice(),
+    ExpensesPage(),
+    InvoicePage(),
   ];
 
   @override

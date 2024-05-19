@@ -1,17 +1,17 @@
-/* import 'dart:io';
+import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-class LeaderInvoice extends StatefulWidget {
-  const LeaderInvoice({super.key});
+class InvoicePage extends StatefulWidget {
+  const InvoicePage({super.key});
   static late CameraDescription firstCamera;
 
   @override
-  State<LeaderInvoice> createState() => _LeaderInvoiceState();
+  State<InvoicePage> createState() => _InvoicePageState();
 }
 
-class _LeaderInvoiceState extends State<LeaderInvoice> {
+class _InvoicePageState extends State<InvoicePage> {
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
   //late File _selectedImage;
@@ -21,7 +21,7 @@ class _LeaderInvoiceState extends State<LeaderInvoice> {
   void initState() {
     super.initState();
     _controller = CameraController(
-      LeaderInvoice.firstCamera,
+      InvoicePage.firstCamera,
       ResolutionPreset.medium,
     );
     _initializeControllerFuture = _controller.initialize();
@@ -208,4 +208,3 @@ class DisplayPictureScreen extends StatelessWidget {
     );
   }
 }
- */

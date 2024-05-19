@@ -1,5 +1,5 @@
-import 'dart:math';
-
+import 'package:bitirme/pages/expenses_page.dart';
+import 'package:bitirme/pages/invoice_page.dart';
 import 'package:bitirme/pages/leader_pages/leader_invoice.dart';
 import 'package:bitirme/pages/leader_pages/leader_navbar.dart';
 import 'package:bitirme/pages/member_pages/member_expenses.dart';
@@ -16,8 +16,7 @@ import 'firebase_options.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final cameras = await availableCameras();
-  LeaderInvoice.firstCamera = cameras.first;
-  MemberInvoice.firstCamera = cameras.first;
+  InvoicePage.firstCamera = cameras.first;
 
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(

@@ -23,13 +23,46 @@ class _FinanceRegisterState extends State<FinanceRegister> {
 
   Icon roleIcon = Icon(Icons.contacts);
 
+  void alertMessage(String message, Color backgroundColor) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          surfaceTintColor: backgroundColor,
+          title: Text(
+            message,
+            style: TextStyle(
+              color: Color.fromARGB(255, 52, 52, 52),
+              fontSize: 30,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text(
+                "Close",
+                style: TextStyle(
+                  color: Color.fromARGB(255, 52, 52, 52),
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            )
+          ],
+        );
+      },
+    );
+  }
+
   void register() async {
     showDialog(
       context: context,
       builder: (context) {
         return const Center(
           child: CircularProgressIndicator(
-            color: Colors.white,
+            color: Color.fromARGB(255, 68, 60, 95),
           ),
         );
       },
@@ -41,8 +74,10 @@ class _FinanceRegisterState extends State<FinanceRegister> {
         password: passwordController.text,
       );
       Navigator.pop(context); //Navigator.of(context).pop;
-
-      print("------------------REGISTERED------------------");
+      alertMessage(
+        "${nameController.text} ${surnameController.text} is registered successfully.",
+        Color.fromARGB(255, 0, 255, 0),
+      );
       UserModel(
         name: nameController.text,
         surname: surnameController.text,
@@ -63,9 +98,11 @@ class _FinanceRegisterState extends State<FinanceRegister> {
       teamNameController.clear();
     } on FirebaseAuthException catch (e) {
       Navigator.pop(context);
-
-      print("------------------EEERRROOORRR------------------");
-      print(e);
+      alertMessage(
+        "User Registration failed!",
+        const Color.fromARGB(255, 255, 0, 0),
+      );
+      print("ERROR -> $e");
     }
   }
 
@@ -98,7 +135,10 @@ class _FinanceRegisterState extends State<FinanceRegister> {
                             borderRadius: BorderRadius.circular(20)),
                         hintText: "Name",
                         hintStyle: TextStyle(color: Colors.black38),
-                        prefixIcon: Icon(Icons.person),
+                        prefixIcon: Icon(
+                          Icons.person,
+                          color: Color.fromARGB(255, 68, 60, 95),
+                        ),
                       ),
                     ),
                   ),
@@ -115,13 +155,16 @@ class _FinanceRegisterState extends State<FinanceRegister> {
                             borderRadius: BorderRadius.circular(20)),
                         hintText: "Surname",
                         hintStyle: TextStyle(color: Colors.black38),
-                        prefixIcon: Icon(Icons.person_outline),
+                        prefixIcon: Icon(
+                          Icons.person_outline,
+                          color: Color.fromARGB(255, 68, 60, 95),
+                        ),
                       ),
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 40),
               TextField(
                 keyboardType: TextInputType.emailAddress,
                 controller: emailController,
@@ -129,14 +172,18 @@ class _FinanceRegisterState extends State<FinanceRegister> {
                   filled: true,
                   fillColor: Colors.white,
                   border: OutlineInputBorder(
-                      borderSide: BorderSide.none,
-                      borderRadius: BorderRadius.circular(20)),
+                    borderSide: BorderSide.none,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
                   hintText: "Email",
                   hintStyle: TextStyle(color: Colors.black38),
-                  prefixIcon: Icon(Icons.email_outlined),
+                  prefixIcon: Icon(
+                    Icons.email_outlined,
+                    color: Color.fromARGB(255, 68, 60, 95),
+                  ),
                 ),
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 40),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -153,7 +200,10 @@ class _FinanceRegisterState extends State<FinanceRegister> {
                             borderRadius: BorderRadius.circular(20)),
                         hintText: "Password",
                         hintStyle: TextStyle(color: Colors.black38),
-                        prefixIcon: Icon(Icons.lock_outline),
+                        prefixIcon: Icon(
+                          Icons.lock_outline,
+                          color: Color.fromARGB(255, 68, 60, 95),
+                        ),
                       ),
                     ),
                   ),
@@ -174,12 +224,12 @@ class _FinanceRegisterState extends State<FinanceRegister> {
                     width: 185,
                     controller: roleController,
                     menuStyle: MenuStyle(
-                      shape: MaterialStatePropertyAll(RoundedRectangleBorder(
+                      shape: WidgetStatePropertyAll(RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15))),
                       alignment: Alignment.bottomLeft,
                       surfaceTintColor:
-                          MaterialStatePropertyAll(Colors.transparent),
-                      backgroundColor: MaterialStatePropertyAll(Colors.white),
+                          WidgetStatePropertyAll(Colors.transparent),
+                      backgroundColor: WidgetStatePropertyAll(Colors.white),
                     ),
                     onSelected: (_) {
                       setState(() {});
@@ -212,7 +262,7 @@ class _FinanceRegisterState extends State<FinanceRegister> {
                   )
                 ],
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 40),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -252,7 +302,7 @@ class _FinanceRegisterState extends State<FinanceRegister> {
                   ),
                 ],
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 40),
               TextField(
                 keyboardType: TextInputType.text,
                 controller: teamNameController,
@@ -267,7 +317,7 @@ class _FinanceRegisterState extends State<FinanceRegister> {
                   prefixIcon: Icon(Icons.groups_outlined),
                 ),
               ),
-              SizedBox(height: 30),
+              SizedBox(height: 40),
               ElevatedButton(
                 onPressed: (() => register()),
                 child: Text(
