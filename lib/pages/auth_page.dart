@@ -1,4 +1,4 @@
-import 'package:bitirme/pages/finance_pages/finance_navbar.dart';
+/* import 'package:bitirme/pages/finance_pages/finance_navbar.dart';
 import 'package:bitirme/pages/login_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -21,3 +21,4 @@ class AuthPage extends StatelessWidget {
     );
   }
 }
+ */

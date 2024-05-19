@@ -1,17 +1,18 @@
-/* import 'package:bitirme/models/expense_model.dart';
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:bitirme/models/expense_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class LeaderExpenses extends StatefulWidget {
-  const LeaderExpenses({super.key});
+class ExpensesPage extends StatefulWidget {
+  const ExpensesPage({super.key});
 
   @override
-  State<LeaderExpenses> createState() => _LeaderExpensesState();
+  State<ExpensesPage> createState() => _ExpensesPageState();
 }
 
-class _LeaderExpensesState extends State<LeaderExpenses> {
+class _ExpensesPageState extends State<ExpensesPage> {
   User? user = FirebaseAuth.instance.currentUser;
 
   Stream<List<ExpenseModel>> fetchExpenses(String status) {
@@ -22,7 +23,7 @@ class _LeaderExpensesState extends State<LeaderExpenses> {
             Filter.and(
               Filter("userEmail", isEqualTo: user?.email),
               Filter.or(
-                Filter("status", isEqualTo: "accepted"),
+                Filter("status", isEqualTo: "acceptedByLeaderAndFinance"),
                 Filter("status", isEqualTo: "denied"),
               ),
             ),
@@ -36,7 +37,10 @@ class _LeaderExpensesState extends State<LeaderExpenses> {
           .collection('expenses')
           .where(Filter.and(
             Filter("userEmail", isEqualTo: user?.email),
-            Filter("status", isEqualTo: "waiting"),
+            Filter.or(
+              Filter("status", isEqualTo: "waiting"),
+              Filter("status", isEqualTo: "acceptedByLeader"),
+            ),
           ))
           .snapshots()
           .map((snapshot) => snapshot.docs
@@ -55,6 +59,7 @@ class _LeaderExpensesState extends State<LeaderExpenses> {
       date: DateTime.now(),
       description: "description description description",
       userEmail: "new@gmail.com",
+      checkerUserEmail: "leader@gmail.com",
       teamName: "team1",
     ).createExpense();
   }
@@ -63,6 +68,7 @@ class _LeaderExpensesState extends State<LeaderExpenses> {
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
+    print(screenWidth);
 
     return DefaultTabController(
       length: 2,
@@ -80,7 +86,7 @@ class _LeaderExpensesState extends State<LeaderExpenses> {
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
-                  unselectedLabelColor: Colors.black38,
+                  unselectedLabelColor: Color.fromARGB(150, 76, 89, 23),
                   indicatorColor: Colors.transparent,
                   indicatorSize: TabBarIndicatorSize.tab,
                   dividerColor: Colors.transparent,
@@ -90,11 +96,11 @@ class _LeaderExpensesState extends State<LeaderExpenses> {
                     (Set<WidgetState> states) {
                       return states.contains(WidgetState.focused)
                           ? null
-                          : Colors.white38;
+                          : Color.fromARGB(50, 191, 203, 155);
                     },
                   ),
                   indicator: BoxDecoration(
-                    color: Colors.white70,
+                    color: Color.fromARGB(170, 191, 203, 155),
                     borderRadius: BorderRadius.circular(15),
                   ),
                   tabs: [
@@ -114,7 +120,7 @@ class _LeaderExpensesState extends State<LeaderExpenses> {
                   indent: screenWidth * 0.01,
                   endIndent: screenWidth * 0.01,
                 ),
-                Container(
+                SizedBox(
                   //color: Colors.black,
                   height: screenHeight * 0.65,
                   child: TabBarView(children: [
@@ -180,7 +186,10 @@ class _LeaderExpensesState extends State<LeaderExpenses> {
   }
 
   Widget expenseTile(
-          ExpenseModel expense, double screenHeight, double screenWidth) =>
+    ExpenseModel expense,
+    double screenHeight,
+    double screenWidth,
+  ) =>
       SizedBox(
         height: screenHeight * 0.08,
         child: Card(
@@ -197,7 +206,7 @@ class _LeaderExpensesState extends State<LeaderExpenses> {
               leading: Icon(
                 Icons.attach_money,
                 color: Color.fromARGB(255, 76, 89, 23),
-                size: 32,
+                size: 34,
               ),
               title: Text(
                 expense.title,
@@ -209,11 +218,11 @@ class _LeaderExpensesState extends State<LeaderExpenses> {
               trailing: IconButton(
                 icon: Icon(
                   Icons.search,
-                  color: Color.fromARGB(255, 191, 203, 155),
+                  color: Color.fromARGB(255, 76, 89, 23),
                   size: 30,
                 ),
                 style: IconButton.styleFrom(
-                    backgroundColor: Color.fromARGB(255, 76, 89, 23)),
+                    backgroundColor: Color.fromARGB(255, 191, 203, 155)),
                 onPressed: () {
                   showDialog(
                     context: context,
@@ -221,8 +230,8 @@ class _LeaderExpensesState extends State<LeaderExpenses> {
                       surfaceTintColor: Color.fromARGB(255, 76, 89, 23),
                       backgroundColor: Colors.white,
                       insetPadding: EdgeInsets.symmetric(
-                        horizontal: screenWidth * 0.0, //0.06
-                        vertical: screenHeight * 0.0, //0.25
+                        horizontal: screenWidth * 0.06,
+                        vertical: screenHeight * 0.20,
                       ),
                       actions: [
                         TextButton(
@@ -232,29 +241,31 @@ class _LeaderExpensesState extends State<LeaderExpenses> {
                           child: Text(
                             "Close",
                             style: TextStyle(
-                                color: Color.fromARGB(255, 76, 89, 23),
-                                fontSize: 20),
+                              color: Color.fromARGB(255, 76, 89, 23),
+                              fontSize: 25,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         )
                       ],
                       content: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          Attribute(
-                            attribute: "Title:  ",
+                          InfoValue(
+                            info: "Title:  ",
                             value: expense.title,
                           ),
-                          Attribute(
-                            attribute: "Description:  ",
+                          InfoValue(
+                            info: "Description:  ",
                             value: expense.description,
                           ),
-                          Attribute(
-                            attribute: "Date:  ",
+                          InfoValue(
+                            info: "Date:  ",
                             value:
                                 DateFormat('MMMM d, yyyy').format(expense.date),
                           ),
-                          Attribute(
-                            attribute: "Price:  ",
+                          InfoValue(
+                            info: "Price:  ",
                             value: expense.price,
                           ),
                         ],
@@ -269,42 +280,41 @@ class _LeaderExpensesState extends State<LeaderExpenses> {
       );
 }
 
-class Attribute extends StatelessWidget {
-  final String attribute;
+class InfoValue extends StatelessWidget {
+  final String info;
   final String value;
 
-  const Attribute({
+  const InfoValue({
     super.key,
-    required this.attribute,
+    required this.info,
     required this.value,
   });
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 400,
-      child: Row(
-        children: [
-          Text(
-            attribute,
-            style: TextStyle(
-              color: Color.fromARGB(255, 52, 52, 52),
-              fontSize: 30,
-              fontWeight: FontWeight.w400,
-            ),
+    return Row(
+      children: [
+        Text(
+          info,
+          style: TextStyle(
+            color: Color.fromARGB(255, 52, 52, 52),
+            fontSize: 30,
           ),
-          Text(
-            overflow: TextOverflow.clip,
+        ),
+        Expanded(
+          child: AutoSizeText(
             value,
+            maxLines: 3,
+            minFontSize: 25,
+            maxFontSize: 30,
             style: TextStyle(
               color: Color.fromARGB(255, 52, 52, 52),
               fontSize: 30,
               fontWeight: FontWeight.bold,
             ),
-          )
-        ],
-      ),
+          ),
+        )
+      ],
     );
   }
 }
- */

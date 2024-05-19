@@ -1,4 +1,4 @@
-import 'package:bitirme/models/expense_model.dart';
+/* import 'package:bitirme/models/expense_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -209,11 +209,11 @@ class _MemberExpensesState extends State<MemberExpenses> {
               trailing: IconButton(
                 icon: Icon(
                   Icons.search,
-                  color: Color.fromARGB(255, 76, 89, 23),
+                  color: Color.fromARGB(255, 191, 203, 155),
                   size: 30,
                 ),
                 style: IconButton.styleFrom(
-                    backgroundColor: Color.fromARGB(255, 191, 203, 155)),
+                    backgroundColor: Color.fromARGB(255, 76, 89, 23)),
                 onPressed: () {
                   showDialog(
                     context: context,
@@ -307,3 +307,4 @@ class Attribute extends StatelessWidget {
     );
   }
 }
+ */

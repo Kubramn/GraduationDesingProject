@@ -8,6 +8,7 @@ class ExpenseModel {
   DateTime date;
   String description;
   String userEmail;
+  String checkerUserEmail;
   String teamName;
 
   ExpenseModel({
@@ -18,6 +19,7 @@ class ExpenseModel {
     required this.date,
     required this.description,
     required this.userEmail,
+    required this.checkerUserEmail,
     required this.teamName,
   });
 
@@ -29,6 +31,7 @@ class ExpenseModel {
         "date": date,
         "description": description,
         "userEmail": userEmail,
+        "checkerUserEmail": checkerUserEmail,
         "teamName": teamName,
       };
 
@@ -40,6 +43,7 @@ class ExpenseModel {
         date: (json["date"] as Timestamp).toDate(),
         description: json["description"],
         userEmail: json["userEmail"],
+        checkerUserEmail: json["checkerUserEmail"],
         teamName: json["teamName"],
       );
 
@@ -53,6 +57,7 @@ class ExpenseModel {
       date: date,
       description: description,
       userEmail: userEmail,
+      checkerUserEmail: checkerUserEmail,
       teamName: teamName,
     );
     await newExpense.set(expense.toJson());
