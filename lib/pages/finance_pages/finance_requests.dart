@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:bitirme/models/expense_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -13,6 +14,15 @@ class FinanceRequests extends StatefulWidget {
 
 class _FinanceRequestsState extends State<FinanceRequests> {
   User? user = FirebaseAuth.instance.currentUser;
+
+  Future<String> getNameSurname(String email) async {
+    final userDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .where('email', isEqualTo: email)
+        .get();
+    final data = userDoc.docs.first.data();
+    return "${data['name']} ${data['surname']}";
+  }
 
   Stream<List<ExpenseModel>> fetchRequests() {
     return FirebaseFirestore.instance
@@ -136,11 +146,11 @@ class _FinanceRequestsState extends State<FinanceRequests> {
                   showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
-                      surfaceTintColor: Color.fromARGB(255, 68, 60, 95),
+                      surfaceTintColor: Color.fromARGB(255, 187, 179, 203),
                       backgroundColor: Colors.white,
                       insetPadding: EdgeInsets.symmetric(
                         horizontal: screenWidth * 0.06,
-                        vertical: screenHeight * 0.20,
+                        vertical: screenHeight * 0.15,
                       ),
                       actions: [
                         Column(
@@ -176,7 +186,7 @@ class _FinanceRequestsState extends State<FinanceRequests> {
                                 "Close",
                                 style: TextStyle(
                                   color: Color.fromARGB(255, 68, 60, 95),
-                                  fontSize: 22,
+                                  fontSize: 25,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -184,27 +194,59 @@ class _FinanceRequestsState extends State<FinanceRequests> {
                           ],
                         )
                       ],
-                      content: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          InfoValue(
-                            info: "Title:  ",
-                            value: request.title,
-                          ),
-                          InfoValue(
-                            info: "Description:  ",
-                            value: request.description,
-                          ),
-                          InfoValue(
-                            info: "Date:  ",
-                            value:
-                                DateFormat('MMMM d, yyyy').format(request.date),
-                          ),
-                          InfoValue(
-                            info: "Price:  ",
-                            value: request.price,
-                          ),
-                        ],
+                      content: SizedBox(
+                        width: double.maxFinite,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            FutureBuilder<String>(
+                              future: getNameSurname(request.userEmail),
+                              builder: (context, snapshot) {
+                                return AutoSizeText.rich(
+                                  TextSpan(
+                                    children: [
+                                      TextSpan(
+                                          text:
+                                              "This expense was incurred by "),
+                                      TextSpan(
+                                        text: snapshot.data,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Color.fromARGB(255, 52, 52, 52),
+                                    fontSize: 30,
+                                  ),
+                                );
+                              },
+                            ),
+                            Divider(
+                              color: Color.fromARGB(255, 68, 60, 95),
+                              thickness: 2,
+                            ),
+                            InfoValue(
+                              info: "Title",
+                              value: request.title,
+                            ),
+                            InfoValue(
+                              info: "Description",
+                              value: request.description,
+                            ),
+                            InfoValue(
+                              info: "Date",
+                              value: DateFormat('MMMM d, yyyy')
+                                  .format(request.date),
+                            ),
+                            InfoValue(
+                              info: "Price",
+                              value: request.price,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   );
@@ -262,28 +304,31 @@ class InfoValue extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 400,
-      child: Row(
-        children: [
-          Text(
-            info,
-            style: TextStyle(
-              color: Color.fromARGB(255, 52, 52, 52),
-              fontSize: 30,
-              fontWeight: FontWeight.w400,
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: AutoSizeText.rich(
+        TextSpan(
+          children: [
+            TextSpan(
+              text: "$info:  ",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Color.fromARGB(255, 68, 60, 95),
+              ),
             ),
-          ),
-          Text(
-            overflow: TextOverflow.clip,
-            value,
-            style: TextStyle(
-              color: Color.fromARGB(255, 52, 52, 52),
-              fontSize: 30,
-              fontWeight: FontWeight.bold,
+            TextSpan(
+              text: value,
             ),
-          )
-        ],
+          ],
+        ),
+        maxLines: 3,
+        minFontSize: 30,
+        maxFontSize: 30,
+        overflow: TextOverflow.ellipsis,
+        style: TextStyle(
+          color: Color.fromARGB(255, 52, 52, 52),
+          fontSize: 30,
+        ),
       ),
     );
   }

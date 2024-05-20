@@ -227,11 +227,11 @@ class _ExpensesPageState extends State<ExpensesPage> {
                   showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
-                      surfaceTintColor: Color.fromARGB(255, 76, 89, 23),
+                      surfaceTintColor: Color.fromARGB(255, 191, 203, 155),
                       backgroundColor: Colors.white,
                       insetPadding: EdgeInsets.symmetric(
                         horizontal: screenWidth * 0.06,
-                        vertical: screenHeight * 0.20,
+                        vertical: screenHeight * 0.22,
                       ),
                       actions: [
                         TextButton(
@@ -248,27 +248,30 @@ class _ExpensesPageState extends State<ExpensesPage> {
                           ),
                         )
                       ],
-                      content: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          InfoValue(
-                            info: "Title:  ",
-                            value: expense.title,
-                          ),
-                          InfoValue(
-                            info: "Description:  ",
-                            value: expense.description,
-                          ),
-                          InfoValue(
-                            info: "Date:  ",
-                            value:
-                                DateFormat('MMMM d, yyyy').format(expense.date),
-                          ),
-                          InfoValue(
-                            info: "Price:  ",
-                            value: expense.price,
-                          ),
-                        ],
+                      content: SizedBox(
+                        width: double.maxFinite,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            InfoValue(
+                              info: "Title",
+                              value: expense.title,
+                            ),
+                            InfoValue(
+                              info: "Description",
+                              value: expense.description,
+                            ),
+                            InfoValue(
+                              info: "Date",
+                              value: DateFormat('MMMM d, yyyy')
+                                  .format(expense.date),
+                            ),
+                            InfoValue(
+                              info: "Price",
+                              value: expense.price,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   );
@@ -292,29 +295,32 @@ class InfoValue extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Text(
-          info,
-          style: TextStyle(
-            color: Color.fromARGB(255, 52, 52, 52),
-            fontSize: 30,
-          ),
-        ),
-        Expanded(
-          child: AutoSizeText(
-            value,
-            maxLines: 3,
-            minFontSize: 25,
-            maxFontSize: 30,
-            style: TextStyle(
-              color: Color.fromARGB(255, 52, 52, 52),
-              fontSize: 30,
-              fontWeight: FontWeight.bold,
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: AutoSizeText.rich(
+        TextSpan(
+          children: [
+            TextSpan(
+              text: "$info:  ",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Color.fromARGB(255, 76, 89, 23),
+              ),
             ),
-          ),
-        )
-      ],
+            TextSpan(
+              text: value,
+            ),
+          ],
+        ),
+        maxLines: 3,
+        minFontSize: 30,
+        maxFontSize: 30,
+        overflow: TextOverflow.ellipsis,
+        style: TextStyle(
+          color: Color.fromARGB(255, 52, 52, 52),
+          fontSize: 30,
+        ),
+      ),
     );
   }
 }

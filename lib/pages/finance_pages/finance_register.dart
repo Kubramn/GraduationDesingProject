@@ -33,7 +33,7 @@ class _FinanceRegisterState extends State<FinanceRegister> {
             message,
             style: TextStyle(
               color: Color.fromARGB(255, 52, 52, 52),
-              fontSize: 30,
+              fontSize: 25,
             ),
           ),
           actions: [
