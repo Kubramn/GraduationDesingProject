@@ -24,6 +24,18 @@ class _LeaderRequestsState extends State<LeaderRequests> {
     return "${data['name']} ${data['surname']}";
   }
 
+  Future<void> updateRequestStatus(String id, String status) async {
+    try {
+      await FirebaseFirestore.instance.collection("expenses").doc(id).update({
+        "status": status,
+      });
+
+      print("Request status updated successfully!");
+    } catch (e) {
+      print("Error updating request status: $e");
+    }
+  }
+
   Stream<List<ExpenseModel>> fetchRequests() {
     return FirebaseFirestore.instance
         .collection('expenses')
@@ -155,20 +167,53 @@ class _LeaderRequestsState extends State<LeaderRequests> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                AcceptOrDeny(
-                                  acceptOrDeny: "Accept",
-                                  textColor: Colors.lightGreen,
-                                  screenHeight: screenHeight,
-                                  screenWidth: screenWidth,
+                                ElevatedButton(
+                                  onPressed: (() {
+                                    updateRequestStatus(
+                                        request.id, "acceptedByLeader");
+                                    Navigator.pop(context);
+                                  }),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.lightGreen,
+                                    foregroundColor:
+                                        Color.fromARGB(255, 230, 255, 230),
+                                    fixedSize: Size(screenWidth * 0.36,
+                                        screenHeight * 0.056),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    "Accept",
+                                    style: TextStyle(
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.bold),
+                                  ),
                                 ),
                                 SizedBox(
                                   width: screenWidth * 0.04,
                                 ),
-                                AcceptOrDeny(
-                                  acceptOrDeny: "Deny",
-                                  textColor: Colors.red,
-                                  screenHeight: screenHeight,
-                                  screenWidth: screenWidth,
+                                ElevatedButton(
+                                  onPressed: (() {
+                                    updateRequestStatus(request.id, "denied");
+                                    Navigator.pop(context);
+                                  }),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.red,
+                                    foregroundColor:
+                                        Color.fromARGB(255, 255, 231, 229),
+                                    fixedSize: Size(screenWidth * 0.36,
+                                        screenHeight * 0.056),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    "Deny",
+                                    style: TextStyle(
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.bold),
+                                  ),
                                 ),
                               ],
                             ),
@@ -253,40 +298,6 @@ class _LeaderRequestsState extends State<LeaderRequests> {
           ),
         ),
       );
-}
-
-class AcceptOrDeny extends StatelessWidget {
-  final String acceptOrDeny;
-  final Color textColor;
-  final double screenHeight;
-  final double screenWidth;
-
-  const AcceptOrDeny({
-    super.key,
-    required this.acceptOrDeny,
-    required this.textColor,
-    required this.screenHeight,
-    required this.screenWidth,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {},
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Color.fromARGB(255, 68, 60, 95),
-        foregroundColor: textColor,
-        fixedSize: Size(screenWidth * 0.36, screenHeight * 0.056),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15),
-        ),
-      ),
-      child: Text(
-        acceptOrDeny,
-        style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-      ),
-    );
-  }
 }
 
 class InfoValue extends StatelessWidget {
