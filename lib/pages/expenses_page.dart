@@ -64,6 +64,16 @@ class _ExpensesPageState extends State<ExpensesPage> {
     ).createExpense();
   }
 
+  bool acceptedOrDenied(ExpenseModel expense) {
+    if (expense.status == "acceptedByLeaderAndFinance") {
+      return true;
+    } else if (expense.status == "denied") {
+      return false;
+    } else {
+      return false;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
@@ -126,47 +136,98 @@ class _ExpensesPageState extends State<ExpensesPage> {
                     StreamBuilder<List<ExpenseModel>>(
                       stream: fetchExpenses("previous"),
                       builder: (context, snapshot) {
-                        if (snapshot.hasData) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return Center(
+                            child: CircularProgressIndicator(
+                              color: Color.fromARGB(255, 76, 89, 23),
+                            ),
+                          );
+                        } else if (snapshot.hasError) {
+                          return Center(
+                            child: Text('ERROR!'),
+                          );
+                        } else if (!snapshot.hasData ||
+                            snapshot.data!.isEmpty) {
+                          return Center(
+                            child: SizedBox(
+                              width: screenWidth * 0.8,
+                              child: Text(
+                                "There is no previous expense of yours right now.",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 25,
+                                  color: Color.fromARGB(255, 76, 89, 23),
+                                ),
+                              ),
+                            ),
+                          );
+                        } else {
                           final expenses = snapshot.data!;
                           return ListView.builder(
                               itemCount: expenses.length,
                               itemBuilder: (context, index) {
                                 return Column(
                                   children: [
-                                    expenseTile(expenses[index], screenHeight,
-                                        screenWidth),
+                                    expenseTile(
+                                      expenses[index],
+                                      true, // previous
+                                      screenHeight,
+                                      screenWidth,
+                                    ),
                                     SizedBox(height: screenHeight * 0.01),
                                   ],
                                 );
                               });
-                        } else if (snapshot.hasError) {
-                          return Center(child: Text('NO DATA!'));
-                        } else {
-                          return Center(
-                            child:
-                                CircularProgressIndicator(color: Colors.white),
-                          );
                         }
                       },
                     ),
                     StreamBuilder<List<ExpenseModel>>(
                       stream: fetchExpenses("waiting"),
                       builder: (context, snapshot) {
-                        if (snapshot.hasData) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return Center(
+                            child: CircularProgressIndicator(
+                              color: Color.fromARGB(255, 76, 89, 23),
+                            ),
+                          );
+                        } else if (snapshot.hasError) {
+                          return Center(
+                            child: Text('ERROR!'),
+                          );
+                        } else if (!snapshot.hasData ||
+                            snapshot.data!.isEmpty) {
+                          return Center(
+                            child: SizedBox(
+                              width: screenWidth * 0.8,
+                              child: Text(
+                                "There is no expense of yours awaiting approval right now.",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 25,
+                                  color: Color.fromARGB(255, 76, 89, 23),
+                                ),
+                              ),
+                            ),
+                          );
+                        } else {
                           final expenses = snapshot.data!;
                           return ListView.builder(
                               itemCount: expenses.length,
                               itemBuilder: (context, index) {
-                                return expenseTile(
-                                    expenses[index], screenHeight, screenWidth);
+                                return Column(
+                                  children: [
+                                    expenseTile(
+                                      expenses[index],
+                                      false, // waiting
+                                      screenHeight,
+                                      screenWidth,
+                                    ),
+                                    SizedBox(height: screenHeight * 0.01),
+                                  ],
+                                );
                               });
-                        } else if (snapshot.hasError) {
-                          return Center(child: Text('NO DATA!'));
-                        } else {
-                          return Center(
-                            child:
-                                CircularProgressIndicator(color: Colors.white),
-                          );
                         }
                       },
                     ),
@@ -186,6 +247,7 @@ class _ExpensesPageState extends State<ExpensesPage> {
 
   Widget expenseTile(
     ExpenseModel expense,
+    bool previousOrWaiting,
     double screenHeight,
     double screenWidth,
   ) =>
@@ -221,7 +283,8 @@ class _ExpensesPageState extends State<ExpensesPage> {
                   size: 30,
                 ),
                 style: IconButton.styleFrom(
-                    backgroundColor: Color.fromARGB(255, 191, 203, 155)),
+                  backgroundColor: Color.fromARGB(255, 191, 203, 155),
+                ),
                 onPressed: () {
                   showDialog(
                     context: context,
@@ -230,7 +293,9 @@ class _ExpensesPageState extends State<ExpensesPage> {
                       backgroundColor: Colors.white,
                       insetPadding: EdgeInsets.symmetric(
                         horizontal: screenWidth * 0.06,
-                        vertical: screenHeight * 0.22,
+                        vertical: previousOrWaiting
+                            ? screenHeight * 0.22
+                            : screenHeight * 0.27,
                       ),
                       actions: [
                         TextButton(
@@ -252,17 +317,42 @@ class _ExpensesPageState extends State<ExpensesPage> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            Text(
-                              "data",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Color.fromARGB(255, 52, 52, 52),
-                                fontSize: 30,
+                            Visibility(
+                              visible: previousOrWaiting,
+                              child: Row(
+                                //mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.info_outline,
+                                    color: acceptedOrDenied(expense)
+                                        ? Colors.lightGreen
+                                        : Colors.red,
+                                    size: 30,
+                                  ),
+                                  SizedBox(
+                                    width: screenWidth * 0.015,
+                                  ),
+                                  Text(
+                                    acceptedOrDenied(expense)
+                                        ? "This expense has been accepted."
+                                        : "This expense has been denied.",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: acceptedOrDenied(expense)
+                                          ? Colors.lightGreen
+                                          : Colors.red,
+                                      fontSize: 20,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                            Divider(
-                              color: Color.fromARGB(255, 68, 60, 95),
-                              thickness: 2,
+                            Visibility(
+                              visible: previousOrWaiting,
+                              child: Divider(
+                                color: Color.fromARGB(255, 52, 52, 52),
+                                thickness: 1.5,
+                              ),
                             ),
                             InfoValue(
                               info: "Title",

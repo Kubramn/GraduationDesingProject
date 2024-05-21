@@ -75,7 +75,7 @@ class _FinanceRequestsState extends State<FinanceRequests> {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Center(
                       child: CircularProgressIndicator(
-                        color: Color.fromARGB(255, 68, 60, 95),
+                        color: Color.fromARGB(255, 76, 89, 23),
                       ),
                     );
                   } else if (snapshot.hasError) {
@@ -91,7 +91,7 @@ class _FinanceRequestsState extends State<FinanceRequests> {
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 25,
-                            color: Color.fromARGB(255, 68, 60, 95),
+                            color: Color.fromARGB(255, 76, 89, 23),
                           ),
                         ),
                       ),
@@ -124,9 +124,9 @@ class _FinanceRequestsState extends State<FinanceRequests> {
         height: screenHeight * 0.08,
         child: Card(
           elevation: 3,
-          shadowColor: Color.fromARGB(255, 187, 179, 203),
+          shadowColor: Color.fromARGB(255, 191, 203, 155),
           color: Colors.white,
-          surfaceTintColor: Color.fromARGB(255, 187, 179, 203),
+          surfaceTintColor: Color.fromARGB(255, 191, 203, 155),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           ),
@@ -135,8 +135,8 @@ class _FinanceRequestsState extends State<FinanceRequests> {
               textColor: Color.fromARGB(255, 52, 52, 52),
               leading: Icon(
                 Icons.attach_money,
-                color: Color.fromARGB(255, 68, 60, 95),
-                size: 32,
+                color: Color.fromARGB(255, 76, 89, 23),
+                size: 34,
               ),
               title: Text(
                 request.title,
@@ -148,17 +148,17 @@ class _FinanceRequestsState extends State<FinanceRequests> {
               trailing: IconButton(
                 icon: Icon(
                   Icons.search,
-                  color: Color.fromARGB(255, 68, 60, 95),
+                  color: Color.fromARGB(255, 76, 89, 23),
                   size: 30,
                 ),
                 style: IconButton.styleFrom(
-                  backgroundColor: Color.fromARGB(255, 187, 179, 203),
+                  backgroundColor: Color.fromARGB(255, 191, 203, 155),
                 ),
                 onPressed: () {
                   showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
-                      surfaceTintColor: Color.fromARGB(255, 187, 179, 203),
+                      surfaceTintColor: Color.fromARGB(255, 191, 203, 155),
                       backgroundColor: Colors.white,
                       insetPadding: EdgeInsets.symmetric(
                         horizontal: screenWidth * 0.06,
@@ -178,8 +178,7 @@ class _FinanceRequestsState extends State<FinanceRequests> {
                                   }),
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.lightGreen,
-                                    foregroundColor:
-                                        Color.fromARGB(255, 230, 255, 230),
+                                    foregroundColor: Colors.white,
                                     fixedSize: Size(screenWidth * 0.36,
                                         screenHeight * 0.056),
                                     shape: RoundedRectangleBorder(
@@ -203,8 +202,7 @@ class _FinanceRequestsState extends State<FinanceRequests> {
                                   }),
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.red,
-                                    foregroundColor:
-                                        Color.fromARGB(255, 255, 231, 229),
+                                    foregroundColor: Colors.white,
                                     fixedSize: Size(screenWidth * 0.36,
                                         screenHeight * 0.056),
                                     shape: RoundedRectangleBorder(
@@ -230,7 +228,7 @@ class _FinanceRequestsState extends State<FinanceRequests> {
                               child: Text(
                                 "Close",
                                 style: TextStyle(
-                                  color: Color.fromARGB(255, 68, 60, 95),
+                                  color: Color.fromARGB(255, 76, 89, 23),
                                   fontSize: 25,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -247,31 +245,49 @@ class _FinanceRequestsState extends State<FinanceRequests> {
                             FutureBuilder<String>(
                               future: getNameSurname(request.userEmail),
                               builder: (context, snapshot) {
-                                return AutoSizeText.rich(
-                                  TextSpan(
-                                    children: [
-                                      TextSpan(
-                                          text:
-                                              "This expense was incurred by "),
-                                      TextSpan(
-                                        text: snapshot.data,
+                                return Row(
+                                  children: [
+                                    Icon(
+                                      Icons.info_outline,
+                                      color: Color.fromARGB(255, 76, 89, 23),
+                                      size: 30,
+                                    ),
+                                    SizedBox(
+                                      width: screenWidth * 0.025,
+                                    ),
+                                    Expanded(
+                                      child: AutoSizeText.rich(
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        maxFontSize: 20,
+                                        minFontSize: 20,
+                                        TextSpan(
+                                          children: [
+                                            TextSpan(
+                                                text:
+                                                    "This expense was incurred by "),
+                                            TextSpan(
+                                              text: snapshot.data,
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                         style: TextStyle(
-                                          fontWeight: FontWeight.bold,
+                                          color:
+                                              Color.fromARGB(255, 52, 52, 52),
+                                          fontSize: 20,
                                         ),
                                       ),
-                                    ],
-                                  ),
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Color.fromARGB(255, 52, 52, 52),
-                                    fontSize: 30,
-                                  ),
+                                    ),
+                                  ],
                                 );
                               },
                             ),
                             Divider(
-                              color: Color.fromARGB(255, 68, 60, 95),
-                              thickness: 2,
+                              color: Color.fromARGB(255, 52, 52, 52),
+                              thickness: 1.5,
                             ),
                             InfoValue(
                               info: "Title",
@@ -324,7 +340,7 @@ class InfoValue extends StatelessWidget {
               text: "$info:  ",
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                color: Color.fromARGB(255, 68, 60, 95),
+                color: Color.fromARGB(255, 76, 89, 23),
               ),
             ),
             TextSpan(

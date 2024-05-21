@@ -175,8 +175,7 @@ class _LeaderRequestsState extends State<LeaderRequests> {
                                   }),
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.lightGreen,
-                                    foregroundColor:
-                                        Color.fromARGB(255, 230, 255, 230),
+                                    foregroundColor: Colors.white,
                                     fixedSize: Size(screenWidth * 0.36,
                                         screenHeight * 0.056),
                                     shape: RoundedRectangleBorder(
@@ -200,8 +199,7 @@ class _LeaderRequestsState extends State<LeaderRequests> {
                                   }),
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.red,
-                                    foregroundColor:
-                                        Color.fromARGB(255, 255, 231, 229),
+                                    foregroundColor: Colors.white,
                                     fixedSize: Size(screenWidth * 0.36,
                                         screenHeight * 0.056),
                                     shape: RoundedRectangleBorder(
@@ -244,31 +242,49 @@ class _LeaderRequestsState extends State<LeaderRequests> {
                             FutureBuilder<String>(
                               future: getNameSurname(request.userEmail),
                               builder: (context, snapshot) {
-                                return AutoSizeText.rich(
-                                  TextSpan(
-                                    children: [
-                                      TextSpan(
-                                          text:
-                                              "This expense was incurred by "),
-                                      TextSpan(
-                                        text: snapshot.data,
+                                return Row(
+                                  children: [
+                                    Icon(
+                                      Icons.info_outline,
+                                      color: Color.fromARGB(255, 68, 60, 95),
+                                      size: 30,
+                                    ),
+                                    SizedBox(
+                                      width: screenWidth * 0.05,
+                                    ),
+                                    Expanded(
+                                      child: AutoSizeText.rich(
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        maxFontSize: 20,
+                                        minFontSize: 20,
+                                        TextSpan(
+                                          children: [
+                                            TextSpan(
+                                                text:
+                                                    "This expense was incurred by "),
+                                            TextSpan(
+                                              text: snapshot.data,
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                         style: TextStyle(
-                                          fontWeight: FontWeight.bold,
+                                          color:
+                                              Color.fromARGB(255, 52, 52, 52),
+                                          fontSize: 20,
                                         ),
                                       ),
-                                    ],
-                                  ),
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Color.fromARGB(255, 52, 52, 52),
-                                    fontSize: 30,
-                                  ),
+                                    ),
+                                  ],
                                 );
                               },
                             ),
                             Divider(
-                              color: Color.fromARGB(255, 68, 60, 95),
-                              thickness: 2,
+                              color: Color.fromARGB(255, 52, 52, 52),
+                              thickness: 1.5,
                             ),
                             InfoValue(
                               info: "Title",
