@@ -68,7 +68,6 @@ class _ExpensesPageState extends State<ExpensesPage> {
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
-    print(screenWidth);
 
     return DefaultTabController(
       length: 2,
@@ -253,6 +252,18 @@ class _ExpensesPageState extends State<ExpensesPage> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
+                            Text(
+                              "data",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Color.fromARGB(255, 52, 52, 52),
+                                fontSize: 30,
+                              ),
+                            ),
+                            Divider(
+                              color: Color.fromARGB(255, 68, 60, 95),
+                              thickness: 2,
+                            ),
                             InfoValue(
                               info: "Title",
                               value: expense.title,

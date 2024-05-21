@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:bitirme/pages/edit_invoice_page.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -49,7 +50,7 @@ class _InvoicePageState extends State<InvoicePage> {
     if (returnedImage != null) {
       await Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (context) => DisplayPictureScreen(
+          builder: (context) => EditInvoicePage(
             imagePath: returnedImage.path,
           ),
         ),
@@ -155,7 +156,7 @@ class _InvoicePageState extends State<InvoicePage> {
                         if (!context.mounted) return;
                         await Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) => DisplayPictureScreen(
+                            builder: (context) => EditInvoicePage(
                               imagePath: image.path,
                             ),
                           ),
@@ -192,19 +193,6 @@ class _InvoicePageState extends State<InvoicePage> {
           ],
         ),
       ),
-    );
-  }
-}
-
-class DisplayPictureScreen extends StatelessWidget {
-  final String imagePath;
-  const DisplayPictureScreen({super.key, required this.imagePath});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Display the Picture')),
-      body: Image.file(File(imagePath)),
     );
   }
 }
