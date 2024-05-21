@@ -47,8 +47,8 @@ class _MemberNavBarState extends State<MemberNavBar> {
       body: _screens[_currentIndex],
       bottomNavigationBar: Padding(
         padding: EdgeInsets.only(
-          right: screenWidth * 0.1,
-          left: screenWidth * 0.1,
+          right: screenWidth * 0.13,
+          left: screenWidth * 0.13,
           bottom: screenWidth * 0.06,
         ),
         child: Container(
@@ -58,8 +58,8 @@ class _MemberNavBarState extends State<MemberNavBar> {
           ),
           child: Padding(
             padding: EdgeInsets.symmetric(
-              horizontal: screenWidth * 0.045,
-              vertical: screenHeight * 0.02,
+              horizontal: screenWidth * 0.037,
+              vertical: screenHeight * 0.017,
             ),
             child: GNav(
               tabBorderRadius: 22,

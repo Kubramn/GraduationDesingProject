@@ -62,8 +62,8 @@ class _LeaderNavBarState extends State<LeaderNavBar> {
           ),
           child: Padding(
             padding: EdgeInsets.symmetric(
-              horizontal: screenWidth * 0.045,
-              vertical: screenHeight * 0.02,
+              horizontal: screenWidth * 0.037,
+              vertical: screenHeight * 0.017,
             ),
             child: GNav(
               tabBorderRadius: 22,
