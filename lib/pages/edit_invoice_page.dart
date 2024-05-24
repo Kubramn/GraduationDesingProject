@@ -144,7 +144,7 @@ class _EditInvoicePageState extends State<EditInvoicePage> {
 
     String price = "";
     String date = "";
-    String title = "";
+    //String title = "";
 
     for (Line line in lines) {
       // Satırdaki kelimeleri birleştirerek küçük harfe dönüştür ve boşluklarla birleştir
@@ -178,7 +178,7 @@ class _EditInvoicePageState extends State<EditInvoicePage> {
 
     // Durumu güncelle ve değerleri atanmış değişkenleri kullan
 
-    titleController.text = title;
+    //titleController.text = title;
     dateController.text = date;
     priceController.text = price;
 
@@ -245,7 +245,7 @@ class _EditInvoicePageState extends State<EditInvoicePage> {
                 ),
                 SizedBox(height: screenHeight * 0.04),
                 ElevatedButton(
-                  onPressed: (() {}),
+                  onPressed: () => addExpense(),
                   child: Text(
                     "Add Expense",
                     style: TextStyle(
