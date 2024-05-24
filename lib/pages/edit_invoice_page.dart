@@ -245,7 +245,7 @@ class _EditInvoicePageState extends State<EditInvoicePage> {
                 ),
                 SizedBox(height: screenHeight * 0.04),
                 ElevatedButton(
-                  onPressed: (() {}),
+                  onPressed: () => addExpense(),
                   child: Text(
                     "Add Expense",
                     style: TextStyle(
