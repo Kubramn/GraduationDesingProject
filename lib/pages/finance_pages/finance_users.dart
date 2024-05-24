@@ -14,9 +14,10 @@ class _FinanceUsersState extends State<FinanceUsers> {
   TextEditingController nameController = TextEditingController();
   TextEditingController surnameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController roleController = TextEditingController();
+  TextEditingController leaderEmailController = TextEditingController();
   TextEditingController jobController = TextEditingController();
   TextEditingController departmentController = TextEditingController();
-  TextEditingController roleController = TextEditingController();
   TextEditingController teamNameController = TextEditingController();
 
   Icon roleIcon = Icon(Icons.contacts);
@@ -35,7 +36,7 @@ class _FinanceUsersState extends State<FinanceUsers> {
             children: [
               SizedBox(height: screenHeight * 0.05),
               StreamBuilder<List<UserModel>>(
-                stream: UserModel.fetchUsers(),
+                stream: UserModel.fetchAllUsers(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     final users = snapshot.data!;
@@ -70,6 +71,8 @@ class _FinanceUsersState extends State<FinanceUsers> {
                         surnameController.text = _selectedUser?.surname ?? "";
                         passwordController.text = _selectedUser?.password ?? "";
                         roleController.text = _selectedUser?.role ?? "";
+                        leaderEmailController.text =
+                            _selectedUser?.leaderEmail ?? "";
                         jobController.text = _selectedUser?.job ?? "";
                         departmentController.text =
                             _selectedUser?.department ?? "";
@@ -217,6 +220,21 @@ class _FinanceUsersState extends State<FinanceUsers> {
                 ],
               ),
               SizedBox(height: 40),
+              TextField(
+                keyboardType: TextInputType.text,
+                controller: leaderEmailController,
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                      borderSide: BorderSide.none,
+                      borderRadius: BorderRadius.circular(20)),
+                  hintText: "Leader Email",
+                  hintStyle: TextStyle(color: Colors.black38),
+                  prefixIcon: Icon(Icons.person_4_outlined),
+                ),
+              ),
+              SizedBox(height: 40),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -281,9 +299,10 @@ class _FinanceUsersState extends State<FinanceUsers> {
                         nameController,
                         surnameController,
                         passwordController,
+                        roleController,
+                        leaderEmailController,
                         jobController,
                         departmentController,
-                        roleController,
                         teamNameController,
                       )),
                   child: Text(

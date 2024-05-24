@@ -207,7 +207,7 @@ class _FinanceRequestsState extends State<FinanceRequests> {
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             FutureBuilder<String>(
-                              future: UserModel.getNameSurnameFromEmail(
+                              future: UserModel.getNameSurnameByEmail(
                                   request.userEmail),
                               builder: (context, snapshot) {
                                 return Row(
@@ -229,8 +229,9 @@ class _FinanceRequestsState extends State<FinanceRequests> {
                                         TextSpan(
                                           children: [
                                             TextSpan(
-                                                text:
-                                                    "This expense was incurred by "),
+                                              text:
+                                                  "This expense was incurred by ",
+                                            ),
                                             TextSpan(
                                               text: snapshot.data,
                                               style: TextStyle(
@@ -264,8 +265,7 @@ class _FinanceRequestsState extends State<FinanceRequests> {
                             ),
                             InfoValuePair(
                               info: "Date",
-                              value: DateFormat('MMMM d, yyyy')
-                                  .format(request.date),
+                              value: request.date,
                             ),
                             InfoValuePair(
                               info: "Price",

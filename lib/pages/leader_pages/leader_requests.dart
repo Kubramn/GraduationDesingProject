@@ -205,7 +205,7 @@ class _LeaderRequestsState extends State<LeaderRequests> {
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             FutureBuilder<String>(
-                              future: UserModel.getNameSurnameFromEmail(
+                              future: UserModel.getNameSurnameByEmail(
                                   request.userEmail),
                               builder: (context, snapshot) {
                                 return Row(
@@ -262,8 +262,7 @@ class _LeaderRequestsState extends State<LeaderRequests> {
                             ),
                             InfoValuePair(
                               info: "Date",
-                              value: DateFormat('MMMM d, yyyy')
-                                  .format(request.date),
+                              value: request.date,
                             ),
                             InfoValuePair(
                               info: "Price",

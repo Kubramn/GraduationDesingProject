@@ -13,9 +13,10 @@ class _FinanceRegisterState extends State<FinanceRegister> {
   TextEditingController surnameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController roleController = TextEditingController();
+  TextEditingController leaderEmailController = TextEditingController();
   TextEditingController jobController = TextEditingController();
   TextEditingController departmentController = TextEditingController();
-  TextEditingController roleController = TextEditingController();
   TextEditingController teamNameController = TextEditingController();
 
   //String? _selectedRole;
@@ -179,6 +180,21 @@ class _FinanceRegisterState extends State<FinanceRegister> {
                 ],
               ),
               SizedBox(height: 40),
+              TextField(
+                keyboardType: TextInputType.text,
+                controller: leaderEmailController,
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                      borderSide: BorderSide.none,
+                      borderRadius: BorderRadius.circular(20)),
+                  hintText: "Leader Email",
+                  hintStyle: TextStyle(color: Colors.black38),
+                  prefixIcon: Icon(Icons.person_4_outlined),
+                ),
+              ),
+              SizedBox(height: 40),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -243,6 +259,7 @@ class _FinanceRegisterState extends State<FinanceRegister> {
                       jobController,
                       departmentController,
                       roleController,
+                      leaderEmailController,
                       teamNameController,
                       context,
                     )),

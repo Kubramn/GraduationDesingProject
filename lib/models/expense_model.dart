@@ -5,7 +5,7 @@ class ExpenseModel {
   String title;
   String status;
   String price;
-  DateTime date;
+  String date;
   String description;
   String userEmail;
   String checkerUserEmail;
@@ -40,7 +40,7 @@ class ExpenseModel {
         title: json["title"],
         status: json["status"],
         price: json["price"],
-        date: (json["date"] as Timestamp).toDate(),
+        date: json["date"],
         description: json["description"],
         userEmail: json["userEmail"],
         checkerUserEmail: json["checkerUserEmail"],
@@ -63,7 +63,7 @@ class ExpenseModel {
     await newExpense.set(expense.toJson());
   }
 
-  static Stream<List<ExpenseModel>> fetchMemberExpenses(
+  static Stream<List<ExpenseModel>> fetchOneMemberExpenses(
     String status,
     String? email,
   ) {
@@ -102,16 +102,19 @@ class ExpenseModel {
     }
   }
 
-  static Future<void> updateRequestStatus(String id, String status) async {
-    try {
-      await FirebaseFirestore.instance.collection("expenses").doc(id).update({
-        "status": status,
-      });
-
-      print("Request status updated successfully!");
-    } catch (e) {
-      print("Error updating request status: $e");
-    }
+  static Stream<List<ExpenseModel>> fetchTeamExpenses(String? email) {
+    return FirebaseFirestore.instance
+        .collection('expenses')
+        .where(
+          Filter.or(
+            Filter("checkerUserEmail", isEqualTo: email),
+            Filter("userEmail", isEqualTo: email),
+          ),
+        )
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+            .map((doc) => ExpenseModel.fromJson(doc.data()))
+            .toList());
   }
 
   static Stream<List<ExpenseModel>> fetchRequestsForLeader(String? email) {
@@ -145,5 +148,17 @@ class ExpenseModel {
         .map((snapshot) => snapshot.docs
             .map((doc) => ExpenseModel.fromJson(doc.data()))
             .toList());
+  }
+
+  static Future<void> updateRequestStatus(String id, String status) async {
+    try {
+      await FirebaseFirestore.instance.collection("expenses").doc(id).update({
+        "status": status,
+      });
+
+      print("Request status updated successfully!");
+    } catch (e) {
+      print("Error updating request status: $e");
+    }
   }
 }
