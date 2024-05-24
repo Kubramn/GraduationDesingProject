@@ -53,12 +53,12 @@ class _ExpensesPageState extends State<ExpensesPage> {
 
   void addExpense() {
     ExpenseModel(
-      title: "Long Description",
-      status: "accepted",
+      title: "Playstation",
+      status: "waiting",
       price: "100₺",
       date: DateTime.now(),
       description: "description description description",
-      userEmail: "new@gmail.com",
+      userEmail: "member@gmail.com",
       checkerUserEmail: "leader@gmail.com",
       teamName: "team1",
     ).createExpense();

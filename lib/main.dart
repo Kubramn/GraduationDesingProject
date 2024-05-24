@@ -9,8 +9,8 @@ import 'firebase_options.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  //final cameras = await availableCameras();
-  //InvoicePage.firstCamera = cameras.first;
+  final cameras = await availableCameras();
+  InvoicePage.firstCamera = cameras.first;
 
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
@@ -30,7 +30,7 @@ class ExpenseManagementApplication extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       home: LoginPage(),
     );
   }

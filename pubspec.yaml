@@ -45,6 +45,7 @@ dependencies:
   image_picker: ^1.1.1
   intl: ^0.19.0
   auto_size_text: ^3.0.0
+  google_mlkit_text_recognition: ^0.13.0
   
 dev_dependencies:
   flutter_test:
