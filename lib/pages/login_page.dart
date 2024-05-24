@@ -76,10 +76,14 @@ class _LoginPageState extends State<LoginPage> {
       Navigator.pop(context);
       print("***************************${e.code}***************************");
 
-      if (e.code == 'invalid-credential') {
-        alertMessage("Wrong password or email!");
-      } else if (e.code == '') {
-        print('');
+      if (e.code == "invalid-credential") {
+        alertMessage("Wrong password email etc");
+      } else if (e.code == "invalid-email") {
+        alertMessage("Email @ vs typo");
+      } else if (e.code == "missing-password") {
+        alertMessage("missing-password");
+      } else if (e.code == "too-many-requests") {
+        alertMessage("too-many-requests");
       }
     }
   }
@@ -89,13 +93,28 @@ class _LoginPageState extends State<LoginPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(message),
+          surfaceTintColor: Colors.red,
+          title: Text(
+            message,
+            style: TextStyle(
+              color: Colors.red,
+              fontSize: 25,
+            ),
+          ),
           actions: [
             TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text("Close"))
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text(
+                "Close",
+                style: TextStyle(
+                  color: Color.fromARGB(255, 52, 52, 52),
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            )
           ],
         );
       },

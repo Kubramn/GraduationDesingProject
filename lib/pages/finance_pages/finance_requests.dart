@@ -173,7 +173,9 @@ class _FinanceRequestsState extends State<FinanceRequests> {
                                 ElevatedButton(
                                   onPressed: (() {
                                     updateRequestStatus(
-                                        request.id, "acceptedByLeader");
+                                      request.id,
+                                      "acceptedByLeaderAndFinance",
+                                    );
                                     Navigator.pop(context);
                                   }),
                                   style: ElevatedButton.styleFrom(
