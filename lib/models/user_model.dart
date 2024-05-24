@@ -1,4 +1,7 @@
+import "package:bitirme/alert_message.dart";
 import "package:cloud_firestore/cloud_firestore.dart";
+import "package:firebase_auth/firebase_auth.dart";
+import "package:flutter/material.dart";
 
 class UserModel {
   String name;
@@ -56,5 +59,124 @@ class UserModel {
       teamName: teamName,
     );
     await newUser.set(user.toJson());
+  }
+
+  static Future<String> getNameSurnameFromEmail(String email) async {
+    final userDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .where('email', isEqualTo: email)
+        .get();
+    final data = userDoc.docs.first.data();
+    return "${data['name']} ${data['surname']}";
+  }
+
+  static Stream<List<UserModel>> fetchUsers() {
+    return FirebaseFirestore.instance.collection('users').snapshots().map(
+        (snapshot) => snapshot.docs
+            .map((doc) => UserModel.fromJson(doc.data()))
+            .toList());
+  }
+
+  static Future<void> updateUser(
+    String? email,
+    TextEditingController nameController,
+    TextEditingController surnameController,
+    TextEditingController passwordController,
+    TextEditingController jobController,
+    TextEditingController departmentController,
+    TextEditingController roleController,
+    TextEditingController teamNameController,
+  ) async {
+    try {
+      DocumentSnapshot<Map<String, dynamic>> snapshot =
+          await FirebaseFirestore.instance.collection("users").doc(email).get();
+
+      if (snapshot.exists) {
+        await FirebaseFirestore.instance.collection("users").doc(email).update({
+          "name": nameController.text,
+          "surname": surnameController.text,
+          "password": passwordController.text,
+          "role": roleController.text,
+          "job": jobController.text,
+          "department": departmentController.text,
+          "teamName": teamNameController.text,
+        });
+        nameController.clear();
+        surnameController.clear();
+        passwordController.clear();
+        roleController.clear();
+        jobController.clear();
+        departmentController.clear();
+        teamNameController.clear();
+
+        print("User data updated successfully!");
+      } else {
+        print("User not found!");
+      }
+    } catch (e) {
+      print("Error fetching or updating user data: $e");
+    }
+  }
+
+  static void register(
+    TextEditingController nameController,
+    TextEditingController surnameController,
+    TextEditingController emailController,
+    TextEditingController passwordController,
+    TextEditingController jobController,
+    TextEditingController departmentController,
+    TextEditingController roleController,
+    TextEditingController teamNameController,
+    BuildContext context,
+  ) async {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return const Center(
+          child: CircularProgressIndicator(
+            color: Color.fromARGB(255, 68, 60, 95),
+          ),
+        );
+      },
+    );
+
+    try {
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: emailController.text,
+        password: passwordController.text,
+      );
+      Navigator.pop(context); //Navigator.of(context).pop;
+      alertMessage(
+        "${nameController.text} ${surnameController.text} is registered successfully.",
+        Color.fromARGB(255, 0, 255, 0),
+        context,
+      );
+      UserModel(
+        name: nameController.text,
+        surname: surnameController.text,
+        email: emailController.text,
+        password: passwordController.text,
+        role: roleController.text,
+        job: jobController.text,
+        department: departmentController.text,
+        teamName: teamNameController.text,
+      ).createUser();
+      nameController.clear();
+      surnameController.clear();
+      emailController.clear();
+      passwordController.clear();
+      roleController.clear();
+      jobController.clear();
+      departmentController.clear();
+      teamNameController.clear();
+    } on FirebaseAuthException catch (e) {
+      Navigator.pop(context);
+      alertMessage(
+        "User Registration failed!",
+        const Color.fromARGB(255, 255, 0, 0),
+        context,
+      );
+      print("ERROR -> $e");
+    }
   }
 }

@@ -62,4 +62,88 @@ class ExpenseModel {
     );
     await newExpense.set(expense.toJson());
   }
+
+  static Stream<List<ExpenseModel>> fetchMemberExpenses(
+    String status,
+    String? email,
+  ) {
+    if (status == "previous") {
+      return FirebaseFirestore.instance
+          .collection('expenses')
+          .where(
+            Filter.and(
+              Filter("userEmail", isEqualTo: email),
+              Filter.or(
+                Filter("status", isEqualTo: "acceptedByLeaderAndFinance"),
+                Filter("status", isEqualTo: "denied"),
+              ),
+            ),
+          )
+          .snapshots()
+          .map((snapshot) => snapshot.docs
+              .map((doc) => ExpenseModel.fromJson(doc.data()))
+              .toList());
+    } else if (status == "waiting") {
+      return FirebaseFirestore.instance
+          .collection('expenses')
+          .where(Filter.and(
+            Filter("userEmail", isEqualTo: email),
+            Filter.or(
+              Filter("status", isEqualTo: "waiting"),
+              Filter("status", isEqualTo: "acceptedByLeader"),
+            ),
+          ))
+          .snapshots()
+          .map((snapshot) => snapshot.docs
+              .map((doc) => ExpenseModel.fromJson(doc.data()))
+              .toList());
+    } else {
+      return const Stream<List<ExpenseModel>>.empty();
+    }
+  }
+
+  static Future<void> updateRequestStatus(String id, String status) async {
+    try {
+      await FirebaseFirestore.instance.collection("expenses").doc(id).update({
+        "status": status,
+      });
+
+      print("Request status updated successfully!");
+    } catch (e) {
+      print("Error updating request status: $e");
+    }
+  }
+
+  static Stream<List<ExpenseModel>> fetchRequestsForLeader(String? email) {
+    return FirebaseFirestore.instance
+        .collection('expenses')
+        .where(
+          Filter.and(
+            Filter("checkerUserEmail", isEqualTo: email),
+            Filter("status", isEqualTo: "waiting"),
+          ),
+        )
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+            .map((doc) => ExpenseModel.fromJson(doc.data()))
+            .toList());
+  }
+
+  static Stream<List<ExpenseModel>> fetchRequestsForFinance(String? email) {
+    return FirebaseFirestore.instance
+        .collection('expenses')
+        .where(
+          Filter.or(
+            Filter.and(
+              Filter("checkerUserEmail", isEqualTo: email),
+              Filter("status", isEqualTo: "waiting"),
+            ),
+            Filter("status", isEqualTo: "acceptedByLeader"),
+          ),
+        )
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+            .map((doc) => ExpenseModel.fromJson(doc.data()))
+            .toList());
+  }
 }

@@ -15,7 +15,6 @@ class LeaderNavBar extends StatefulWidget {
 }
 
 class _LeaderNavBarState extends State<LeaderNavBar> {
-  //User? user = FirebaseAuth.instance.currentUser;
   int _currentIndex = 0;
 
   void goToPage(index) {

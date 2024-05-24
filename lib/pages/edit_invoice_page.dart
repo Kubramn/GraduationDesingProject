@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:bitirme/models/expense_model.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 
@@ -52,6 +53,20 @@ class _EditInvoicePageState extends State<EditInvoicePage> {
 //-----------------------------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------
+
+  void addExpense() {
+    ExpenseModel(
+      title: "Playstation",
+      status: "waiting",
+      price: "100₺",
+      date: DateTime.now(),
+      description: "description description description",
+      userEmail: "member@gmail.com",
+      checkerUserEmail: "leader@gmail.com",
+      teamName: "team1",
+    ).createExpense();
+  }
+
   List<WordBox> getText(RecognizedText recognisedText) {
     List<WordBox> wordBoxes = [];
     for (TextBlock block in recognisedText.blocks) {

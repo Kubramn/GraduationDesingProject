@@ -98,7 +98,8 @@ class _MemberNavBarState extends State<MemberNavBar> {
                 ),
                 GButton(
                   icon: Icons.logout_outlined,
-                  iconColor: Color.fromARGB(255, 85, 39, 41),
+                  //iconColor: Color.fromARGB(255, 85, 39, 41),
+                  iconColor: Color.fromARGB(255, 175, 47, 38),
                 ),
               ],
             ),
