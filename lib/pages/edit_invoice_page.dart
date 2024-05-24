@@ -2,6 +2,8 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:bitirme/models/expense_model.dart';
+import 'package:bitirme/models/user_model.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 
@@ -15,10 +17,6 @@ class EditInvoicePage extends StatefulWidget {
   @override
   State<EditInvoicePage> createState() => _EditInvoicePageState();
 }
-
-//-----------------------------------------------------------------------------------------------------------
-//-----------------------------------------------------------------------------------------------------------
-//-----------------------------------------------------------------------------------------------------------
 
 class WordBox {
   String text;
@@ -34,11 +32,9 @@ class Line {
   Line(this.wordBoxes);
 }
 
-//-----------------------------------------------------------------------------------------------------------
-//-----------------------------------------------------------------------------------------------------------
-//-----------------------------------------------------------------------------------------------------------
-
 class _EditInvoicePageState extends State<EditInvoicePage> {
+  User? user = FirebaseAuth.instance.currentUser;
+
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   TextEditingController dateController = TextEditingController();
@@ -50,20 +46,19 @@ class _EditInvoicePageState extends State<EditInvoicePage> {
     _readTextFromImage(); // Sayfa açıldığında metni okumayı başlat
   }
 
-//-----------------------------------------------------------------------------------------------------------
-//-----------------------------------------------------------------------------------------------------------
-//-----------------------------------------------------------------------------------------------------------
+  Future<void> addExpense() async {
+    String checkerUserEmail =
+        await UserModel.findCheckerUserEmailByEmail(user?.email ?? "");
 
-  void addExpense() {
     ExpenseModel(
-      title: "Playstation",
+      title: titleController.text,
       status: "waiting",
-      price: "100₺",
-      date: DateTime.now(),
-      description: "description description description",
-      userEmail: "member@gmail.com",
-      checkerUserEmail: "leader@gmail.com",
-      teamName: "team1",
+      price: priceController.text,
+      date: dateController.text,
+      description: descriptionController.text,
+      userEmail: user?.email ?? "",
+      checkerUserEmail: checkerUserEmail,
+      teamName: "???",
     ).createExpense();
   }
 
@@ -126,10 +121,6 @@ class _EditInvoicePageState extends State<EditInvoicePage> {
     });
     return lines;
   }
-
-//-----------------------------------------------------------------------------------------------------------
-//-----------------------------------------------------------------------------------------------------------
-//-----------------------------------------------------------------------------------------------------------
 
   void _readTextFromImage() async {
     // Seçilen resmi InputImage formatına dönüştür
@@ -198,10 +189,6 @@ class _EditInvoicePageState extends State<EditInvoicePage> {
   String fixNumberFormat(String amount) {
     return amount.replaceAll(',', '.').replaceAll(RegExp(r'\s+'), '');
   }
-
-//-----------------------------------------------------------------------------------------------------------
-//-----------------------------------------------------------------------------------------------------------
-//-----------------------------------------------------------------------------------------------------------
 
   @override
   Widget build(BuildContext context) {

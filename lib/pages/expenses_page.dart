@@ -80,11 +80,10 @@ class _ExpensesPageState extends State<ExpensesPage> {
                   endIndent: screenWidth * 0.01,
                 ),
                 SizedBox(
-                  //color: Colors.black,
-                  height: screenHeight * 0.65,
+                  height: screenHeight * 0.71,
                   child: TabBarView(children: [
                     StreamBuilder<List<ExpenseModel>>(
-                      stream: ExpenseModel.fetchMemberExpenses(
+                      stream: ExpenseModel.fetchOneMemberExpenses(
                         "previous",
                         user?.email,
                       ),
@@ -136,7 +135,7 @@ class _ExpensesPageState extends State<ExpensesPage> {
                       },
                     ),
                     StreamBuilder<List<ExpenseModel>>(
-                      stream: ExpenseModel.fetchMemberExpenses(
+                      stream: ExpenseModel.fetchOneMemberExpenses(
                         "waiting",
                         user?.email,
                       ),
@@ -316,8 +315,7 @@ class _ExpensesPageState extends State<ExpensesPage> {
                             ),
                             InfoValue(
                               info: "Date",
-                              value: DateFormat('MMMM d, yyyy')
-                                  .format(expense.date),
+                              value: expense.date,
                             ),
                             InfoValue(
                               info: "Price",

@@ -9,6 +9,7 @@ class UserModel {
   String email;
   String password;
   String role;
+  String leaderEmail;
   String job;
   String department;
   String teamName;
@@ -19,6 +20,7 @@ class UserModel {
     required this.email,
     required this.password,
     required this.role,
+    required this.leaderEmail,
     required this.job,
     required this.department,
     required this.teamName,
@@ -30,6 +32,7 @@ class UserModel {
         "email": email,
         "password": password,
         "role": role,
+        "leaderEmail": leaderEmail,
         "job": job,
         "department": department,
         "teamName": teamName,
@@ -41,6 +44,7 @@ class UserModel {
         email: json["email"],
         password: json["password"],
         role: json["role"],
+        leaderEmail: json["leaderEmail"],
         job: json["job"],
         department: json["department"],
         teamName: json["teamName"],
@@ -54,6 +58,7 @@ class UserModel {
       email: email,
       password: password,
       role: role,
+      leaderEmail: leaderEmail,
       job: job,
       department: department,
       teamName: teamName,
@@ -61,7 +66,7 @@ class UserModel {
     await newUser.set(user.toJson());
   }
 
-  static Future<String> getNameSurnameFromEmail(String email) async {
+  static Future<String> getNameSurnameByEmail(String email) async {
     final userDoc = await FirebaseFirestore.instance
         .collection('users')
         .where('email', isEqualTo: email)
@@ -70,7 +75,22 @@ class UserModel {
     return "${data['name']} ${data['surname']}";
   }
 
-  static Stream<List<UserModel>> fetchUsers() {
+  static Future<String> findCheckerUserEmailByEmail(String email) async {
+    final userDoc = await FirebaseFirestore.instance
+        .collection("users")
+        .where("email", isEqualTo: email)
+        .get();
+    final data = userDoc.docs.first.data();
+    if (data["role"] == "Member") {
+      return data["leaderEmail"];
+    } else if (data["role"] == "Leader") {
+      return "finance@gmail.com";
+    } else {
+      return "";
+    }
+  }
+
+  static Stream<List<UserModel>> fetchAllUsers() {
     return FirebaseFirestore.instance.collection('users').snapshots().map(
         (snapshot) => snapshot.docs
             .map((doc) => UserModel.fromJson(doc.data()))
@@ -82,9 +102,10 @@ class UserModel {
     TextEditingController nameController,
     TextEditingController surnameController,
     TextEditingController passwordController,
+    TextEditingController roleController,
+    TextEditingController leaderEmailController,
     TextEditingController jobController,
     TextEditingController departmentController,
-    TextEditingController roleController,
     TextEditingController teamNameController,
   ) async {
     try {
@@ -97,6 +118,7 @@ class UserModel {
           "surname": surnameController.text,
           "password": passwordController.text,
           "role": roleController.text,
+          "leaderEmail": leaderEmailController.text,
           "job": jobController.text,
           "department": departmentController.text,
           "teamName": teamNameController.text,
@@ -105,6 +127,7 @@ class UserModel {
         surnameController.clear();
         passwordController.clear();
         roleController.clear();
+        leaderEmailController.clear();
         jobController.clear();
         departmentController.clear();
         teamNameController.clear();
@@ -123,9 +146,10 @@ class UserModel {
     TextEditingController surnameController,
     TextEditingController emailController,
     TextEditingController passwordController,
+    TextEditingController roleController,
+    TextEditingController leaderEmailController,
     TextEditingController jobController,
     TextEditingController departmentController,
-    TextEditingController roleController,
     TextEditingController teamNameController,
     BuildContext context,
   ) async {
@@ -157,6 +181,7 @@ class UserModel {
         email: emailController.text,
         password: passwordController.text,
         role: roleController.text,
+        leaderEmail: leaderEmailController.text,
         job: jobController.text,
         department: departmentController.text,
         teamName: teamNameController.text,
@@ -166,6 +191,7 @@ class UserModel {
       emailController.clear();
       passwordController.clear();
       roleController.clear();
+      leaderEmailController.clear();
       jobController.clear();
       departmentController.clear();
       teamNameController.clear();
