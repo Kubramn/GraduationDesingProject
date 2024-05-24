@@ -1,6 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:bitirme/models/expense_model.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -14,55 +13,6 @@ class ExpensesPage extends StatefulWidget {
 
 class _ExpensesPageState extends State<ExpensesPage> {
   User? user = FirebaseAuth.instance.currentUser;
-
-  Stream<List<ExpenseModel>> fetchExpenses(String status) {
-    if (status == "previous") {
-      return FirebaseFirestore.instance
-          .collection('expenses')
-          .where(
-            Filter.and(
-              Filter("userEmail", isEqualTo: user?.email),
-              Filter.or(
-                Filter("status", isEqualTo: "acceptedByLeaderAndFinance"),
-                Filter("status", isEqualTo: "denied"),
-              ),
-            ),
-          )
-          .snapshots()
-          .map((snapshot) => snapshot.docs
-              .map((doc) => ExpenseModel.fromJson(doc.data()))
-              .toList());
-    } else if (status == "waiting") {
-      return FirebaseFirestore.instance
-          .collection('expenses')
-          .where(Filter.and(
-            Filter("userEmail", isEqualTo: user?.email),
-            Filter.or(
-              Filter("status", isEqualTo: "waiting"),
-              Filter("status", isEqualTo: "acceptedByLeader"),
-            ),
-          ))
-          .snapshots()
-          .map((snapshot) => snapshot.docs
-              .map((doc) => ExpenseModel.fromJson(doc.data()))
-              .toList());
-    } else {
-      return const Stream<List<ExpenseModel>>.empty();
-    }
-  }
-
-  void addExpense() {
-    ExpenseModel(
-      title: "Playstation",
-      status: "waiting",
-      price: "100₺",
-      date: DateTime.now(),
-      description: "description description description",
-      userEmail: "member@gmail.com",
-      checkerUserEmail: "leader@gmail.com",
-      teamName: "team1",
-    ).createExpense();
-  }
 
   bool acceptedOrDenied(ExpenseModel expense) {
     if (expense.status == "acceptedByLeaderAndFinance") {
@@ -134,7 +84,10 @@ class _ExpensesPageState extends State<ExpensesPage> {
                   height: screenHeight * 0.65,
                   child: TabBarView(children: [
                     StreamBuilder<List<ExpenseModel>>(
-                      stream: fetchExpenses("previous"),
+                      stream: ExpenseModel.fetchMemberExpenses(
+                        "previous",
+                        user?.email,
+                      ),
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
@@ -183,7 +136,10 @@ class _ExpensesPageState extends State<ExpensesPage> {
                       },
                     ),
                     StreamBuilder<List<ExpenseModel>>(
-                      stream: fetchExpenses("waiting"),
+                      stream: ExpenseModel.fetchMemberExpenses(
+                        "waiting",
+                        user?.email,
+                      ),
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
@@ -232,10 +188,6 @@ class _ExpensesPageState extends State<ExpensesPage> {
                       },
                     ),
                   ]),
-                ),
-                ElevatedButton(
-                  onPressed: () => addExpense(),
-                  child: Text("ADD EXPENSE"),
                 ),
               ],
             ),

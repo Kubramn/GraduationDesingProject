@@ -1,5 +1,4 @@
 import 'package:bitirme/models/user_model.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class FinanceUsers extends StatefulWidget {
@@ -22,45 +21,6 @@ class _FinanceUsersState extends State<FinanceUsers> {
 
   Icon roleIcon = Icon(Icons.contacts);
 
-  Stream<List<UserModel>> fetchUsers() {
-    return FirebaseFirestore.instance.collection('users').snapshots().map(
-        (snapshot) => snapshot.docs
-            .map((doc) => UserModel.fromJson(doc.data()))
-            .toList());
-  }
-
-  Future<void> updateUser(String? email) async {
-    try {
-      DocumentSnapshot<Map<String, dynamic>> snapshot =
-          await FirebaseFirestore.instance.collection("users").doc(email).get();
-
-      if (snapshot.exists) {
-        await FirebaseFirestore.instance.collection("users").doc(email).update({
-          "name": nameController.text,
-          "surname": surnameController.text,
-          "password": passwordController.text,
-          "role": roleController.text,
-          "job": jobController.text,
-          "department": departmentController.text,
-          "teamName": teamNameController.text,
-        });
-        nameController.clear();
-        surnameController.clear();
-        passwordController.clear();
-        roleController.clear();
-        jobController.clear();
-        departmentController.clear();
-        teamNameController.clear();
-
-        print("User data updated successfully!");
-      } else {
-        print("User not found!");
-      }
-    } catch (e) {
-      print("Error fetching or updating user data: $e");
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
@@ -75,7 +35,7 @@ class _FinanceUsersState extends State<FinanceUsers> {
             children: [
               SizedBox(height: screenHeight * 0.05),
               StreamBuilder<List<UserModel>>(
-                stream: fetchUsers(),
+                stream: UserModel.fetchUsers(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     final users = snapshot.data!;
@@ -316,7 +276,16 @@ class _FinanceUsersState extends State<FinanceUsers> {
                 height: 60,
                 width: screenWidth - 60,
                 child: ElevatedButton(
-                  onPressed: (() => updateUser(_selectedUser?.email)),
+                  onPressed: (() => UserModel.updateUser(
+                        _selectedUser?.email,
+                        nameController,
+                        surnameController,
+                        passwordController,
+                        jobController,
+                        departmentController,
+                        roleController,
+                        teamNameController,
+                      )),
                   child: Text(
                     "Update User",
                     style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),

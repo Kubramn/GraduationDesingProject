@@ -1,5 +1,4 @@
 import 'package:bitirme/models/user_model.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class FinanceRegister extends StatefulWidget {
@@ -22,89 +21,6 @@ class _FinanceRegisterState extends State<FinanceRegister> {
   //String? _selectedRole;
 
   Icon roleIcon = Icon(Icons.contacts);
-
-  void alertMessage(String message, Color backgroundColor) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          surfaceTintColor: backgroundColor,
-          title: Text(
-            message,
-            style: TextStyle(
-              color: Color.fromARGB(255, 52, 52, 52),
-              fontSize: 25,
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text(
-                "Close",
-                style: TextStyle(
-                  color: Color.fromARGB(255, 52, 52, 52),
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            )
-          ],
-        );
-      },
-    );
-  }
-
-  void register() async {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return const Center(
-          child: CircularProgressIndicator(
-            color: Color.fromARGB(255, 68, 60, 95),
-          ),
-        );
-      },
-    );
-
-    try {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: emailController.text,
-        password: passwordController.text,
-      );
-      Navigator.pop(context); //Navigator.of(context).pop;
-      alertMessage(
-        "${nameController.text} ${surnameController.text} is registered successfully.",
-        Color.fromARGB(255, 0, 255, 0),
-      );
-      UserModel(
-        name: nameController.text,
-        surname: surnameController.text,
-        email: emailController.text,
-        password: passwordController.text,
-        role: roleController.text,
-        job: jobController.text,
-        department: departmentController.text,
-        teamName: teamNameController.text,
-      ).createUser();
-      nameController.clear();
-      surnameController.clear();
-      emailController.clear();
-      passwordController.clear();
-      roleController.clear();
-      jobController.clear();
-      departmentController.clear();
-      teamNameController.clear();
-    } on FirebaseAuthException catch (e) {
-      Navigator.pop(context);
-      alertMessage(
-        "User Registration failed!",
-        const Color.fromARGB(255, 255, 0, 0),
-      );
-      print("ERROR -> $e");
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -319,7 +235,17 @@ class _FinanceRegisterState extends State<FinanceRegister> {
               ),
               SizedBox(height: 40),
               ElevatedButton(
-                onPressed: (() => register()),
+                onPressed: (() => UserModel.register(
+                      nameController,
+                      surnameController,
+                      emailController,
+                      passwordController,
+                      jobController,
+                      departmentController,
+                      roleController,
+                      teamNameController,
+                      context,
+                    )),
                 child: Text(
                   "Register",
                   style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),

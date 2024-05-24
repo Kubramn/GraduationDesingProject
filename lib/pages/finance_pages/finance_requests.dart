@@ -1,6 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:bitirme/models/expense_model.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:bitirme/models/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -14,45 +14,6 @@ class FinanceRequests extends StatefulWidget {
 
 class _FinanceRequestsState extends State<FinanceRequests> {
   User? user = FirebaseAuth.instance.currentUser;
-
-  Future<String> getNameSurname(String email) async {
-    final userDoc = await FirebaseFirestore.instance
-        .collection('users')
-        .where('email', isEqualTo: email)
-        .get();
-    final data = userDoc.docs.first.data();
-    return "${data['name']} ${data['surname']}";
-  }
-
-  Future<void> updateRequestStatus(String id, String status) async {
-    try {
-      await FirebaseFirestore.instance.collection("expenses").doc(id).update({
-        "status": status,
-      });
-
-      print("Request status updated successfully!");
-    } catch (e) {
-      print("Error updating request status: $e");
-    }
-  }
-
-  Stream<List<ExpenseModel>> fetchRequests() {
-    return FirebaseFirestore.instance
-        .collection('expenses')
-        .where(
-          Filter.or(
-            Filter.and(
-              Filter("checkerUserEmail", isEqualTo: user?.email),
-              Filter("status", isEqualTo: "waiting"),
-            ),
-            Filter("status", isEqualTo: "acceptedByLeader"),
-          ),
-        )
-        .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) => ExpenseModel.fromJson(doc.data()))
-            .toList());
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +31,7 @@ class _FinanceRequestsState extends State<FinanceRequests> {
               //color: Colors.black,
               height: screenHeight * 0.8,
               child: StreamBuilder<List<ExpenseModel>>(
-                stream: fetchRequests(),
+                stream: ExpenseModel.fetchRequestsForFinance(user?.email),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Center(
@@ -172,7 +133,7 @@ class _FinanceRequestsState extends State<FinanceRequests> {
                               children: [
                                 ElevatedButton(
                                   onPressed: (() {
-                                    updateRequestStatus(
+                                    ExpenseModel.updateRequestStatus(
                                       request.id,
                                       "acceptedByLeaderAndFinance",
                                     );
@@ -199,7 +160,8 @@ class _FinanceRequestsState extends State<FinanceRequests> {
                                 ),
                                 ElevatedButton(
                                   onPressed: (() {
-                                    updateRequestStatus(request.id, "denied");
+                                    ExpenseModel.updateRequestStatus(
+                                        request.id, "denied");
                                     Navigator.pop(context);
                                   }),
                                   style: ElevatedButton.styleFrom(
@@ -245,7 +207,8 @@ class _FinanceRequestsState extends State<FinanceRequests> {
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             FutureBuilder<String>(
-                              future: getNameSurname(request.userEmail),
+                              future: UserModel.getNameSurnameFromEmail(
+                                  request.userEmail),
                               builder: (context, snapshot) {
                                 return Row(
                                   children: [
@@ -291,20 +254,20 @@ class _FinanceRequestsState extends State<FinanceRequests> {
                               color: Color.fromARGB(255, 52, 52, 52),
                               thickness: 1.5,
                             ),
-                            InfoValue(
+                            InfoValuePair(
                               info: "Title",
                               value: request.title,
                             ),
-                            InfoValue(
+                            InfoValuePair(
                               info: "Description",
                               value: request.description,
                             ),
-                            InfoValue(
+                            InfoValuePair(
                               info: "Date",
                               value: DateFormat('MMMM d, yyyy')
                                   .format(request.date),
                             ),
-                            InfoValue(
+                            InfoValuePair(
                               info: "Price",
                               value: request.price,
                             ),
@@ -321,11 +284,11 @@ class _FinanceRequestsState extends State<FinanceRequests> {
       );
 }
 
-class InfoValue extends StatelessWidget {
+class InfoValuePair extends StatelessWidget {
   final String info;
   final String value;
 
-  const InfoValue({
+  const InfoValuePair({
     super.key,
     required this.info,
     required this.value,
