@@ -41,7 +41,7 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
         ];
 
       default:
-        return [null];
+        return [];
     }
   }
 

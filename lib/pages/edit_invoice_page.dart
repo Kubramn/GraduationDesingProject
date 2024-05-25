@@ -46,6 +46,31 @@ class _EditInvoicePageState extends State<EditInvoicePage> {
     _readTextFromImage(); // Sayfa açıldığında metni okumayı başlat
   }
 
+  TextField invoiceInfoTextField(
+    TextEditingController controller,
+    String hint,
+    IconData icon,
+  ) {
+    return TextField(
+      keyboardType: TextInputType.text,
+      controller: controller,
+      decoration: InputDecoration(
+        filled: true,
+        fillColor: Colors.white,
+        border: OutlineInputBorder(
+          borderSide: BorderSide.none,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        hintText: hint,
+        hintStyle: TextStyle(color: Colors.black38),
+        prefixIcon: Icon(
+          icon,
+          color: Color.fromARGB(255, 49, 102, 101),
+        ),
+      ),
+    );
+  }
+
   Future<void> addExpense() async {
     String checkerUserEmail =
         await UserModel.findCheckerUserEmailByEmail(user?.email ?? "");
@@ -220,28 +245,28 @@ class _EditInvoicePageState extends State<EditInvoicePage> {
                   File(widget.imagePath),
                 ),
                 SizedBox(height: screenHeight * 0.06),
-                InvoiceDetail(
-                  controller: titleController,
-                  hint: "Title",
-                  icon: Icons.title,
+                invoiceInfoTextField(
+                  titleController,
+                  "Title",
+                  Icons.title,
                 ),
                 SizedBox(height: screenHeight * 0.02),
-                InvoiceDetail(
-                  controller: descriptionController,
-                  hint: "Description",
-                  icon: Icons.description_outlined,
+                invoiceInfoTextField(
+                  descriptionController,
+                  "Description",
+                  Icons.description_outlined,
                 ),
                 SizedBox(height: screenHeight * 0.02),
-                InvoiceDetail(
-                  controller: dateController,
-                  hint: "Date",
-                  icon: Icons.date_range,
+                invoiceInfoTextField(
+                  dateController,
+                  "Date",
+                  Icons.date_range,
                 ),
                 SizedBox(height: screenHeight * 0.02),
-                InvoiceDetail(
-                  controller: priceController,
-                  hint: "Price",
-                  icon: Icons.price_change_outlined,
+                invoiceInfoTextField(
+                  priceController,
+                  "Price",
+                  Icons.price_change_outlined,
                 ),
                 SizedBox(height: screenHeight * 0.04),
                 ElevatedButton(
@@ -265,41 +290,6 @@ class _EditInvoicePageState extends State<EditInvoicePage> {
               ],
             ),
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class InvoiceDetail extends StatelessWidget {
-  final TextEditingController controller;
-  final String hint;
-  final IconData icon;
-
-  const InvoiceDetail({
-    super.key,
-    required this.controller,
-    required this.hint,
-    required this.icon,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return TextField(
-      keyboardType: TextInputType.text,
-      controller: controller,
-      decoration: InputDecoration(
-        filled: true,
-        fillColor: Colors.white,
-        border: OutlineInputBorder(
-          borderSide: BorderSide.none,
-          borderRadius: BorderRadius.circular(20),
-        ),
-        hintText: hint,
-        hintStyle: TextStyle(color: Colors.black38),
-        prefixIcon: Icon(
-          icon,
-          color: Color.fromARGB(255, 49, 102, 101),
         ),
       ),
     );
