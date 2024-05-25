@@ -1,6 +1,6 @@
-import 'package:bitirme/pages/finance_pages/finance_navbar.dart';
-import 'package:bitirme/pages/leader_pages/leader_navbar.dart';
-import 'package:bitirme/pages/member_pages/member_navbar.dart';
+import 'package:bitirme/view/finance_pages/finance_navbar.dart';
+import 'package:bitirme/view/leader_pages/leader_navbar.dart';
+import 'package:bitirme/view/member_pages/member_navbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';

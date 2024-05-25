@@ -1,4 +1,4 @@
-import 'package:bitirme/pages/edit_invoice_page.dart';
+import 'package:bitirme/view/edit_invoice_page.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
