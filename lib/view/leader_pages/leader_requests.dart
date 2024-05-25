@@ -14,36 +14,6 @@ class LeaderRequests extends StatefulWidget {
 class _LeaderRequestsState extends State<LeaderRequests> {
   User? user = FirebaseAuth.instance.currentUser;
 
-  Align infoValuePair(String info, String value) {
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: AutoSizeText.rich(
-        TextSpan(
-          children: [
-            TextSpan(
-              text: "$info:  ",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Color.fromARGB(255, 68, 60, 95),
-              ),
-            ),
-            TextSpan(
-              text: value,
-            ),
-          ],
-        ),
-        maxLines: 3,
-        minFontSize: 30,
-        maxFontSize: 30,
-        overflow: TextOverflow.ellipsis,
-        style: TextStyle(
-          color: Color.fromARGB(255, 52, 52, 52),
-          fontSize: 30,
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
@@ -100,6 +70,36 @@ class _LeaderRequestsState extends State<LeaderRequests> {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget infoValuePair(String info, String value) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: AutoSizeText.rich(
+        TextSpan(
+          children: [
+            TextSpan(
+              text: "$info:  ",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Color.fromARGB(255, 68, 60, 95),
+              ),
+            ),
+            TextSpan(
+              text: value,
+            ),
+          ],
+        ),
+        maxLines: 3,
+        minFontSize: 25,
+        maxFontSize: 25,
+        overflow: TextOverflow.ellipsis,
+        style: TextStyle(
+          color: Color.fromARGB(255, 52, 52, 52),
+          fontSize: 25,
         ),
       ),
     );

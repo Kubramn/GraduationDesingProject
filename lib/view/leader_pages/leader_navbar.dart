@@ -17,29 +17,6 @@ class LeaderNavBar extends StatefulWidget {
 class _LeaderNavBarState extends State<LeaderNavBar> {
   int _currentIndex = 0;
 
-  void goToPage(index) {
-    if (index == 4) {
-      FirebaseAuth.instance.signOut();
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const LoginPage(),
-        ),
-      );
-    } else {
-      setState(() {
-        _currentIndex = index;
-      });
-    }
-  }
-
-  final List _screens = const [
-    LeaderDashboard(),
-    ExpensesPage(),
-    InvoicePage(),
-    LeaderRequests(),
-  ];
-
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
@@ -121,7 +98,7 @@ class _LeaderNavBarState extends State<LeaderNavBar> {
                 ),
                 GButton(
                   icon: Icons.logout_outlined,
-                  iconColor: Color.fromARGB(255, 85, 39, 41),
+                  iconColor: Color.fromARGB(255, 139, 0, 0),
                 ),
               ],
             ),
@@ -130,4 +107,27 @@ class _LeaderNavBarState extends State<LeaderNavBar> {
       ),
     );
   }
+
+  void goToPage(index) {
+    if (index == 4) {
+      FirebaseAuth.instance.signOut();
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const LoginPage(),
+        ),
+      );
+    } else {
+      setState(() {
+        _currentIndex = index;
+      });
+    }
+  }
+
+  final List _screens = const [
+    LeaderDashboard(),
+    ExpensesPage(),
+    InvoicePage(),
+    LeaderRequests(),
+  ];
 }

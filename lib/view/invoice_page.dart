@@ -27,36 +27,6 @@ class _InvoicePageState extends State<InvoicePage> {
     _initializeControllerFuture = _controller.initialize();
   }
 
-  Future<void> _toggleFlashlight() async {
-    if (_controller.value.isInitialized) {
-      if (_controller.value.flashMode == FlashMode.off) {
-        await _controller.setFlashMode(FlashMode.torch);
-        setState(() {
-          _flashToggle = true;
-        });
-      } else {
-        await _controller.setFlashMode(FlashMode.off);
-        setState(() {
-          _flashToggle = false;
-        });
-      }
-    }
-  }
-
-  Future<void> _selectImageFromLibrary() async {
-    final returnedImage =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (returnedImage != null) {
-      await Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => EditInvoicePage(
-            imagePath: returnedImage.path,
-          ),
-        ),
-      );
-    }
-  }
-
   @override
   void dispose() {
     _controller.dispose();
@@ -193,5 +163,35 @@ class _InvoicePageState extends State<InvoicePage> {
         ),
       ),
     );
+  }
+
+  Future<void> _toggleFlashlight() async {
+    if (_controller.value.isInitialized) {
+      if (_controller.value.flashMode == FlashMode.off) {
+        await _controller.setFlashMode(FlashMode.torch);
+        setState(() {
+          _flashToggle = true;
+        });
+      } else {
+        await _controller.setFlashMode(FlashMode.off);
+        setState(() {
+          _flashToggle = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _selectImageFromLibrary() async {
+    final returnedImage =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (returnedImage != null) {
+      await Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => EditInvoicePage(
+            imagePath: returnedImage.path,
+          ),
+        ),
+      );
+    }
   }
 }

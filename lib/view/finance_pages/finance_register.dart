@@ -14,14 +14,16 @@ class _FinanceRegisterState extends State<FinanceRegister> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController roleController = TextEditingController();
-  TextEditingController leaderEmailController = TextEditingController();
   TextEditingController jobController = TextEditingController();
   TextEditingController departmentController = TextEditingController();
   TextEditingController teamNameController = TextEditingController();
 
   //String? _selectedRole;
 
-  Icon roleIcon = Icon(Icons.contacts);
+  Icon roleIcon = Icon(
+    Icons.contacts,
+    color: Color.fromARGB(255, 68, 60, 95),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -152,47 +154,53 @@ class _FinanceRegisterState extends State<FinanceRegister> {
                       setState(() {});
                       switch (roleController.text) {
                         case "Member":
-                          roleIcon = Icon(Icons.person_2_outlined);
+                          roleIcon = Icon(
+                            Icons.person_2_outlined,
+                            color: Color.fromARGB(255, 68, 60, 95),
+                          );
                           break;
                         case "Leader":
-                          roleIcon = Icon(Icons.person_4_outlined);
+                          roleIcon = Icon(
+                            Icons.person_4_outlined,
+                            color: Color.fromARGB(255, 68, 60, 95),
+                          );
                           break;
                         case "Finance":
-                          roleIcon = Icon(Icons.person_3_outlined);
+                          roleIcon = Icon(
+                            Icons.person_3_outlined,
+                            color: Color.fromARGB(255, 68, 60, 95),
+                          );
                           break;
                       }
                     },
                     dropdownMenuEntries: const [
                       DropdownMenuEntry(
-                          value: "Member",
-                          label: "Member",
-                          leadingIcon: Icon(Icons.person_2_outlined)),
+                        value: "Member",
+                        label: "Member",
+                        leadingIcon: Icon(
+                          Icons.person_2_outlined,
+                          color: Color.fromARGB(255, 68, 60, 95),
+                        ),
+                      ),
                       DropdownMenuEntry(
-                          value: "Leader",
-                          label: "Leader",
-                          leadingIcon: Icon(Icons.person_4_outlined)),
+                        value: "Leader",
+                        label: "Leader",
+                        leadingIcon: Icon(
+                          Icons.person_4_outlined,
+                          color: Color.fromARGB(255, 68, 60, 95),
+                        ),
+                      ),
                       DropdownMenuEntry(
-                          value: "Finance",
-                          label: "Finance",
-                          leadingIcon: Icon(Icons.person_3_outlined)),
+                        value: "Finance",
+                        label: "Finance",
+                        leadingIcon: Icon(
+                          Icons.person_3_outlined,
+                          color: Color.fromARGB(255, 68, 60, 95),
+                        ),
+                      ),
                     ],
                   )
                 ],
-              ),
-              SizedBox(height: 40),
-              TextField(
-                keyboardType: TextInputType.text,
-                controller: leaderEmailController,
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                      borderSide: BorderSide.none,
-                      borderRadius: BorderRadius.circular(20)),
-                  hintText: "Leader Email",
-                  hintStyle: TextStyle(color: Colors.black38),
-                  prefixIcon: Icon(Icons.person_4_outlined),
-                ),
               ),
               SizedBox(height: 40),
               Row(
@@ -211,7 +219,10 @@ class _FinanceRegisterState extends State<FinanceRegister> {
                             borderRadius: BorderRadius.circular(20)),
                         hintText: "Job",
                         hintStyle: TextStyle(color: Colors.black38),
-                        prefixIcon: Icon(Icons.business_center_outlined),
+                        prefixIcon: Icon(
+                          Icons.business_center_outlined,
+                          color: Color.fromARGB(255, 68, 60, 95),
+                        ),
                       ),
                     ),
                   ),
@@ -228,7 +239,10 @@ class _FinanceRegisterState extends State<FinanceRegister> {
                             borderRadius: BorderRadius.circular(20)),
                         hintText: "Department",
                         hintStyle: TextStyle(color: Colors.black38),
-                        prefixIcon: Icon(Icons.business_outlined),
+                        prefixIcon: Icon(
+                          Icons.business_outlined,
+                          color: Color.fromARGB(255, 68, 60, 95),
+                        ),
                       ),
                     ),
                   ),
@@ -246,23 +260,43 @@ class _FinanceRegisterState extends State<FinanceRegister> {
                       borderRadius: BorderRadius.circular(20)),
                   hintText: "Team Name",
                   hintStyle: TextStyle(color: Colors.black38),
-                  prefixIcon: Icon(Icons.groups_outlined),
+                  prefixIcon: Icon(
+                    Icons.groups_outlined,
+                    color: Color.fromARGB(255, 68, 60, 95),
+                  ),
                 ),
               ),
               SizedBox(height: 40),
               ElevatedButton(
-                onPressed: (() => UserModel.register(
-                      nameController,
-                      surnameController,
-                      emailController,
-                      passwordController,
-                      jobController,
-                      departmentController,
-                      roleController,
-                      leaderEmailController,
-                      teamNameController,
-                      context,
-                    )),
+                onPressed: () async {
+                  String leaderEmail =
+                      await UserModel.decideLeaderEmailByTeamName(
+                    roleController.text,
+                    teamNameController.text,
+                  );
+
+                  if (await UserModel.register(
+                    nameController.text,
+                    surnameController.text,
+                    emailController.text,
+                    passwordController.text,
+                    roleController.text,
+                    leaderEmail,
+                    jobController.text,
+                    departmentController.text,
+                    teamNameController.text,
+                    context,
+                  )) {
+                    nameController.clear();
+                    surnameController.clear();
+                    emailController.clear();
+                    passwordController.clear();
+                    roleController.clear();
+                    jobController.clear();
+                    departmentController.clear();
+                    teamNameController.clear();
+                  }
+                },
                 child: Text(
                   "Register",
                   style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),

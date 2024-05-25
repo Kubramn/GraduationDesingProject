@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:math';
-
 import 'package:bitirme/models/expense_model.dart';
 import 'package:bitirme/models/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -18,20 +17,6 @@ class EditInvoicePage extends StatefulWidget {
   State<EditInvoicePage> createState() => _EditInvoicePageState();
 }
 
-class WordBox {
-  String text;
-  Rect boundingBox;
-  List<Point<int>> vertices;
-
-  WordBox(this.text, this.boundingBox, this.vertices);
-}
-
-class Line {
-  List<WordBox> wordBoxes;
-
-  Line(this.wordBoxes);
-}
-
 class _EditInvoicePageState extends State<EditInvoicePage> {
   User? user = FirebaseAuth.instance.currentUser;
 
@@ -46,7 +31,88 @@ class _EditInvoicePageState extends State<EditInvoicePage> {
     _readTextFromImage(); // Sayfa açıldığında metni okumayı başlat
   }
 
-  TextField invoiceInfoTextField(
+  @override
+  Widget build(BuildContext context) {
+    double screenHeight = MediaQuery.of(context).size.height;
+    double screenWidth = MediaQuery.of(context).size.width;
+
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        leading: IconButton(
+          highlightColor: Color.fromARGB(50, 49, 102, 101),
+          icon: Icon(
+            Icons.arrow_back_ios_new,
+            size: 30,
+            color: Color.fromARGB(255, 49, 102, 101),
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
+      backgroundColor: Color.fromARGB(255, 229, 229, 225),
+      body: Center(
+        child: Padding(
+          padding: EdgeInsets.all(screenWidth * 0.06),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Image.file(
+                  File(widget.imagePath),
+                ),
+                SizedBox(height: screenHeight * 0.06),
+                invoiceInfoTextField(
+                  titleController,
+                  "Title",
+                  Icons.title,
+                ),
+                SizedBox(height: screenHeight * 0.02),
+                invoiceInfoTextField(
+                  descriptionController,
+                  "Description",
+                  Icons.description_outlined,
+                ),
+                SizedBox(height: screenHeight * 0.02),
+                invoiceInfoTextField(
+                  dateController,
+                  "Date",
+                  Icons.date_range,
+                ),
+                SizedBox(height: screenHeight * 0.02),
+                invoiceInfoTextField(
+                  priceController,
+                  "Price",
+                  Icons.price_change_outlined,
+                ),
+                SizedBox(height: screenHeight * 0.04),
+                ElevatedButton(
+                  onPressed: () => addExpense(),
+                  child: Text(
+                    "Add Expense",
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color.fromARGB(255, 157, 203, 201),
+                    foregroundColor: Color.fromARGB(255, 49, 102, 101),
+                    fixedSize: Size(500, 60),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget invoiceInfoTextField(
     TextEditingController controller,
     String hint,
     IconData icon,
@@ -73,11 +139,12 @@ class _EditInvoicePageState extends State<EditInvoicePage> {
 
   Future<void> addExpense() async {
     String checkerUserEmail =
-        await UserModel.findCheckerUserEmailByEmail(user?.email ?? "");
+        await UserModel.decideCheckerUserEmailByRole(user?.email ?? "");
+    String status = await UserModel.decideStatusByRole(user?.email ?? "");
 
     ExpenseModel(
       title: titleController.text,
-      status: "waiting",
+      status: status,
       price: priceController.text,
       date: dateController.text,
       description: descriptionController.text,
@@ -214,84 +281,18 @@ class _EditInvoicePageState extends State<EditInvoicePage> {
   String fixNumberFormat(String amount) {
     return amount.replaceAll(',', '.').replaceAll(RegExp(r'\s+'), '');
   }
+}
 
-  @override
-  Widget build(BuildContext context) {
-    double screenHeight = MediaQuery.of(context).size.height;
-    double screenWidth = MediaQuery.of(context).size.width;
+class WordBox {
+  String text;
+  Rect boundingBox;
+  List<Point<int>> vertices;
 
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios_new,
-            size: 30,
-            color: Color.fromARGB(255, 49, 102, 101),
-          ),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-      ),
-      backgroundColor: Color.fromARGB(255, 229, 229, 225),
-      body: Center(
-        child: Padding(
-          padding: EdgeInsets.all(screenWidth * 0.06),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Image.file(
-                  File(widget.imagePath),
-                ),
-                SizedBox(height: screenHeight * 0.06),
-                invoiceInfoTextField(
-                  titleController,
-                  "Title",
-                  Icons.title,
-                ),
-                SizedBox(height: screenHeight * 0.02),
-                invoiceInfoTextField(
-                  descriptionController,
-                  "Description",
-                  Icons.description_outlined,
-                ),
-                SizedBox(height: screenHeight * 0.02),
-                invoiceInfoTextField(
-                  dateController,
-                  "Date",
-                  Icons.date_range,
-                ),
-                SizedBox(height: screenHeight * 0.02),
-                invoiceInfoTextField(
-                  priceController,
-                  "Price",
-                  Icons.price_change_outlined,
-                ),
-                SizedBox(height: screenHeight * 0.04),
-                ElevatedButton(
-                  onPressed: () => addExpense(),
-                  child: Text(
-                    "Add Expense",
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color.fromARGB(255, 157, 203, 201),
-                    foregroundColor: Color.fromARGB(255, 49, 102, 101),
-                    fixedSize: Size(500, 60),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+  WordBox(this.text, this.boundingBox, this.vertices);
+}
+
+class Line {
+  List<WordBox> wordBoxes;
+
+  Line(this.wordBoxes);
 }
