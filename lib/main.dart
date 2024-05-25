@@ -1,8 +1,8 @@
-import 'package:bitirme/pages/invoice_page.dart';
+import 'package:bitirme/view/invoice_page.dart';
 import 'package:camera/camera.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:bitirme/pages/login_page.dart';
+import 'package:bitirme/view/login_page.dart';
 import 'package:flutter/services.dart';
 import 'firebase_options.dart';
 

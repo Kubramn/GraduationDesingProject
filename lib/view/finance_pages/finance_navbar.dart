@@ -1,8 +1,8 @@
-import 'package:bitirme/pages/finance_pages/finance_dashboard.dart';
-import 'package:bitirme/pages/finance_pages/finance_register.dart';
-import 'package:bitirme/pages/finance_pages/finance_requests.dart';
-import 'package:bitirme/pages/finance_pages/finance_users.dart';
-import 'package:bitirme/pages/login_page.dart';
+import 'package:bitirme/view/finance_pages/finance_dashboard.dart';
+import 'package:bitirme/view/finance_pages/finance_register.dart';
+import 'package:bitirme/view/finance_pages/finance_requests.dart';
+import 'package:bitirme/view/finance_pages/finance_users.dart';
+import 'package:bitirme/view/login_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
