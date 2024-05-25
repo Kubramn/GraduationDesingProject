@@ -13,14 +13,50 @@ class ExpensesPage extends StatefulWidget {
 class _ExpensesPageState extends State<ExpensesPage> {
   User? user = FirebaseAuth.instance.currentUser;
 
-  bool acceptedOrDenied(ExpenseModel expense) {
+  List<dynamic> statusInfo(ExpenseModel expense) {
     if (expense.status == "acceptedByLeaderAndFinance") {
-      return true;
+      return [
+        "This expense has been accepted.",
+        Colors.lightGreen,
+      ];
     } else if (expense.status == "denied") {
-      return false;
+      return [
+        "This expense has been denied.",
+        Colors.red,
+      ];
     } else {
-      return false;
+      return [];
     }
+  }
+
+  Align infoValuePair(String info, String value, ExpenseModel expense) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: AutoSizeText.rich(
+        TextSpan(
+          children: [
+            TextSpan(
+              text: "$info:  ",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: statusInfo(expense)[1],
+              ),
+            ),
+            TextSpan(
+              text: value,
+            ),
+          ],
+        ),
+        maxLines: 3,
+        minFontSize: 30,
+        maxFontSize: 30,
+        overflow: TextOverflow.ellipsis,
+        style: TextStyle(
+          color: Color.fromARGB(255, 52, 52, 52),
+          fontSize: 30,
+        ),
+      ),
+    );
   }
 
   @override
@@ -255,7 +291,7 @@ class _ExpensesPageState extends State<ExpensesPage> {
                           child: Text(
                             "Close",
                             style: TextStyle(
-                              color: Color.fromARGB(255, 76, 89, 23),
+                              color: statusInfo(expense)[1],
                               fontSize: 25,
                               fontWeight: FontWeight.bold,
                             ),
@@ -274,23 +310,17 @@ class _ExpensesPageState extends State<ExpensesPage> {
                                 children: [
                                   Icon(
                                     Icons.info_outline,
-                                    color: acceptedOrDenied(expense)
-                                        ? Colors.lightGreen
-                                        : Colors.red,
+                                    color: statusInfo(expense)[1],
                                     size: 30,
                                   ),
                                   SizedBox(
                                     width: screenWidth * 0.015,
                                   ),
                                   Text(
-                                    acceptedOrDenied(expense)
-                                        ? "This expense has been accepted."
-                                        : "This expense has been denied.",
+                                    statusInfo(expense)[0],
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
-                                      color: acceptedOrDenied(expense)
-                                          ? Colors.lightGreen
-                                          : Colors.red,
+                                      color: statusInfo(expense)[1],
                                       fontSize: 20,
                                     ),
                                   ),
@@ -304,21 +334,25 @@ class _ExpensesPageState extends State<ExpensesPage> {
                                 thickness: 1.5,
                               ),
                             ),
-                            InfoValue(
-                              info: "Title",
-                              value: expense.title,
+                            infoValuePair(
+                              "Title",
+                              expense.title,
+                              expense,
                             ),
-                            InfoValue(
-                              info: "Description",
-                              value: expense.description,
+                            infoValuePair(
+                              "Description",
+                              expense.description,
+                              expense,
                             ),
-                            InfoValue(
-                              info: "Date",
-                              value: expense.date,
+                            infoValuePair(
+                              "Date",
+                              expense.date,
+                              expense,
                             ),
-                            InfoValue(
-                              info: "Price",
-                              value: expense.price,
+                            infoValuePair(
+                              "Price",
+                              expense.price,
+                              expense,
                             ),
                           ],
                         ),
@@ -331,46 +365,4 @@ class _ExpensesPageState extends State<ExpensesPage> {
           ),
         ),
       );
-}
-
-class InfoValue extends StatelessWidget {
-  final String info;
-  final String value;
-
-  const InfoValue({
-    super.key,
-    required this.info,
-    required this.value,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: AutoSizeText.rich(
-        TextSpan(
-          children: [
-            TextSpan(
-              text: "$info:  ",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Color.fromARGB(255, 76, 89, 23),
-              ),
-            ),
-            TextSpan(
-              text: value,
-            ),
-          ],
-        ),
-        maxLines: 3,
-        minFontSize: 30,
-        maxFontSize: 30,
-        overflow: TextOverflow.ellipsis,
-        style: TextStyle(
-          color: Color.fromARGB(255, 52, 52, 52),
-          fontSize: 30,
-        ),
-      ),
-    );
-  }
 }

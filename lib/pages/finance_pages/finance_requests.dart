@@ -14,6 +14,36 @@ class FinanceRequests extends StatefulWidget {
 class _FinanceRequestsState extends State<FinanceRequests> {
   User? user = FirebaseAuth.instance.currentUser;
 
+  Align infoValuePair(String info, String value) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: AutoSizeText.rich(
+        TextSpan(
+          children: [
+            TextSpan(
+              text: "$info:  ",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Color.fromARGB(255, 76, 89, 23),
+              ),
+            ),
+            TextSpan(
+              text: value,
+            ),
+          ],
+        ),
+        maxLines: 3,
+        minFontSize: 30,
+        maxFontSize: 30,
+        overflow: TextOverflow.ellipsis,
+        style: TextStyle(
+          color: Color.fromARGB(255, 52, 52, 52),
+          fontSize: 30,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
@@ -254,22 +284,10 @@ class _FinanceRequestsState extends State<FinanceRequests> {
                               color: Color.fromARGB(255, 52, 52, 52),
                               thickness: 1.5,
                             ),
-                            InfoValuePair(
-                              info: "Title",
-                              value: request.title,
-                            ),
-                            InfoValuePair(
-                              info: "Description",
-                              value: request.description,
-                            ),
-                            InfoValuePair(
-                              info: "Date",
-                              value: request.date,
-                            ),
-                            InfoValuePair(
-                              info: "Price",
-                              value: request.price,
-                            ),
+                            infoValuePair("Title", request.title),
+                            infoValuePair("Description", request.description),
+                            infoValuePair("Date", request.date),
+                            infoValuePair("Price", request.price),
                           ],
                         ),
                       ),
@@ -281,46 +299,4 @@ class _FinanceRequestsState extends State<FinanceRequests> {
           ),
         ),
       );
-}
-
-class InfoValuePair extends StatelessWidget {
-  final String info;
-  final String value;
-
-  const InfoValuePair({
-    super.key,
-    required this.info,
-    required this.value,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: AutoSizeText.rich(
-        TextSpan(
-          children: [
-            TextSpan(
-              text: "$info:  ",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Color.fromARGB(255, 76, 89, 23),
-              ),
-            ),
-            TextSpan(
-              text: value,
-            ),
-          ],
-        ),
-        maxLines: 3,
-        minFontSize: 30,
-        maxFontSize: 30,
-        overflow: TextOverflow.ellipsis,
-        style: TextStyle(
-          color: Color.fromARGB(255, 52, 52, 52),
-          fontSize: 30,
-        ),
-      ),
-    );
-  }
 }
