@@ -20,7 +20,10 @@ class _FinanceUsersState extends State<FinanceUsers> {
   TextEditingController departmentController = TextEditingController();
   TextEditingController teamNameController = TextEditingController();
 
-  Icon roleIcon = Icon(Icons.contacts);
+  Icon roleIcon = Icon(
+    Icons.contacts,
+    color: Color.fromARGB(255, 49, 102, 101),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -42,9 +45,18 @@ class _FinanceUsersState extends State<FinanceUsers> {
                     final users = snapshot.data!;
                     return DropdownMenu<UserModel>(
                       width: screenWidth - 60,
-                      leadingIcon: Icon(Icons.person_search),
-                      trailingIcon: Icon(Icons.keyboard_arrow_down),
-                      selectedTrailingIcon: Icon(Icons.keyboard_arrow_up),
+                      leadingIcon: Icon(
+                        Icons.person_search,
+                        color: Color.fromARGB(255, 49, 102, 101),
+                      ),
+                      trailingIcon: Icon(
+                        Icons.keyboard_arrow_down,
+                        color: Color.fromARGB(255, 49, 102, 101),
+                      ),
+                      selectedTrailingIcon: Icon(
+                        Icons.keyboard_arrow_up,
+                        color: Color.fromARGB(255, 49, 102, 101),
+                      ),
                       inputDecorationTheme: InputDecorationTheme(
                         filled: true,
                         fillColor: Colors.white,
@@ -80,7 +92,10 @@ class _FinanceUsersState extends State<FinanceUsers> {
                       },
                       dropdownMenuEntries: users.map((UserModel user) {
                         return DropdownMenuEntry<UserModel>(
-                          leadingIcon: Icon(Icons.person_outline),
+                          leadingIcon: Icon(
+                            Icons.person_outline,
+                            color: Color.fromARGB(255, 49, 102, 101),
+                          ),
                           label: user.email,
                           value: user,
                         );
@@ -120,7 +135,10 @@ class _FinanceUsersState extends State<FinanceUsers> {
                             borderRadius: BorderRadius.circular(20)),
                         hintText: "Name",
                         hintStyle: TextStyle(color: Colors.black38),
-                        prefixIcon: Icon(Icons.person),
+                        prefixIcon: Icon(
+                          Icons.person,
+                          color: Color.fromARGB(255, 49, 102, 101),
+                        ),
                       ),
                     ),
                   ),
@@ -137,7 +155,10 @@ class _FinanceUsersState extends State<FinanceUsers> {
                             borderRadius: BorderRadius.circular(20)),
                         hintText: "Surname",
                         hintStyle: TextStyle(color: Colors.black38),
-                        prefixIcon: Icon(Icons.person_outline),
+                        prefixIcon: Icon(
+                          Icons.person_outline,
+                          color: Color.fromARGB(255, 49, 102, 101),
+                        ),
                       ),
                     ),
                   ),
@@ -160,7 +181,10 @@ class _FinanceUsersState extends State<FinanceUsers> {
                             borderRadius: BorderRadius.circular(20)),
                         hintText: "Password",
                         hintStyle: TextStyle(color: Colors.black38),
-                        prefixIcon: Icon(Icons.lock_outline),
+                        prefixIcon: Icon(
+                          Icons.lock_outline,
+                          color: Color.fromARGB(255, 49, 102, 101),
+                        ),
                       ),
                     ),
                   ),
@@ -192,47 +216,53 @@ class _FinanceUsersState extends State<FinanceUsers> {
                       setState(() {});
                       switch (roleController.text) {
                         case "Member":
-                          roleIcon = Icon(Icons.person_2_outlined);
+                          roleIcon = Icon(
+                            Icons.person_2_outlined,
+                            color: Color.fromARGB(255, 49, 102, 101),
+                          );
                           break;
                         case "Leader":
-                          roleIcon = Icon(Icons.person_4_outlined);
+                          roleIcon = Icon(
+                            Icons.person_4_outlined,
+                            color: Color.fromARGB(255, 49, 102, 101),
+                          );
                           break;
                         case "Finance":
-                          roleIcon = Icon(Icons.person_3_outlined);
+                          roleIcon = Icon(
+                            Icons.person_3_outlined,
+                            color: Color.fromARGB(255, 49, 102, 101),
+                          );
                           break;
                       }
                     },
                     dropdownMenuEntries: const [
                       DropdownMenuEntry(
-                          value: "Member",
-                          label: "Member",
-                          leadingIcon: Icon(Icons.person_2_outlined)),
+                        value: "Member",
+                        label: "Member",
+                        leadingIcon: Icon(
+                          Icons.person_2_outlined,
+                          color: Color.fromARGB(255, 49, 102, 101),
+                        ),
+                      ),
                       DropdownMenuEntry(
-                          value: "Leader",
-                          label: "Leader",
-                          leadingIcon: Icon(Icons.person_4_outlined)),
+                        value: "Leader",
+                        label: "Leader",
+                        leadingIcon: Icon(
+                          Icons.person_4_outlined,
+                          color: Color.fromARGB(255, 49, 102, 101),
+                        ),
+                      ),
                       DropdownMenuEntry(
-                          value: "Finance",
-                          label: "Finance",
-                          leadingIcon: Icon(Icons.person_3_outlined)),
+                        value: "Finance",
+                        label: "Finance",
+                        leadingIcon: Icon(
+                          Icons.person_3_outlined,
+                          color: Color.fromARGB(255, 49, 102, 101),
+                        ),
+                      ),
                     ],
                   )
                 ],
-              ),
-              SizedBox(height: 40),
-              TextField(
-                keyboardType: TextInputType.text,
-                controller: leaderEmailController,
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                      borderSide: BorderSide.none,
-                      borderRadius: BorderRadius.circular(20)),
-                  hintText: "Leader Email",
-                  hintStyle: TextStyle(color: Colors.black38),
-                  prefixIcon: Icon(Icons.person_4_outlined),
-                ),
               ),
               SizedBox(height: 40),
               Row(
@@ -251,7 +281,10 @@ class _FinanceUsersState extends State<FinanceUsers> {
                             borderRadius: BorderRadius.circular(20)),
                         hintText: "Job",
                         hintStyle: TextStyle(color: Colors.black38),
-                        prefixIcon: Icon(Icons.business_center_outlined),
+                        prefixIcon: Icon(
+                          Icons.business_center_outlined,
+                          color: Color.fromARGB(255, 49, 102, 101),
+                        ),
                       ),
                     ),
                   ),
@@ -268,7 +301,10 @@ class _FinanceUsersState extends State<FinanceUsers> {
                             borderRadius: BorderRadius.circular(20)),
                         hintText: "Department",
                         hintStyle: TextStyle(color: Colors.black38),
-                        prefixIcon: Icon(Icons.business_outlined),
+                        prefixIcon: Icon(
+                          Icons.business_outlined,
+                          color: Color.fromARGB(255, 49, 102, 101),
+                        ),
                       ),
                     ),
                   ),
@@ -286,7 +322,10 @@ class _FinanceUsersState extends State<FinanceUsers> {
                       borderRadius: BorderRadius.circular(20)),
                   hintText: "Team Name",
                   hintStyle: TextStyle(color: Colors.black38),
-                  prefixIcon: Icon(Icons.groups_outlined),
+                  prefixIcon: Icon(
+                    Icons.groups_outlined,
+                    color: Color.fromARGB(255, 49, 102, 101),
+                  ),
                 ),
               ),
               SizedBox(height: 40),

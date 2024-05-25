@@ -13,29 +13,7 @@ class MemberNavBar extends StatefulWidget {
 }
 
 class _MemberNavBarState extends State<MemberNavBar> {
-  //User? user = FirebaseAuth.instance.currentUser;
   int _currentIndex = 0;
-
-  void goToPage(index) {
-    if (index == 2) {
-      FirebaseAuth.instance.signOut();
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const LoginPage(),
-        ),
-      );
-    } else {
-      setState(() {
-        _currentIndex = index;
-      });
-    }
-  }
-
-  final List _screens = const [
-    ExpensesPage(),
-    InvoicePage(),
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -99,7 +77,7 @@ class _MemberNavBarState extends State<MemberNavBar> {
                 GButton(
                   icon: Icons.logout_outlined,
                   //iconColor: Color.fromARGB(255, 85, 39, 41),
-                  iconColor: Color.fromARGB(255, 175, 47, 38),
+                  iconColor: Color.fromARGB(255, 139, 0, 0),
                 ),
               ],
             ),
@@ -108,4 +86,25 @@ class _MemberNavBarState extends State<MemberNavBar> {
       ),
     );
   }
+
+  void goToPage(index) {
+    if (index == 2) {
+      FirebaseAuth.instance.signOut();
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const LoginPage(),
+        ),
+      );
+    } else {
+      setState(() {
+        _currentIndex = index;
+      });
+    }
+  }
+
+  final List _screens = const [
+    ExpensesPage(),
+    InvoicePage(),
+  ];
 }

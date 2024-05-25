@@ -13,52 +13,6 @@ class ExpensesPage extends StatefulWidget {
 class _ExpensesPageState extends State<ExpensesPage> {
   User? user = FirebaseAuth.instance.currentUser;
 
-  List<dynamic> statusInfo(ExpenseModel expense) {
-    if (expense.status == "acceptedByLeaderAndFinance") {
-      return [
-        "This expense has been accepted.",
-        Colors.lightGreen,
-      ];
-    } else if (expense.status == "denied") {
-      return [
-        "This expense has been denied.",
-        Colors.red,
-      ];
-    } else {
-      return [];
-    }
-  }
-
-  Align infoValuePair(String info, String value, ExpenseModel expense) {
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: AutoSizeText.rich(
-        TextSpan(
-          children: [
-            TextSpan(
-              text: "$info:  ",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: statusInfo(expense)[1],
-              ),
-            ),
-            TextSpan(
-              text: value,
-            ),
-          ],
-        ),
-        maxLines: 3,
-        minFontSize: 30,
-        maxFontSize: 30,
-        overflow: TextOverflow.ellipsis,
-        style: TextStyle(
-          color: Color.fromARGB(255, 52, 52, 52),
-          fontSize: 30,
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
@@ -70,10 +24,12 @@ class _ExpensesPageState extends State<ExpensesPage> {
         backgroundColor: Color.fromARGB(255, 229, 229, 225),
         body: Center(
           child: Padding(
-            padding: EdgeInsets.all(screenWidth * 0.06),
+            padding: EdgeInsets.symmetric(
+              horizontal: screenWidth * 0.06,
+            ),
             child: Column(
               children: [
-                SizedBox(height: screenHeight * 0.04),
+                SizedBox(height: screenHeight * 0.06),
                 TabBar(
                   labelColor: Color.fromARGB(255, 76, 89, 23),
                   labelStyle: TextStyle(
@@ -106,16 +62,16 @@ class _ExpensesPageState extends State<ExpensesPage> {
                     ),
                   ],
                 ),
-                SizedBox(height: screenHeight * 0.028),
+                //SizedBox(height: screenHeight * 0.028),
                 Divider(
-                  height: screenHeight * 0.01,
+                  height: screenHeight * 0.04,
                   color: Color.fromARGB(255, 76, 89, 23),
                   thickness: 1.5,
                   indent: screenWidth * 0.01,
                   endIndent: screenWidth * 0.01,
                 ),
                 SizedBox(
-                  height: screenHeight * 0.71,
+                  height: screenHeight * 0.7,
                   child: TabBarView(children: [
                     StreamBuilder<List<ExpenseModel>>(
                       stream: ExpenseModel.fetchOneMemberExpenses(
@@ -226,6 +182,55 @@ class _ExpensesPageState extends State<ExpensesPage> {
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  List<dynamic> statusInfo(ExpenseModel expense) {
+    if (expense.status == "acceptedByLeaderAndFinance") {
+      return [
+        "This expense has been accepted.",
+        Colors.lightGreen,
+      ];
+    } else if (expense.status == "denied") {
+      return [
+        "This expense has been denied.",
+        Colors.red,
+      ];
+    } else {
+      return [
+        "",
+        Colors.black,
+      ];
+    }
+  }
+
+  Widget infoValuePair(String info, String value, ExpenseModel expense) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: AutoSizeText.rich(
+        TextSpan(
+          children: [
+            TextSpan(
+              text: "$info:  ",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: statusInfo(expense)[1],
+              ),
+            ),
+            TextSpan(
+              text: value,
+            ),
+          ],
+        ),
+        maxLines: 3,
+        minFontSize: 25,
+        maxFontSize: 25,
+        overflow: TextOverflow.ellipsis,
+        style: TextStyle(
+          color: Color.fromARGB(255, 52, 52, 52),
+          fontSize: 25,
         ),
       ),
     );

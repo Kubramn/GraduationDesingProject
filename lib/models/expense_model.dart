@@ -117,6 +117,13 @@ class ExpenseModel {
             .toList());
   }
 
+  static Stream<List<ExpenseModel>> fetchAllExpenses() {
+    return FirebaseFirestore.instance.collection('expenses').snapshots().map(
+        (snapshot) => snapshot.docs
+            .map((doc) => ExpenseModel.fromJson(doc.data()))
+            .toList());
+  }
+
   static Stream<List<ExpenseModel>> fetchRequestsForLeader(String? email) {
     return FirebaseFirestore.instance
         .collection('expenses')
@@ -135,15 +142,7 @@ class ExpenseModel {
   static Stream<List<ExpenseModel>> fetchRequestsForFinance(String? email) {
     return FirebaseFirestore.instance
         .collection('expenses')
-        .where(
-          Filter.or(
-            Filter.and(
-              Filter("checkerUserEmail", isEqualTo: email),
-              Filter("status", isEqualTo: "waiting"),
-            ),
-            Filter("status", isEqualTo: "acceptedByLeader"),
-          ),
-        )
+        .where("status", isEqualTo: "acceptedByLeader")
         .snapshots()
         .map((snapshot) => snapshot.docs
             .map((doc) => ExpenseModel.fromJson(doc.data()))

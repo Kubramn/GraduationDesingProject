@@ -71,28 +71,74 @@ class UserModel {
         .collection('users')
         .where('email', isEqualTo: email)
         .get();
+        
     final data = userDoc.docs.first.data();
     return "${data['name']} ${data['surname']}";
   }
 
-  static Future<String> findCheckerUserEmailByEmail(String email) async {
+  static Future<String> decideCheckerUserEmailByRole(String email) async {
     final userDoc = await FirebaseFirestore.instance
         .collection("users")
         .where("email", isEqualTo: email)
         .get();
+
     final data = userDoc.docs.first.data();
     if (data["role"] == "Member") {
       return data["leaderEmail"];
+    } else {
+      return "No Leader";
+    }
+  }
+
+  static Future<String> decideStatusByRole(String email) async {
+    final userDoc = await FirebaseFirestore.instance
+        .collection("users")
+        .where("email", isEqualTo: email)
+        .get();
+
+    final data = userDoc.docs.first.data();
+    if (data["role"] == "Member") {
+      return "waiting";
     } else if (data["role"] == "Leader") {
-      return "finance@gmail.com";
+      return "acceptedByLeader";
     } else {
       return "";
+    }
+  }
+
+  static Future<String> decideLeaderEmailByTeamName(
+      String role, String teamName) async {
+    final userDoc = await FirebaseFirestore.instance
+        .collection("users")
+        .where(
+          Filter.and(
+            Filter("teamName", isEqualTo: teamName),
+            Filter("role", isEqualTo: "Leader"),
+          ),
+        )
+        .get();
+
+    final data = userDoc.docs.first.data();
+    if (role == "Member") {
+      return data["email"];
+    } else {
+      return "No Leader";
     }
   }
 
   static Stream<List<UserModel>> fetchAllUsers() {
     return FirebaseFirestore.instance.collection('users').snapshots().map(
         (snapshot) => snapshot.docs
+            .map((doc) => UserModel.fromJson(doc.data()))
+            .toList());
+  }
+
+  static Stream<List<UserModel>> fetchAllLeaders() {
+    return FirebaseFirestore.instance
+        .collection('users')
+        .where("role", isEqualTo: "Leader")
+        .snapshots()
+        .map((snapshot) => snapshot.docs
             .map((doc) => UserModel.fromJson(doc.data()))
             .toList());
   }
@@ -141,16 +187,16 @@ class UserModel {
     }
   }
 
-  static void register(
-    TextEditingController nameController,
-    TextEditingController surnameController,
-    TextEditingController emailController,
-    TextEditingController passwordController,
-    TextEditingController roleController,
-    TextEditingController leaderEmailController,
-    TextEditingController jobController,
-    TextEditingController departmentController,
-    TextEditingController teamNameController,
+  static Future<bool> register(
+    String name,
+    String surname,
+    String email,
+    String password,
+    String role,
+    String leaderEmail,
+    String job,
+    String department,
+    String teamName,
     BuildContext context,
   ) async {
     showDialog(
@@ -166,35 +212,27 @@ class UserModel {
 
     try {
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: emailController.text,
-        password: passwordController.text,
+        email: email,
+        password: password,
       );
       Navigator.pop(context); //Navigator.of(context).pop;
       alertMessage(
-        "${nameController.text} ${surnameController.text} is registered successfully.",
+        "${name} ${surname} is registered successfully.",
         Color.fromARGB(255, 0, 255, 0),
         context,
       );
       UserModel(
-        name: nameController.text,
-        surname: surnameController.text,
-        email: emailController.text,
-        password: passwordController.text,
-        role: roleController.text,
-        leaderEmail: leaderEmailController.text,
-        job: jobController.text,
-        department: departmentController.text,
-        teamName: teamNameController.text,
+        name: name,
+        surname: surname,
+        email: email,
+        password: password,
+        role: role,
+        leaderEmail: leaderEmail,
+        job: job,
+        department: department,
+        teamName: teamName,
       ).createUser();
-      nameController.clear();
-      surnameController.clear();
-      emailController.clear();
-      passwordController.clear();
-      roleController.clear();
-      leaderEmailController.clear();
-      jobController.clear();
-      departmentController.clear();
-      teamNameController.clear();
+      return true;
     } on FirebaseAuthException catch (e) {
       Navigator.pop(context);
       alertMessage(
@@ -203,6 +241,7 @@ class UserModel {
         context,
       );
       print("ERROR -> $e");
+      return false;
     }
   }
 }
