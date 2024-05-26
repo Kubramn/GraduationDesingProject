@@ -22,8 +22,14 @@ class _EditInvoicePageState extends State<EditInvoicePage> {
 
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
+  TextEditingController categoryController = TextEditingController();
   TextEditingController dateController = TextEditingController();
   TextEditingController priceController = TextEditingController();
+
+  Icon categoryIcon = Icon(
+    Icons.category_outlined,
+    color: Color.fromARGB(255, 49, 102, 101),
+  );
 
   @override
   void initState() {
@@ -52,63 +58,166 @@ class _EditInvoicePageState extends State<EditInvoicePage> {
         ),
       ),
       backgroundColor: Color.fromARGB(255, 229, 229, 225),
-      body: Center(
-        child: Padding(
-          padding: EdgeInsets.all(screenWidth * 0.06),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Image.file(
-                  File(widget.imagePath),
-                ),
-                SizedBox(height: screenHeight * 0.06),
-                invoiceInfoTextField(
-                  titleController,
-                  "Title",
-                  Icons.title,
-                ),
-                SizedBox(height: screenHeight * 0.02),
-                invoiceInfoTextField(
-                  descriptionController,
-                  "Description",
-                  Icons.description_outlined,
-                ),
-                SizedBox(height: screenHeight * 0.02),
-                invoiceInfoTextField(
-                  dateController,
-                  "Date",
-                  Icons.date_range,
-                ),
-                SizedBox(height: screenHeight * 0.02),
-                invoiceInfoTextField(
-                  priceController,
-                  "Price",
-                  Icons.price_change_outlined,
-                ),
-                SizedBox(height: screenHeight * 0.04),
-                ElevatedButton(
-                  onPressed: () => addExpense(),
-                  child: Text(
-                    "Add Expense",
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color.fromARGB(255, 157, 203, 201),
-                    foregroundColor: Color.fromARGB(255, 49, 102, 101),
-                    fixedSize: Size(500, 60),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
+      body: Padding(
+        padding: EdgeInsets.all(screenWidth * 0.06),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.file(
+                File(widget.imagePath),
+                //height: 300,
+                //width: 300,
+              ),
+              SizedBox(height: screenHeight * 0.06),
+              invoiceInfoTextField(
+                titleController,
+                "Title",
+                Icons.title,
+              ),
+              SizedBox(height: screenHeight * 0.02),
+              invoiceInfoTextField(
+                descriptionController,
+                "Description",
+                Icons.description_outlined,
+              ),
+              SizedBox(height: screenHeight * 0.02),
+              categoryDropdownMenu(),
+              SizedBox(height: screenHeight * 0.02),
+              invoiceInfoTextField(
+                dateController,
+                "Date",
+                Icons.date_range,
+              ),
+              SizedBox(height: screenHeight * 0.02),
+              invoiceInfoTextField(
+                priceController,
+                "Price",
+                Icons.price_change_outlined,
+              ),
+              SizedBox(height: screenHeight * 0.04),
+              ElevatedButton(
+                onPressed: () => addExpense(),
+                child: Text(
+                  "Add Expense",
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-              ],
-            ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color.fromARGB(255, 157, 203, 201),
+                  foregroundColor: Color.fromARGB(255, 49, 102, 101),
+                  fixedSize: Size(500, 60),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget categoryDropdownMenu() {
+    return DropdownMenu<String>(
+      leadingIcon: categoryIcon,
+      trailingIcon: Icon(
+        Icons.keyboard_arrow_down,
+        color: Color.fromARGB(255, 49, 102, 101),
+      ),
+      selectedTrailingIcon: Icon(
+        Icons.keyboard_arrow_up,
+        color: Color.fromARGB(255, 49, 102, 101),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: Colors.white,
+        hintStyle:
+            TextStyle(color: Colors.black38, fontWeight: FontWeight.w500),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(20),
+          borderSide: BorderSide.none,
+        ),
+      ),
+      hintText: "Category",
+      width: 394,
+      controller: categoryController,
+      menuStyle: MenuStyle(
+        shape: WidgetStatePropertyAll(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+        ),
+        alignment: Alignment.bottomLeft,
+        surfaceTintColor: WidgetStatePropertyAll(Colors.transparent),
+        backgroundColor: WidgetStatePropertyAll(Colors.white),
+      ),
+      onSelected: (_) {
+        setState(() {});
+        switch (categoryController.text) {
+          case "Travel and Transportation":
+            categoryIcon = Icon(
+              Icons.emoji_transportation,
+              color: Color.fromARGB(255, 49, 102, 101),
+            );
+            break;
+          case "Meals and Entertainment":
+            categoryIcon = Icon(
+              Icons.fastfood_outlined,
+              color: Color.fromARGB(255, 49, 102, 101),
+            );
+            break;
+          case "Office Supplies and Equipment":
+            categoryIcon = Icon(
+              Icons.meeting_room_outlined,
+              color: Color.fromARGB(255, 49, 102, 101),
+            );
+            break;
+          case "Other Expenses":
+            categoryIcon = Icon(
+              Icons.attach_money,
+              color: Color.fromARGB(255, 49, 102, 101),
+            );
+            break;
+        }
+      },
+      dropdownMenuEntries: const [
+        DropdownMenuEntry(
+          value: "Travel and Transportation",
+          label: "Travel and Transportation",
+          leadingIcon: Icon(
+            Icons.emoji_transportation,
+            color: Color.fromARGB(255, 49, 102, 101),
+          ),
+        ),
+        DropdownMenuEntry(
+          value: "Meals and Entertainment",
+          label: "Meals and Entertainment",
+          leadingIcon: Icon(
+            Icons.fastfood_outlined,
+            color: Color.fromARGB(255, 49, 102, 101),
+          ),
+        ),
+        DropdownMenuEntry(
+          value: "Office Supplies and Equipment",
+          label: "Office Supplies and Equipment",
+          leadingIcon: Icon(
+            Icons.meeting_room_outlined,
+            color: Color.fromARGB(255, 49, 102, 101),
+          ),
+        ),
+        DropdownMenuEntry(
+          value: "Other Expenses",
+          label: "Other Expenses",
+          leadingIcon: Icon(
+            Icons.attach_money,
+            color: Color.fromARGB(255, 49, 102, 101),
+          ),
+        ),
+      ],
     );
   }
 
@@ -150,7 +259,7 @@ class _EditInvoicePageState extends State<EditInvoicePage> {
       description: descriptionController.text,
       userEmail: user?.email ?? "",
       checkerUserEmail: checkerUserEmail,
-      teamName: "???",
+      category: categoryController.text,
     ).createExpense();
   }
 
