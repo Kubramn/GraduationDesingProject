@@ -1,3 +1,4 @@
+import 'package:bitirme/alert_message.dart';
 import 'package:bitirme/view/finance_pages/finance_navbar.dart';
 import 'package:bitirme/view/leader_pages/leader_navbar.dart';
 import 'package:bitirme/view/member_pages/member_navbar.dart';
@@ -171,47 +172,14 @@ class _LoginPageState extends State<LoginPage> {
       print("***************************${e.code}***************************");
 
       if (e.code == "invalid-credential") {
-        alertMessage("Wrong password email etc");
+        alertMessage("Wrong password email etc", Colors.red, context);
       } else if (e.code == "invalid-email") {
-        alertMessage("Email @ vs typo");
+        alertMessage("Email @ vs typo", Colors.red, context);
       } else if (e.code == "missing-password") {
-        alertMessage("missing-password");
+        alertMessage("missing-password", Colors.red, context);
       } else if (e.code == "too-many-requests") {
-        alertMessage("too-many-requests");
+        alertMessage("too-many-requests", Colors.red, context);
       }
     }
-  }
-
-  void alertMessage(String message) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          surfaceTintColor: Colors.red,
-          title: Text(
-            message,
-            style: TextStyle(
-              color: Colors.red,
-              fontSize: 25,
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text(
-                "Close",
-                style: TextStyle(
-                  color: Color.fromARGB(255, 52, 52, 52),
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            )
-          ],
-        );
-      },
-    );
   }
 }

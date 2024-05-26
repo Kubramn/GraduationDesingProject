@@ -71,7 +71,7 @@ class UserModel {
         .collection('users')
         .where('email', isEqualTo: email)
         .get();
-        
+
     final data = userDoc.docs.first.data();
     return "${data['name']} ${data['surname']}";
   }
@@ -143,16 +143,15 @@ class UserModel {
             .toList());
   }
 
-  static Future<void> updateUser(
+  static Future<bool> updateUser(
     String? email,
-    TextEditingController nameController,
-    TextEditingController surnameController,
-    TextEditingController passwordController,
-    TextEditingController roleController,
-    TextEditingController leaderEmailController,
-    TextEditingController jobController,
-    TextEditingController departmentController,
-    TextEditingController teamNameController,
+    String name,
+    String surname,
+    String password,
+    String role,
+    String job,
+    String department,
+    String teamName,
   ) async {
     try {
       DocumentSnapshot<Map<String, dynamic>> snapshot =
@@ -160,30 +159,23 @@ class UserModel {
 
       if (snapshot.exists) {
         await FirebaseFirestore.instance.collection("users").doc(email).update({
-          "name": nameController.text,
-          "surname": surnameController.text,
-          "password": passwordController.text,
-          "role": roleController.text,
-          "leaderEmail": leaderEmailController.text,
-          "job": jobController.text,
-          "department": departmentController.text,
-          "teamName": teamNameController.text,
+          "name": name,
+          "surname": surname,
+          "password": password,
+          "role": role,
+          "job": job,
+          "department": department,
+          "teamName": teamName,
         });
-        nameController.clear();
-        surnameController.clear();
-        passwordController.clear();
-        roleController.clear();
-        leaderEmailController.clear();
-        jobController.clear();
-        departmentController.clear();
-        teamNameController.clear();
-
         print("User data updated successfully!");
+        return true;
       } else {
         print("User not found!");
+        return false;
       }
     } catch (e) {
       print("Error fetching or updating user data: $e");
+      return false;
     }
   }
 

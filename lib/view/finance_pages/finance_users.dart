@@ -15,7 +15,6 @@ class _FinanceUsersState extends State<FinanceUsers> {
   TextEditingController surnameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController roleController = TextEditingController();
-  TextEditingController leaderEmailController = TextEditingController();
   TextEditingController jobController = TextEditingController();
   TextEditingController departmentController = TextEditingController();
   TextEditingController teamNameController = TextEditingController();
@@ -83,8 +82,6 @@ class _FinanceUsersState extends State<FinanceUsers> {
                         surnameController.text = _selectedUser?.surname ?? "";
                         passwordController.text = _selectedUser?.password ?? "";
                         roleController.text = _selectedUser?.role ?? "";
-                        leaderEmailController.text =
-                            _selectedUser?.leaderEmail ?? "";
                         jobController.text = _selectedUser?.job ?? "";
                         departmentController.text =
                             _selectedUser?.department ?? "";
@@ -190,15 +187,21 @@ class _FinanceUsersState extends State<FinanceUsers> {
                   ),
                   DropdownMenu<String>(
                     leadingIcon: roleIcon,
-                    trailingIcon: Icon(Icons.keyboard_arrow_down),
-                    selectedTrailingIcon: Icon(Icons.keyboard_arrow_up),
+                    trailingIcon: Icon(
+                      Icons.keyboard_arrow_down,
+                      color: Color.fromARGB(255, 49, 102, 101),
+                    ),
+                    selectedTrailingIcon: Icon(
+                      Icons.keyboard_arrow_up,
+                      color: Color.fromARGB(255, 49, 102, 101),
+                    ),
                     inputDecorationTheme: InputDecorationTheme(
                       filled: true,
                       fillColor: Colors.white,
                       hintStyle: TextStyle(
                           color: Colors.black38, fontWeight: FontWeight.w500),
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15),
+                          borderRadius: BorderRadius.circular(20),
                           borderSide: BorderSide.none),
                     ),
                     hintText: "Role",
@@ -206,7 +209,7 @@ class _FinanceUsersState extends State<FinanceUsers> {
                     controller: roleController,
                     menuStyle: MenuStyle(
                       shape: WidgetStatePropertyAll(RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15))),
+                          borderRadius: BorderRadius.circular(20))),
                       alignment: Alignment.bottomLeft,
                       surfaceTintColor:
                           WidgetStatePropertyAll(Colors.transparent),
@@ -333,17 +336,26 @@ class _FinanceUsersState extends State<FinanceUsers> {
                 height: 60,
                 width: screenWidth - 60,
                 child: ElevatedButton(
-                  onPressed: (() => UserModel.updateUser(
-                        _selectedUser?.email,
-                        nameController,
-                        surnameController,
-                        passwordController,
-                        roleController,
-                        leaderEmailController,
-                        jobController,
-                        departmentController,
-                        teamNameController,
-                      )),
+                  onPressed: () async {
+                    if (await UserModel.updateUser(
+                      _selectedUser?.email,
+                      nameController.text,
+                      surnameController.text,
+                      passwordController.text,
+                      roleController.text,
+                      jobController.text,
+                      departmentController.text,
+                      teamNameController.text,
+                    )) {
+                      nameController.clear();
+                      surnameController.clear();
+                      passwordController.clear();
+                      roleController.clear();
+                      jobController.clear();
+                      departmentController.clear();
+                      teamNameController.clear();
+                    }
+                  },
                   child: Text(
                     "Update User",
                     style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),

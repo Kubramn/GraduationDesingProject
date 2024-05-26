@@ -9,7 +9,7 @@ class ExpenseModel {
   String description;
   String userEmail;
   String checkerUserEmail;
-  String teamName;
+  String category;
 
   ExpenseModel({
     this.id = "",
@@ -20,7 +20,7 @@ class ExpenseModel {
     required this.description,
     required this.userEmail,
     required this.checkerUserEmail,
-    required this.teamName,
+    required this.category,
   });
 
   Map<String, dynamic> toJson() => {
@@ -32,7 +32,7 @@ class ExpenseModel {
         "description": description,
         "userEmail": userEmail,
         "checkerUserEmail": checkerUserEmail,
-        "teamName": teamName,
+        "teamName": category,
       };
 
   static ExpenseModel fromJson(Map<String, dynamic> json) => ExpenseModel(
@@ -44,7 +44,7 @@ class ExpenseModel {
         description: json["description"],
         userEmail: json["userEmail"],
         checkerUserEmail: json["checkerUserEmail"],
-        teamName: json["teamName"],
+        category: json["teamName"],
       );
 
   Future createExpense() async {
@@ -58,7 +58,7 @@ class ExpenseModel {
       description: description,
       userEmail: userEmail,
       checkerUserEmail: checkerUserEmail,
-      teamName: teamName,
+      category: category,
     );
     await newExpense.set(expense.toJson());
   }
