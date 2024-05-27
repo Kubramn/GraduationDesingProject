@@ -13,6 +13,8 @@ class LeaderDashboard extends StatefulWidget {
 
 class _LeaderDashboardState extends State<LeaderDashboard> {
   User? user = FirebaseAuth.instance.currentUser;
+  DateTime? filterStartDate;
+  DateTime? filterEndDate;
   TextEditingController teamController = TextEditingController();
   TextEditingController categoryController = TextEditingController();
 
@@ -224,9 +226,8 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
         backgroundColor: Colors.white,
         shadowColor: Colors.black,
         insetPadding: EdgeInsets.symmetric(
-            //horizontal: screenWidth * 0.06,
-            //vertical: screenHeight * 0.1,
-            ),
+          horizontal: 5,
+        ),
         actions: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -254,6 +255,8 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
                 onPressed: () {
                   teamController.clear();
                   categoryController.clear();
+                  filterStartDate = DateTime(2000);
+                  filterEndDate = DateTime.now();
                 },
                 child: Text(
                   "Reset",
@@ -284,14 +287,17 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
           )
         ],
         content: SizedBox(
-          height: 600,
+          height: 280,
           width: 340,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               SizedBox(height: 15),
               teamDropdownMenu(screenWidth),
-              SizedBox(height: 20),
+              SizedBox(height: 40),
               categoryDropdownMenu(),
+              SizedBox(height: 40),
+              dateRangeButton(context),
             ],
           ),
         ),
@@ -323,8 +329,10 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
             inputDecorationTheme: InputDecorationTheme(
               filled: true,
               fillColor: Colors.white,
-              hintStyle:
-                  TextStyle(color: Colors.black38, fontWeight: FontWeight.w500),
+              hintStyle: TextStyle(
+                color: Colors.black38,
+                fontWeight: FontWeight.w500,
+              ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(20),
                 borderSide: BorderSide(
@@ -464,6 +472,59 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget dateRangeButton(BuildContext context) {
+    return SizedBox(
+      height: 55,
+      width: 340,
+      child: ElevatedButton(
+        onPressed: (() async {
+          final dateRange = await showDateRangePicker(
+            context: context,
+            firstDate: DateTime(2000),
+            lastDate: DateTime.now(),
+          );
+
+          if (dateRange != null) {
+            setState(() {
+              filterStartDate = dateRange.start;
+              filterEndDate = dateRange.end;
+            });
+          }
+        }),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.date_range,
+              color: Color.fromARGB(255, 96, 71, 36),
+            ),
+            SizedBox(width: 10),
+            Text(
+              "Select Date Range",
+              style: TextStyle(
+                color: Color.fromARGB(255, 96, 71, 36),
+                fontWeight: FontWeight.w500,
+                fontSize: 16,
+              ),
+            ),
+          ],
+        ),
+        style: ElevatedButton.styleFrom(
+          overlayColor: Color.fromARGB(255, 227, 185, 117),
+          backgroundColor: Colors.white,
+          //foregroundColor: Color.fromARGB(255, 52, 52, 52),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+            side: BorderSide(
+              color: Color.fromARGB(255, 227, 185, 117),
+              width: 1.5,
+            ),
+          ),
+        ),
+      ),
     );
   }
 
