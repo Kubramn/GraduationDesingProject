@@ -158,6 +158,7 @@ class _FinanceRequestsState extends State<FinanceRequests> {
     return showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        shadowColor: Colors.black,
         surfaceTintColor: Color.fromARGB(255, 191, 203, 155),
         backgroundColor: Colors.white,
         insetPadding: EdgeInsets.symmetric(

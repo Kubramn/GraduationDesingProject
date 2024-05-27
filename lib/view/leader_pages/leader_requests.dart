@@ -158,6 +158,7 @@ class _LeaderRequestsState extends State<LeaderRequests> {
     return showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        shadowColor: Colors.black,
         surfaceTintColor: Color.fromARGB(255, 187, 179, 203),
         backgroundColor: Colors.white,
         insetPadding: EdgeInsets.symmetric(
