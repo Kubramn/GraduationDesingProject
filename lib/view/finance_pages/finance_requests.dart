@@ -145,158 +145,158 @@ class _FinanceRequestsState extends State<FinanceRequests> {
                   backgroundColor: Color.fromARGB(255, 191, 203, 155),
                 ),
                 onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      surfaceTintColor: Color.fromARGB(255, 191, 203, 155),
-                      backgroundColor: Colors.white,
-                      insetPadding: EdgeInsets.symmetric(
-                        horizontal: screenWidth * 0.06,
-                        vertical: screenHeight * 0.15,
-                      ),
-                      actions: [
-                        Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                ElevatedButton(
-                                  onPressed: (() {
-                                    ExpenseModel.updateRequestStatus(
-                                      request.id,
-                                      "acceptedByLeaderAndFinance",
-                                    );
-                                    Navigator.pop(context);
-                                  }),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.lightGreen,
-                                    foregroundColor: Colors.white,
-                                    fixedSize: Size(screenWidth * 0.36,
-                                        screenHeight * 0.056),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(15),
-                                    ),
-                                  ),
-                                  child: Text(
-                                    "Accept",
-                                    style: TextStyle(
-                                        fontSize: 22,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: screenWidth * 0.04,
-                                ),
-                                ElevatedButton(
-                                  onPressed: (() {
-                                    ExpenseModel.updateRequestStatus(
-                                        request.id, "denied");
-                                    Navigator.pop(context);
-                                  }),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.red,
-                                    foregroundColor: Colors.white,
-                                    fixedSize: Size(screenWidth * 0.36,
-                                        screenHeight * 0.056),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(15),
-                                    ),
-                                  ),
-                                  child: Text(
-                                    "Deny",
-                                    style: TextStyle(
-                                        fontSize: 22,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: screenHeight * 0.015,
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: Text(
-                                "Close",
-                                style: TextStyle(
-                                  color: Color.fromARGB(255, 76, 89, 23),
-                                  fontSize: 25,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            )
-                          ],
-                        )
-                      ],
-                      content: SizedBox(
-                        width: double.maxFinite,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            FutureBuilder<String>(
-                              future: UserModel.getNameSurnameByEmail(
-                                  request.userEmail),
-                              builder: (context, snapshot) {
-                                return Row(
-                                  children: [
-                                    Icon(
-                                      Icons.info_outline,
-                                      color: Color.fromARGB(255, 76, 89, 23),
-                                      size: 30,
-                                    ),
-                                    SizedBox(
-                                      width: screenWidth * 0.025,
-                                    ),
-                                    Expanded(
-                                      child: AutoSizeText.rich(
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                        maxFontSize: 20,
-                                        minFontSize: 20,
-                                        TextSpan(
-                                          children: [
-                                            TextSpan(
-                                              text:
-                                                  "This expense was incurred by ",
-                                            ),
-                                            TextSpan(
-                                              text: snapshot.data,
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        style: TextStyle(
-                                          color:
-                                              Color.fromARGB(255, 52, 52, 52),
-                                          fontSize: 20,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              },
-                            ),
-                            Divider(
-                              color: Color.fromARGB(255, 52, 52, 52),
-                              thickness: 1.5,
-                            ),
-                            infoValuePair("Title", request.title),
-                            infoValuePair("Description", request.description),
-                            infoValuePair("Date", request.date),
-                            infoValuePair("Price", request.price),
-                          ],
-                        ),
-                      ),
-                    ),
-                  );
+                  showRequestDialog(screenWidth, screenHeight, request);
                 },
               ),
             ),
           ),
         ),
       );
+
+  Future<dynamic> showRequestDialog(
+      double screenWidth, double screenHeight, ExpenseModel request) {
+    return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        surfaceTintColor: Color.fromARGB(255, 191, 203, 155),
+        backgroundColor: Colors.white,
+        insetPadding: EdgeInsets.symmetric(
+          horizontal: screenWidth * 0.06,
+          vertical: screenHeight * 0.2,
+        ),
+        actions: [
+          Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: (() {
+                      ExpenseModel.updateRequestStatus(
+                        request.id,
+                        "acceptedByLeaderAndFinance",
+                      );
+                      Navigator.pop(context);
+                    }),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.lightGreen,
+                      foregroundColor: Colors.white,
+                      fixedSize: Size(screenWidth * 0.36, screenHeight * 0.056),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                    ),
+                    child: Text(
+                      "Accept",
+                      style:
+                          TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  SizedBox(
+                    width: screenWidth * 0.04,
+                  ),
+                  ElevatedButton(
+                    onPressed: (() {
+                      ExpenseModel.updateRequestStatus(request.id, "denied");
+                      Navigator.pop(context);
+                    }),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                      foregroundColor: Colors.white,
+                      fixedSize: Size(screenWidth * 0.36, screenHeight * 0.056),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                    ),
+                    child: Text(
+                      "Deny",
+                      style:
+                          TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: screenHeight * 0.015,
+              ),
+              TextButton(
+                style: TextButton.styleFrom(
+                  overlayColor: Color.fromARGB(255, 191, 203, 155),
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  "Close",
+                  style: TextStyle(
+                    color: Color.fromARGB(255, 76, 89, 23),
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              )
+            ],
+          )
+        ],
+        content: SizedBox(
+          width: double.maxFinite,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              FutureBuilder<String>(
+                future: UserModel.getNameSurnameByEmail(request.userEmail),
+                builder: (context, snapshot) {
+                  return Row(
+                    children: [
+                      Icon(
+                        Icons.info_outline,
+                        color: Color.fromARGB(255, 76, 89, 23),
+                        size: 30,
+                      ),
+                      SizedBox(
+                        width: screenWidth * 0.025,
+                      ),
+                      Expanded(
+                        child: AutoSizeText.rich(
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          maxFontSize: 20,
+                          minFontSize: 20,
+                          TextSpan(
+                            children: [
+                              TextSpan(
+                                text: "This expense was incurred by ",
+                              ),
+                              TextSpan(
+                                text: snapshot.data,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                          style: TextStyle(
+                            color: Color.fromARGB(255, 52, 52, 52),
+                            fontSize: 20,
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
+              Divider(
+                color: Color.fromARGB(255, 52, 52, 52),
+                thickness: 1.5,
+              ),
+              infoValuePair("Title", request.title),
+              infoValuePair("Description", request.description),
+              infoValuePair("Date", request.date),
+              infoValuePair("Price", request.price),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }

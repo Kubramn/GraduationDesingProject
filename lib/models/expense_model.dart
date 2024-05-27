@@ -32,7 +32,7 @@ class ExpenseModel {
         "description": description,
         "userEmail": userEmail,
         "checkerUserEmail": checkerUserEmail,
-        "teamName": category,
+        "category": category,
       };
 
   static ExpenseModel fromJson(Map<String, dynamic> json) => ExpenseModel(
@@ -44,7 +44,7 @@ class ExpenseModel {
         description: json["description"],
         userEmail: json["userEmail"],
         checkerUserEmail: json["checkerUserEmail"],
-        category: json["teamName"],
+        category: json["category"],
       );
 
   Future createExpense() async {

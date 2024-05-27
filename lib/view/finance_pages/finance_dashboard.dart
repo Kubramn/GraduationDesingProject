@@ -13,7 +13,7 @@ class FinanceDashboard extends StatefulWidget {
 
 class _FinanceDashboardState extends State<FinanceDashboard> {
   User? user = FirebaseAuth.instance.currentUser;
-  String? _selectedTeam;
+  TextEditingController teamController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -250,100 +250,103 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
           child: Column(
             children: [
               SizedBox(height: screenHeight * 0.02),
-              StreamBuilder<List<UserModel>>(
-                stream: UserModel.fetchAllLeaders(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    final leaders = snapshot.data!;
-                    return DropdownMenu<String>(
-                      textStyle: TextStyle(
-                        color: Color.fromARGB(255, 52, 52, 52),
-                      ),
-                      width: screenWidth * 0.6,
-                      leadingIcon: Icon(
-                        Icons.person_search,
-                        color: Color.fromARGB(255, 96, 71, 36),
-                      ),
-                      trailingIcon: Icon(
-                        Icons.keyboard_arrow_down,
-                        color: Color.fromARGB(255, 96, 71, 36),
-                      ),
-                      selectedTrailingIcon: Icon(Icons.keyboard_arrow_up),
-                      inputDecorationTheme: InputDecorationTheme(
-                        filled: true,
-                        fillColor: Colors.white,
-                        hintStyle: TextStyle(
-                            color: Colors.black38, fontWeight: FontWeight.w500),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20),
-                          borderSide: BorderSide(
-                            color: Color.fromARGB(255, 227, 185, 117),
-                            width: 1.5,
-                          ),
-                        ),
-                      ),
-                      hintText: "Select a team...",
-                      menuStyle: MenuStyle(
-                        shape: WidgetStatePropertyAll(RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20))),
-                        alignment: Alignment.bottomLeft,
-                        surfaceTintColor: WidgetStatePropertyAll(
-                          Colors.transparent,
-                        ),
-                        backgroundColor: WidgetStatePropertyAll(
-                          Colors.white,
-                        ),
-                      ),
-                      onSelected: (team) {
-                        setState(() {
-                          _selectedTeam = team;
-                        });
-                        /*
-
-
-
-
-                        İŞLEMLEEEEEERRRRRRR
-
-
-
-
-           */
-                      },
-                      dropdownMenuEntries: leaders.map((UserModel leader) {
-                        return DropdownMenuEntry<String>(
-                          leadingIcon: Icon(
-                            Icons.person_outline,
-                            color: Color.fromARGB(255, 96, 71, 36),
-                          ),
-                          label: leader.teamName,
-                          value: leader.email,
-                          style: ButtonStyle(
-                            overlayColor: WidgetStatePropertyAll(
-                              Color.fromARGB(255, 227, 185, 117),
-                            ),
-                            foregroundColor: WidgetStatePropertyAll(
-                              Color.fromARGB(255, 52, 52, 52),
-                            ),
-                          ),
-                        );
-                      }).toList(),
-                    );
-                  } else if (snapshot.hasError) {
-                    return Center(child: Text("ERROR!"));
-                  } else {
-                    return Center(
-                      child: CircularProgressIndicator(
-                        color: Colors.white,
-                      ),
-                    );
-                  }
-                },
-              ),
+              teamDropdownMenu(screenWidth),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  StreamBuilder<List<UserModel>> teamDropdownMenu(double screenWidth) {
+    return StreamBuilder<List<UserModel>>(
+      stream: UserModel.fetchAllLeaders(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          final leaders = snapshot.data!;
+          return DropdownMenu<String>(
+            controller: teamController,
+            width: 300,
+            leadingIcon: Icon(
+              Icons.groups,
+              color: Color.fromARGB(255, 96, 71, 36),
+            ),
+            trailingIcon: Icon(
+              Icons.keyboard_arrow_down,
+              color: Color.fromARGB(255, 96, 71, 36),
+            ),
+            selectedTrailingIcon: Icon(
+              Icons.keyboard_arrow_up,
+              color: Color.fromARGB(255, 96, 71, 36),
+            ),
+            inputDecorationTheme: InputDecorationTheme(
+              filled: true,
+              fillColor: Colors.white,
+              hintStyle:
+                  TextStyle(color: Colors.black38, fontWeight: FontWeight.w500),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+                borderSide: BorderSide(
+                  color: Color.fromARGB(255, 227, 185, 117),
+                  width: 1.5,
+                ),
+              ),
+            ),
+            hintText: "Select a team...",
+            menuStyle: MenuStyle(
+              shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20))),
+              alignment: Alignment.bottomLeft,
+              surfaceTintColor: WidgetStatePropertyAll(
+                Colors.transparent,
+              ),
+              backgroundColor: WidgetStatePropertyAll(
+                Colors.white,
+              ),
+            ),
+            onSelected: (_) {
+              setState(() {});
+              /*
+
+
+
+
+                      İŞLEMLEEEEEERRRRRRR
+
+
+
+
+         */
+            },
+            dropdownMenuEntries: leaders.map((UserModel leader) {
+              return DropdownMenuEntry<String>(
+                leadingIcon: Icon(
+                  Icons.groups_outlined,
+                  color: Color.fromARGB(255, 96, 71, 36),
+                ),
+                label: leader.teamName,
+                value: leader.email,
+                style: ButtonStyle(
+                  overlayColor: WidgetStatePropertyAll(
+                    Color.fromARGB(255, 227, 185, 117),
+                  ),
+                  foregroundColor: WidgetStatePropertyAll(
+                    Color.fromARGB(255, 52, 52, 52),
+                  ),
+                ),
+              );
+            }).toList(),
+          );
+        } else if (snapshot.hasError) {
+          return Center(child: Text("ERROR!"));
+        } else {
+          return Center(
+            child: CircularProgressIndicator(
+              color: Colors.white,
+            ),
+          );
+        }
+      },
     );
   }
 
