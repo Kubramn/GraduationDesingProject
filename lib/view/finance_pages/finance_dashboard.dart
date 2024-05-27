@@ -14,6 +14,7 @@ class FinanceDashboard extends StatefulWidget {
 class _FinanceDashboardState extends State<FinanceDashboard> {
   User? user = FirebaseAuth.instance.currentUser;
   TextEditingController teamController = TextEditingController();
+  TextEditingController categoryController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +82,6 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
                     ),
                   ],
                 ),
-                //SizedBox(height: screenHeight * 0.005),
                 Divider(
                   height: screenHeight * 0.04,
                   color: Color.fromARGB(255, 96, 71, 36),
@@ -126,6 +126,7 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
                           } else {
                             final expenses = snapshot.data!;
                             return ListView.builder(
+                                padding: EdgeInsets.zero,
                                 itemCount: expenses.length,
                                 itemBuilder: (context, index) {
                                   return Column(
@@ -227,30 +228,70 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
             //vertical: screenHeight * 0.1,
             ),
         actions: [
-          TextButton(
-            style: TextButton.styleFrom(
-              overlayColor: Color.fromARGB(255, 227, 185, 117),
-            ),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: Text(
-              "Close",
-              style: TextStyle(
-                color: Color.fromARGB(255, 96, 71, 36),
-                fontSize: 25,
-                fontWeight: FontWeight.bold,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              TextButton(
+                style: TextButton.styleFrom(
+                  overlayColor: Color.fromARGB(255, 227, 185, 117),
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  "Apply",
+                  style: TextStyle(
+                    color: Color.fromARGB(255, 96, 71, 36),
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
-            ),
+              TextButton(
+                style: TextButton.styleFrom(
+                  overlayColor: Color.fromARGB(255, 227, 185, 117),
+                ),
+                onPressed: () {
+                  teamController.clear();
+                  categoryController.clear();
+                },
+                child: Text(
+                  "Reset",
+                  style: TextStyle(
+                    color: Color.fromARGB(255, 96, 71, 36),
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              TextButton(
+                style: TextButton.styleFrom(
+                  overlayColor: Color.fromARGB(255, 227, 185, 117),
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  "Close",
+                  style: TextStyle(
+                    color: Color.fromARGB(255, 96, 71, 36),
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
           )
         ],
         content: SizedBox(
           height: 600,
-          width: 300,
+          width: 340,
           child: Column(
             children: [
-              SizedBox(height: screenHeight * 0.02),
+              SizedBox(height: 15),
               teamDropdownMenu(screenWidth),
+              SizedBox(height: 20),
+              categoryDropdownMenu(),
             ],
           ),
         ),
@@ -266,7 +307,7 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
           final leaders = snapshot.data!;
           return DropdownMenu<String>(
             controller: teamController,
-            width: 300,
+            width: 340,
             leadingIcon: Icon(
               Icons.groups,
               color: Color.fromARGB(255, 96, 71, 36),
@@ -297,12 +338,8 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
               shape: WidgetStatePropertyAll(RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20))),
               alignment: Alignment.bottomLeft,
-              surfaceTintColor: WidgetStatePropertyAll(
-                Colors.transparent,
-              ),
-              backgroundColor: WidgetStatePropertyAll(
-                Colors.white,
-              ),
+              surfaceTintColor: WidgetStatePropertyAll(Colors.transparent),
+              backgroundColor: WidgetStatePropertyAll(Colors.white),
             ),
             onSelected: (_) {
               setState(() {});
@@ -350,6 +387,86 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
     );
   }
 
+  Widget categoryDropdownMenu() {
+    return DropdownMenu<String>(
+      controller: categoryController,
+      width: 340,
+      leadingIcon: Icon(
+        Icons.category,
+        color: Color.fromARGB(255, 96, 71, 36),
+      ),
+      trailingIcon: Icon(
+        Icons.keyboard_arrow_down,
+        color: Color.fromARGB(255, 96, 71, 36),
+      ),
+      selectedTrailingIcon: Icon(
+        Icons.keyboard_arrow_up,
+        color: Color.fromARGB(255, 96, 71, 36),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: Colors.white,
+        hintStyle:
+            TextStyle(color: Colors.black38, fontWeight: FontWeight.w500),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(20),
+          borderSide: BorderSide(
+            color: Color.fromARGB(255, 227, 185, 117),
+            width: 1.5,
+          ),
+        ),
+      ),
+      hintText: "Select a category...",
+      menuStyle: MenuStyle(
+        shape: WidgetStatePropertyAll(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+        ),
+        alignment: Alignment.bottomLeft,
+        surfaceTintColor: WidgetStatePropertyAll(Colors.transparent),
+        backgroundColor: WidgetStatePropertyAll(Colors.white),
+      ),
+      onSelected: (_) {
+        setState(() {});
+      },
+      dropdownMenuEntries: const [
+        DropdownMenuEntry(
+          value: "Travel and Transportation",
+          label: "Travel and Transportation",
+          leadingIcon: Icon(
+            Icons.emoji_transportation,
+            color: Color.fromARGB(255, 96, 71, 36),
+          ),
+        ),
+        DropdownMenuEntry(
+          value: "Meals and Entertainment",
+          label: "Meals and Entertainment",
+          leadingIcon: Icon(
+            Icons.fastfood_outlined,
+            color: Color.fromARGB(255, 96, 71, 36),
+          ),
+        ),
+        DropdownMenuEntry(
+          value: "Office Supplies and Equipment",
+          label: "Office Supplies and Equipment",
+          leadingIcon: Icon(
+            Icons.meeting_room_outlined,
+            color: Color.fromARGB(255, 96, 71, 36),
+          ),
+        ),
+        DropdownMenuEntry(
+          value: "Other Expenses",
+          label: "Other Expenses",
+          leadingIcon: Icon(
+            Icons.attach_money,
+            color: Color.fromARGB(255, 96, 71, 36),
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget expenseTile(
       ExpenseModel expense, double screenHeight, double screenWidth) {
     return SizedBox(
@@ -387,125 +504,124 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
                 backgroundColor: Color.fromARGB(255, 227, 185, 117),
               ),
               onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    surfaceTintColor: Colors.transparent,
-                    //shadowColor: statusInfoAndColor(expense)[1],
-                    shadowColor: Colors.black,
-                    //elevation: 5,
-                    backgroundColor: Color.lerp(
-                      statusInfoAndColor(expense)[1],
-                      Colors.white,
-                      0.97,
-                    ),
-                    //backgroundColor: statusInfoAndColor(expense)[1],
-                    insetPadding: EdgeInsets.symmetric(
-                      horizontal: screenWidth * 0.06,
-                      vertical: screenHeight * 0.22,
-                    ),
-                    actions: [
-                      TextButton(
-                        style: TextButton.styleFrom(
-                          overlayColor: statusInfoAndColor(expense)[1],
-                        ),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: Text(
-                          "Close",
-                          style: TextStyle(
-                            color: statusInfoAndColor(expense)[1],
-                            fontSize: 25,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      )
-                    ],
-                    content: SizedBox(
-                      width: double.maxFinite,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          FutureBuilder<String>(
-                            future: UserModel.getNameSurnameByEmail(
-                                expense.userEmail),
-                            builder: (context, snapshot) {
-                              return Row(
-                                children: [
-                                  Icon(
-                                    Icons.info_outline,
-                                    color: statusInfoAndColor(expense)[1],
-                                    size: 30,
-                                  ),
-                                  SizedBox(
-                                    width: screenWidth * 0.035,
-                                  ),
-                                  Expanded(
-                                    child: AutoSizeText.rich(
-                                      maxLines: 4,
-                                      overflow: TextOverflow.ellipsis,
-                                      maxFontSize: 20,
-                                      minFontSize: 20,
-                                      TextSpan(
-                                        children: [
-                                          TextSpan(
-                                            text:
-                                                "This expense was incurred by ",
-                                          ),
-                                          TextSpan(
-                                            text: snapshot.data,
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          TextSpan(
-                                            text:
-                                                statusInfoAndColor(expense)[0],
-                                          ),
-                                        ],
-                                      ),
-                                      style: TextStyle(
-                                        color: statusInfoAndColor(expense)[1],
-                                        fontSize: 20,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              );
-                            },
-                          ),
-                          Divider(
-                            color: Color.fromARGB(255, 52, 52, 52),
-                            thickness: 1.5,
-                          ),
-                          infoValuePair(
-                            "Title",
-                            expense.title,
-                            expense,
-                          ),
-                          infoValuePair(
-                            "Description",
-                            expense.description,
-                            expense,
-                          ),
-                          infoValuePair(
-                            "Date",
-                            expense.date,
-                            expense,
-                          ),
-                          infoValuePair(
-                            "Price",
-                            expense.price,
-                            expense,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                );
+                showExpenseDialog(expense, screenWidth, screenHeight);
               },
             ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<dynamic> showExpenseDialog(
+      ExpenseModel expense, double screenWidth, double screenHeight) {
+    return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        surfaceTintColor: Colors.transparent,
+        shadowColor: Colors.black,
+        backgroundColor: Color.lerp(
+          statusInfoAndColor(expense)[1],
+          Colors.white,
+          0.96,
+        ),
+        insetPadding: EdgeInsets.symmetric(
+          horizontal: screenWidth * 0.06,
+          vertical: screenHeight * 0.22,
+        ),
+        actions: [
+          TextButton(
+            style: TextButton.styleFrom(
+              overlayColor: statusInfoAndColor(expense)[1],
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text(
+              "Close",
+              style: TextStyle(
+                color: statusInfoAndColor(expense)[1],
+                fontSize: 25,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          )
+        ],
+        content: SizedBox(
+          width: double.maxFinite,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              FutureBuilder<String>(
+                future: UserModel.getNameSurnameByEmail(expense.userEmail),
+                builder: (context, snapshot) {
+                  return Row(
+                    children: [
+                      Icon(
+                        Icons.info_outline,
+                        color: statusInfoAndColor(expense)[1],
+                        size: 30,
+                      ),
+                      SizedBox(
+                        width: screenWidth * 0.035,
+                      ),
+                      Expanded(
+                        child: AutoSizeText.rich(
+                          maxLines: 4,
+                          overflow: TextOverflow.ellipsis,
+                          maxFontSize: 20,
+                          minFontSize: 20,
+                          TextSpan(
+                            children: [
+                              TextSpan(
+                                text: "This expense was incurred by ",
+                              ),
+                              TextSpan(
+                                text: snapshot.data,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              TextSpan(
+                                text: statusInfoAndColor(expense)[0],
+                              ),
+                            ],
+                          ),
+                          style: TextStyle(
+                            color: statusInfoAndColor(expense)[1],
+                            fontSize: 20,
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
+              Divider(
+                color: Color.fromARGB(255, 52, 52, 52),
+                thickness: 1.5,
+              ),
+              infoValuePair(
+                "Title",
+                expense.title,
+                expense,
+              ),
+              infoValuePair(
+                "Description",
+                expense.description,
+                expense,
+              ),
+              infoValuePair(
+                "Date",
+                expense.date,
+                expense,
+              ),
+              infoValuePair(
+                "Price",
+                expense.price,
+                expense,
+              ),
+            ],
           ),
         ),
       ),

@@ -15,10 +15,6 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
   User? user = FirebaseAuth.instance.currentUser;
   TextEditingController teamController = TextEditingController();
   TextEditingController categoryController = TextEditingController();
-  Icon categoryIcon = Icon(
-    Icons.category_outlined,
-    color: Color.fromARGB(255, 96, 71, 36),
-  );
 
   @override
   Widget build(BuildContext context) {
@@ -158,112 +154,6 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
     );
   }
 
-  Widget categoryDropdownMenu() {
-    return DropdownMenu<String>(
-      controller: categoryController,
-      width: 300,
-      leadingIcon: categoryIcon,
-      trailingIcon: Icon(
-        Icons.keyboard_arrow_down,
-        color: Color.fromARGB(255, 96, 71, 36),
-      ),
-      selectedTrailingIcon: Icon(
-        Icons.keyboard_arrow_up,
-        color: Color.fromARGB(255, 96, 71, 36),
-      ),
-      inputDecorationTheme: InputDecorationTheme(
-        filled: true,
-        fillColor: Colors.white,
-        hintStyle:
-            TextStyle(color: Colors.black38, fontWeight: FontWeight.w500),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20),
-          borderSide: BorderSide(
-            color: Color.fromARGB(255, 227, 185, 117),
-            width: 1.5,
-          ),
-        ),
-      ),
-      hintText: "Select a category...",
-      menuStyle: MenuStyle(
-        shape: WidgetStatePropertyAll(
-          RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-        ),
-        alignment: Alignment.bottomLeft,
-        surfaceTintColor: WidgetStatePropertyAll(Colors.transparent),
-        backgroundColor: WidgetStatePropertyAll(Colors.white),
-      ),
-      onSelected: (_) {
-        setState(() {
-          switch (categoryController.text) {
-            case "Travel and Transportation":
-              setState(() {
-                categoryIcon = Icon(
-                  Icons.emoji_transportation,
-                  color: Color.fromARGB(255, 96, 71, 36),
-                );
-              });
-              break;
-            case "Meals and Entertainment":
-              categoryIcon = Icon(
-                Icons.fastfood_outlined,
-                color: Color.fromARGB(255, 96, 71, 36),
-              );
-              break;
-            case "Office Supplies and Equipment":
-              categoryIcon = Icon(
-                Icons.meeting_room_outlined,
-                color: Color.fromARGB(255, 96, 71, 36),
-              );
-              break;
-            case "Other Expenses":
-              categoryIcon = Icon(
-                Icons.attach_money,
-                color: Color.fromARGB(255, 96, 71, 36),
-              );
-              break;
-          }
-        });
-      },
-      dropdownMenuEntries: const [
-        DropdownMenuEntry(
-          value: "Travel and Transportation",
-          label: "Travel and Transportation",
-          leadingIcon: Icon(
-            Icons.emoji_transportation,
-            color: Color.fromARGB(255, 96, 71, 36),
-          ),
-        ),
-        DropdownMenuEntry(
-          value: "Meals and Entertainment",
-          label: "Meals and Entertainment",
-          leadingIcon: Icon(
-            Icons.fastfood_outlined,
-            color: Color.fromARGB(255, 96, 71, 36),
-          ),
-        ),
-        DropdownMenuEntry(
-          value: "Office Supplies and Equipment",
-          label: "Office Supplies and Equipment",
-          leadingIcon: Icon(
-            Icons.meeting_room_outlined,
-            color: Color.fromARGB(255, 96, 71, 36),
-          ),
-        ),
-        DropdownMenuEntry(
-          value: "Other Expenses",
-          label: "Other Expenses",
-          leadingIcon: Icon(
-            Icons.attach_money,
-            color: Color.fromARGB(255, 96, 71, 36),
-          ),
-        ),
-      ],
-    );
-  }
-
   List<dynamic> statusInfoAndColor(ExpenseModel expense) {
     switch (expense.status) {
       case "waiting":
@@ -395,7 +285,7 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
         ],
         content: SizedBox(
           height: 600,
-          width: 300,
+          width: 340,
           child: Column(
             children: [
               SizedBox(height: 15),
@@ -417,9 +307,9 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
           final leaders = snapshot.data!;
           return DropdownMenu<String>(
             controller: teamController,
-            width: 300,
+            width: 340,
             leadingIcon: Icon(
-              Icons.person_search,
+              Icons.groups,
               color: Color.fromARGB(255, 96, 71, 36),
             ),
             trailingIcon: Icon(
@@ -468,7 +358,7 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
             dropdownMenuEntries: leaders.map((UserModel leader) {
               return DropdownMenuEntry<String>(
                 leadingIcon: Icon(
-                  Icons.person_outline,
+                  Icons.groups_outlined,
                   color: Color.fromARGB(255, 96, 71, 36),
                 ),
                 label: leader.teamName,
@@ -494,6 +384,86 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
           );
         }
       },
+    );
+  }
+
+  Widget categoryDropdownMenu() {
+    return DropdownMenu<String>(
+      controller: categoryController,
+      width: 340,
+      leadingIcon: Icon(
+        Icons.category,
+        color: Color.fromARGB(255, 96, 71, 36),
+      ),
+      trailingIcon: Icon(
+        Icons.keyboard_arrow_down,
+        color: Color.fromARGB(255, 96, 71, 36),
+      ),
+      selectedTrailingIcon: Icon(
+        Icons.keyboard_arrow_up,
+        color: Color.fromARGB(255, 96, 71, 36),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: Colors.white,
+        hintStyle:
+            TextStyle(color: Colors.black38, fontWeight: FontWeight.w500),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(20),
+          borderSide: BorderSide(
+            color: Color.fromARGB(255, 227, 185, 117),
+            width: 1.5,
+          ),
+        ),
+      ),
+      hintText: "Select a category...",
+      menuStyle: MenuStyle(
+        shape: WidgetStatePropertyAll(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+        ),
+        alignment: Alignment.bottomLeft,
+        surfaceTintColor: WidgetStatePropertyAll(Colors.transparent),
+        backgroundColor: WidgetStatePropertyAll(Colors.white),
+      ),
+      onSelected: (_) {
+        setState(() {});
+      },
+      dropdownMenuEntries: const [
+        DropdownMenuEntry(
+          value: "Travel and Transportation",
+          label: "Travel and Transportation",
+          leadingIcon: Icon(
+            Icons.emoji_transportation,
+            color: Color.fromARGB(255, 96, 71, 36),
+          ),
+        ),
+        DropdownMenuEntry(
+          value: "Meals and Entertainment",
+          label: "Meals and Entertainment",
+          leadingIcon: Icon(
+            Icons.fastfood_outlined,
+            color: Color.fromARGB(255, 96, 71, 36),
+          ),
+        ),
+        DropdownMenuEntry(
+          value: "Office Supplies and Equipment",
+          label: "Office Supplies and Equipment",
+          leadingIcon: Icon(
+            Icons.meeting_room_outlined,
+            color: Color.fromARGB(255, 96, 71, 36),
+          ),
+        ),
+        DropdownMenuEntry(
+          value: "Other Expenses",
+          label: "Other Expenses",
+          leadingIcon: Icon(
+            Icons.attach_money,
+            color: Color.fromARGB(255, 96, 71, 36),
+          ),
+        ),
+      ],
     );
   }
 
