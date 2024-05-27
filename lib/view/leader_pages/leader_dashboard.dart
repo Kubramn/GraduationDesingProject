@@ -1,7 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:bitirme/models/expense_model.dart';
 import 'package:bitirme/models/user_model.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:bitirme/view/login_page.dart';
 import 'package:flutter/material.dart';
 
 class LeaderDashboard extends StatefulWidget {
@@ -12,7 +12,6 @@ class LeaderDashboard extends StatefulWidget {
 }
 
 class _LeaderDashboardState extends State<LeaderDashboard> {
-  User? user = FirebaseAuth.instance.currentUser;
   DateTime? filterStartDate;
   DateTime? filterEndDate;
   TextEditingController teamController = TextEditingController();
@@ -97,7 +96,7 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
                     children: [
                       Center(child: Text("data")),
                       StreamBuilder<List<ExpenseModel>>(
-                        stream: ExpenseModel.fetchTeamExpenses(user?.email),
+                        stream: ExpenseModel.fetchTeamExpenses(LoginPage.currentUserEmail),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {

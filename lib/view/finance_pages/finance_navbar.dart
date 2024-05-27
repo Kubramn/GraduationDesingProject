@@ -3,7 +3,6 @@ import 'package:bitirme/view/finance_pages/finance_register.dart';
 import 'package:bitirme/view/finance_pages/finance_requests.dart';
 import 'package:bitirme/view/finance_pages/finance_users.dart';
 import 'package:bitirme/view/login_page.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
@@ -110,7 +109,7 @@ class _FinanceNavBarState extends State<FinanceNavBar> {
 
   void goToPage(index) {
     if (index == 4) {
-      FirebaseAuth.instance.signOut();
+      LoginPage.currentUserEmail = null;
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(

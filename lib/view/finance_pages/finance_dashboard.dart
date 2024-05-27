@@ -1,7 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:bitirme/models/expense_model.dart';
 import 'package:bitirme/models/user_model.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class FinanceDashboard extends StatefulWidget {
@@ -12,7 +11,6 @@ class FinanceDashboard extends StatefulWidget {
 }
 
 class _FinanceDashboardState extends State<FinanceDashboard> {
-  User? user = FirebaseAuth.instance.currentUser;
   DateTime? filterStartDate;
   DateTime? filterEndDate;
   TextEditingController teamController = TextEditingController();

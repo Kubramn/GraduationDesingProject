@@ -1,7 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:bitirme/models/expense_model.dart';
 import 'package:bitirme/models/user_model.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:bitirme/view/login_page.dart';
 import 'package:flutter/material.dart';
 
 class LeaderRequests extends StatefulWidget {
@@ -12,8 +12,6 @@ class LeaderRequests extends StatefulWidget {
 }
 
 class _LeaderRequestsState extends State<LeaderRequests> {
-  User? user = FirebaseAuth.instance.currentUser;
-
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
@@ -30,7 +28,8 @@ class _LeaderRequestsState extends State<LeaderRequests> {
               //color: Colors.black,
               height: screenHeight * 0.8,
               child: StreamBuilder<List<ExpenseModel>>(
-                stream: ExpenseModel.fetchRequestsForLeader(user?.email),
+                stream: ExpenseModel.fetchRequestsForLeader(
+                    LoginPage.currentUserEmail),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Center(

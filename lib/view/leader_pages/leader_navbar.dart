@@ -3,7 +3,6 @@ import 'package:bitirme/view/invoice_page.dart';
 import 'package:bitirme/view/leader_pages/leader_dashboard.dart';
 import 'package:bitirme/view/leader_pages/leader_requests.dart';
 import 'package:bitirme/view/login_page.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
@@ -110,7 +109,7 @@ class _LeaderNavBarState extends State<LeaderNavBar> {
 
   void goToPage(index) {
     if (index == 4) {
-      FirebaseAuth.instance.signOut();
+      LoginPage.currentUserEmail = null;
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(

@@ -1,7 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:bitirme/models/expense_model.dart';
 import 'package:bitirme/models/user_model.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:bitirme/view/login_page.dart';
 import 'package:flutter/material.dart';
 
 class FinanceRequests extends StatefulWidget {
@@ -12,8 +12,6 @@ class FinanceRequests extends StatefulWidget {
 }
 
 class _FinanceRequestsState extends State<FinanceRequests> {
-  User? user = FirebaseAuth.instance.currentUser;
-
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
@@ -30,7 +28,9 @@ class _FinanceRequestsState extends State<FinanceRequests> {
               //color: Colors.black,
               height: screenHeight * 0.8,
               child: StreamBuilder<List<ExpenseModel>>(
-                stream: ExpenseModel.fetchRequestsForFinance(user?.email),
+                stream: ExpenseModel.fetchRequestsForFinance(
+                  LoginPage.currentUserEmail,
+                ),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Center(
