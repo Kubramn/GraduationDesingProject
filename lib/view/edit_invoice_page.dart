@@ -25,7 +25,6 @@ class _EditInvoicePageState extends State<EditInvoicePage> {
   TextEditingController categoryController = TextEditingController();
   TextEditingController dateController = TextEditingController();
   TextEditingController priceController = TextEditingController();
-
   Icon categoryIcon = Icon(
     Icons.category_outlined,
     color: Color.fromARGB(255, 49, 102, 101),
@@ -123,6 +122,7 @@ class _EditInvoicePageState extends State<EditInvoicePage> {
 
   Widget categoryDropdownMenu() {
     return DropdownMenu<String>(
+      controller: categoryController,
       leadingIcon: categoryIcon,
       trailingIcon: Icon(
         Icons.keyboard_arrow_down,
@@ -144,7 +144,6 @@ class _EditInvoicePageState extends State<EditInvoicePage> {
       ),
       hintText: "Category",
       width: 394,
-      controller: categoryController,
       menuStyle: MenuStyle(
         shape: WidgetStatePropertyAll(
           RoundedRectangleBorder(

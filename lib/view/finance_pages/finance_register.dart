@@ -128,8 +128,14 @@ class _FinanceRegisterState extends State<FinanceRegister> {
                   ),
                   DropdownMenu<String>(
                     leadingIcon: roleIcon,
-                    trailingIcon: Icon(Icons.keyboard_arrow_down),
-                    selectedTrailingIcon: Icon(Icons.keyboard_arrow_up),
+                    trailingIcon: Icon(
+                      Icons.keyboard_arrow_down,
+                      color: Color.fromARGB(255, 68, 60, 95),
+                    ),
+                    selectedTrailingIcon: Icon(
+                      Icons.keyboard_arrow_up,
+                      color: Color.fromARGB(255, 68, 60, 95),
+                    ),
                     inputDecorationTheme: InputDecorationTheme(
                       filled: true,
                       fillColor: Colors.white,

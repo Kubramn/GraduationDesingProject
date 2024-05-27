@@ -13,7 +13,12 @@ class LeaderDashboard extends StatefulWidget {
 
 class _LeaderDashboardState extends State<LeaderDashboard> {
   User? user = FirebaseAuth.instance.currentUser;
-  String? _selectedTeam;
+  TextEditingController teamController = TextEditingController();
+  TextEditingController categoryController = TextEditingController();
+  Icon categoryIcon = Icon(
+    Icons.category_outlined,
+    color: Color.fromARGB(255, 96, 71, 36),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +86,6 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
                     ),
                   ],
                 ),
-                //SizedBox(height: screenHeight * 0.005),
                 Divider(
                   height: screenHeight * 0.04,
                   color: Color.fromARGB(255, 96, 71, 36),
@@ -126,6 +130,7 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
                           } else {
                             final expenses = snapshot.data!;
                             return ListView.builder(
+                                padding: EdgeInsets.zero,
                                 itemCount: expenses.length,
                                 itemBuilder: (context, index) {
                                   return Column(
@@ -150,6 +155,112 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget categoryDropdownMenu() {
+    return DropdownMenu<String>(
+      controller: categoryController,
+      width: 300,
+      leadingIcon: categoryIcon,
+      trailingIcon: Icon(
+        Icons.keyboard_arrow_down,
+        color: Color.fromARGB(255, 96, 71, 36),
+      ),
+      selectedTrailingIcon: Icon(
+        Icons.keyboard_arrow_up,
+        color: Color.fromARGB(255, 96, 71, 36),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: Colors.white,
+        hintStyle:
+            TextStyle(color: Colors.black38, fontWeight: FontWeight.w500),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(20),
+          borderSide: BorderSide(
+            color: Color.fromARGB(255, 227, 185, 117),
+            width: 1.5,
+          ),
+        ),
+      ),
+      hintText: "Select a category...",
+      menuStyle: MenuStyle(
+        shape: WidgetStatePropertyAll(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+        ),
+        alignment: Alignment.bottomLeft,
+        surfaceTintColor: WidgetStatePropertyAll(Colors.transparent),
+        backgroundColor: WidgetStatePropertyAll(Colors.white),
+      ),
+      onSelected: (_) {
+        setState(() {
+          switch (categoryController.text) {
+            case "Travel and Transportation":
+              setState(() {
+                categoryIcon = Icon(
+                  Icons.emoji_transportation,
+                  color: Color.fromARGB(255, 96, 71, 36),
+                );
+              });
+              break;
+            case "Meals and Entertainment":
+              categoryIcon = Icon(
+                Icons.fastfood_outlined,
+                color: Color.fromARGB(255, 96, 71, 36),
+              );
+              break;
+            case "Office Supplies and Equipment":
+              categoryIcon = Icon(
+                Icons.meeting_room_outlined,
+                color: Color.fromARGB(255, 96, 71, 36),
+              );
+              break;
+            case "Other Expenses":
+              categoryIcon = Icon(
+                Icons.attach_money,
+                color: Color.fromARGB(255, 96, 71, 36),
+              );
+              break;
+          }
+        });
+      },
+      dropdownMenuEntries: const [
+        DropdownMenuEntry(
+          value: "Travel and Transportation",
+          label: "Travel and Transportation",
+          leadingIcon: Icon(
+            Icons.emoji_transportation,
+            color: Color.fromARGB(255, 96, 71, 36),
+          ),
+        ),
+        DropdownMenuEntry(
+          value: "Meals and Entertainment",
+          label: "Meals and Entertainment",
+          leadingIcon: Icon(
+            Icons.fastfood_outlined,
+            color: Color.fromARGB(255, 96, 71, 36),
+          ),
+        ),
+        DropdownMenuEntry(
+          value: "Office Supplies and Equipment",
+          label: "Office Supplies and Equipment",
+          leadingIcon: Icon(
+            Icons.meeting_room_outlined,
+            color: Color.fromARGB(255, 96, 71, 36),
+          ),
+        ),
+        DropdownMenuEntry(
+          value: "Other Expenses",
+          label: "Other Expenses",
+          leadingIcon: Icon(
+            Icons.attach_money,
+            color: Color.fromARGB(255, 96, 71, 36),
+          ),
+        ),
+      ],
     );
   }
 
@@ -227,21 +338,59 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
             //vertical: screenHeight * 0.1,
             ),
         actions: [
-          TextButton(
-            style: TextButton.styleFrom(
-              overlayColor: Color.fromARGB(255, 227, 185, 117),
-            ),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: Text(
-              "Close",
-              style: TextStyle(
-                color: Color.fromARGB(255, 96, 71, 36),
-                fontSize: 25,
-                fontWeight: FontWeight.bold,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              TextButton(
+                style: TextButton.styleFrom(
+                  overlayColor: Color.fromARGB(255, 227, 185, 117),
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  "Apply",
+                  style: TextStyle(
+                    color: Color.fromARGB(255, 96, 71, 36),
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
-            ),
+              TextButton(
+                style: TextButton.styleFrom(
+                  overlayColor: Color.fromARGB(255, 227, 185, 117),
+                ),
+                onPressed: () {
+                  teamController.clear();
+                  categoryController.clear();
+                },
+                child: Text(
+                  "Reset",
+                  style: TextStyle(
+                    color: Color.fromARGB(255, 96, 71, 36),
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              TextButton(
+                style: TextButton.styleFrom(
+                  overlayColor: Color.fromARGB(255, 227, 185, 117),
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  "Close",
+                  style: TextStyle(
+                    color: Color.fromARGB(255, 96, 71, 36),
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
           )
         ],
         content: SizedBox(
@@ -249,102 +398,102 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
           width: 300,
           child: Column(
             children: [
-              SizedBox(height: screenHeight * 0.02),
-              StreamBuilder<List<UserModel>>(
-                stream: UserModel.fetchAllLeaders(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    final leaders = snapshot.data!;
-                    return DropdownMenu<String>(
-                      textStyle: TextStyle(
-                        color: Color.fromARGB(255, 52, 52, 52),
-                      ),
-                      width: screenWidth * 0.6,
-                      leadingIcon: Icon(
-                        Icons.person_search,
-                        color: Color.fromARGB(255, 96, 71, 36),
-                      ),
-                      trailingIcon: Icon(
-                        Icons.keyboard_arrow_down,
-                        color: Color.fromARGB(255, 96, 71, 36),
-                      ),
-                      selectedTrailingIcon: Icon(Icons.keyboard_arrow_up),
-                      inputDecorationTheme: InputDecorationTheme(
-                        filled: true,
-                        fillColor: Colors.white,
-                        hintStyle: TextStyle(
-                            color: Colors.black38, fontWeight: FontWeight.w500),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20),
-                          borderSide: BorderSide(
-                            color: Color.fromARGB(255, 227, 185, 117),
-                            width: 1.5,
-                          ),
-                        ),
-                      ),
-                      hintText: "Select a team...",
-                      menuStyle: MenuStyle(
-                        shape: WidgetStatePropertyAll(RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20))),
-                        alignment: Alignment.bottomLeft,
-                        surfaceTintColor: WidgetStatePropertyAll(
-                          Colors.transparent,
-                        ),
-                        backgroundColor: WidgetStatePropertyAll(
-                          Colors.white,
-                        ),
-                      ),
-                      onSelected: (team) {
-                        setState(() {
-                          _selectedTeam = team;
-                          print(_selectedTeam);
-                        });
-                        /*
-
-
-
-
-                        İŞLEMLEEEEEERRRRRRR
-
-
-
-
-           */
-                      },
-                      dropdownMenuEntries: leaders.map((UserModel leader) {
-                        return DropdownMenuEntry<String>(
-                          leadingIcon: Icon(
-                            Icons.person_outline,
-                            color: Color.fromARGB(255, 96, 71, 36),
-                          ),
-                          label: leader.teamName,
-                          value: leader.email,
-                          style: ButtonStyle(
-                            overlayColor: WidgetStatePropertyAll(
-                              Color.fromARGB(255, 227, 185, 117),
-                            ),
-                            foregroundColor: WidgetStatePropertyAll(
-                              Color.fromARGB(255, 52, 52, 52),
-                            ),
-                          ),
-                        );
-                      }).toList(),
-                    );
-                  } else if (snapshot.hasError) {
-                    return Center(child: Text("ERROR!"));
-                  } else {
-                    return Center(
-                      child: CircularProgressIndicator(
-                        color: Colors.white,
-                      ),
-                    );
-                  }
-                },
-              ),
+              SizedBox(height: 15),
+              teamDropdownMenu(screenWidth),
+              SizedBox(height: 20),
+              categoryDropdownMenu(),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  StreamBuilder<List<UserModel>> teamDropdownMenu(double screenWidth) {
+    return StreamBuilder<List<UserModel>>(
+      stream: UserModel.fetchAllLeaders(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          final leaders = snapshot.data!;
+          return DropdownMenu<String>(
+            controller: teamController,
+            width: 300,
+            leadingIcon: Icon(
+              Icons.person_search,
+              color: Color.fromARGB(255, 96, 71, 36),
+            ),
+            trailingIcon: Icon(
+              Icons.keyboard_arrow_down,
+              color: Color.fromARGB(255, 96, 71, 36),
+            ),
+            selectedTrailingIcon: Icon(
+              Icons.keyboard_arrow_up,
+              color: Color.fromARGB(255, 96, 71, 36),
+            ),
+            inputDecorationTheme: InputDecorationTheme(
+              filled: true,
+              fillColor: Colors.white,
+              hintStyle:
+                  TextStyle(color: Colors.black38, fontWeight: FontWeight.w500),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+                borderSide: BorderSide(
+                  color: Color.fromARGB(255, 227, 185, 117),
+                  width: 1.5,
+                ),
+              ),
+            ),
+            hintText: "Select a team...",
+            menuStyle: MenuStyle(
+              shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20))),
+              alignment: Alignment.bottomLeft,
+              surfaceTintColor: WidgetStatePropertyAll(Colors.transparent),
+              backgroundColor: WidgetStatePropertyAll(Colors.white),
+            ),
+            onSelected: (_) {
+              setState(() {});
+              /*
+
+
+
+
+                      İŞLEMLEEEEEERRRRRRR
+
+
+
+
+         */
+            },
+            dropdownMenuEntries: leaders.map((UserModel leader) {
+              return DropdownMenuEntry<String>(
+                leadingIcon: Icon(
+                  Icons.person_outline,
+                  color: Color.fromARGB(255, 96, 71, 36),
+                ),
+                label: leader.teamName,
+                value: leader.email,
+                style: ButtonStyle(
+                  overlayColor: WidgetStatePropertyAll(
+                    Color.fromARGB(255, 227, 185, 117),
+                  ),
+                  foregroundColor: WidgetStatePropertyAll(
+                    Color.fromARGB(255, 52, 52, 52),
+                  ),
+                ),
+              );
+            }).toList(),
+          );
+        } else if (snapshot.hasError) {
+          return Center(child: Text("ERROR!"));
+        } else {
+          return Center(
+            child: CircularProgressIndicator(
+              color: Colors.white,
+            ),
+          );
+        }
+      },
     );
   }
 
@@ -385,125 +534,124 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
                 backgroundColor: Color.fromARGB(255, 227, 185, 117),
               ),
               onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    surfaceTintColor: Colors.transparent,
-                    //shadowColor: statusInfoAndColor(expense)[1],
-                    shadowColor: Colors.black,
-                    //elevation: 5,
-                    backgroundColor: Color.lerp(
-                      statusInfoAndColor(expense)[1],
-                      Colors.white,
-                      0.97,
-                    ),
-                    //backgroundColor: statusInfoAndColor(expense)[1],
-                    insetPadding: EdgeInsets.symmetric(
-                      horizontal: screenWidth * 0.06,
-                      vertical: screenHeight * 0.22,
-                    ),
-                    actions: [
-                      TextButton(
-                        style: TextButton.styleFrom(
-                          overlayColor: statusInfoAndColor(expense)[1],
-                        ),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: Text(
-                          "Close",
-                          style: TextStyle(
-                            color: statusInfoAndColor(expense)[1],
-                            fontSize: 25,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      )
-                    ],
-                    content: SizedBox(
-                      width: double.maxFinite,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          FutureBuilder<String>(
-                            future: UserModel.getNameSurnameByEmail(
-                                expense.userEmail),
-                            builder: (context, snapshot) {
-                              return Row(
-                                children: [
-                                  Icon(
-                                    Icons.info_outline,
-                                    color: statusInfoAndColor(expense)[1],
-                                    size: 30,
-                                  ),
-                                  SizedBox(
-                                    width: screenWidth * 0.035,
-                                  ),
-                                  Expanded(
-                                    child: AutoSizeText.rich(
-                                      maxLines: 4,
-                                      overflow: TextOverflow.ellipsis,
-                                      maxFontSize: 20,
-                                      minFontSize: 20,
-                                      TextSpan(
-                                        children: [
-                                          TextSpan(
-                                            text:
-                                                "This expense was incurred by ",
-                                          ),
-                                          TextSpan(
-                                            text: snapshot.data,
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          TextSpan(
-                                            text:
-                                                statusInfoAndColor(expense)[0],
-                                          ),
-                                        ],
-                                      ),
-                                      style: TextStyle(
-                                        color: statusInfoAndColor(expense)[1],
-                                        fontSize: 20,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              );
-                            },
-                          ),
-                          Divider(
-                            color: Color.fromARGB(255, 52, 52, 52),
-                            thickness: 1.5,
-                          ),
-                          infoValuePair(
-                            "Title",
-                            expense.title,
-                            expense,
-                          ),
-                          infoValuePair(
-                            "Description",
-                            expense.description,
-                            expense,
-                          ),
-                          infoValuePair(
-                            "Date",
-                            expense.date,
-                            expense,
-                          ),
-                          infoValuePair(
-                            "Price",
-                            expense.price,
-                            expense,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                );
+                showExpenseDialog(expense, screenWidth, screenHeight);
               },
             ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<dynamic> showExpenseDialog(
+      ExpenseModel expense, double screenWidth, double screenHeight) {
+    return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        surfaceTintColor: Colors.transparent,
+        shadowColor: Colors.black,
+        backgroundColor: Color.lerp(
+          statusInfoAndColor(expense)[1],
+          Colors.white,
+          0.96,
+        ),
+        insetPadding: EdgeInsets.symmetric(
+          horizontal: screenWidth * 0.06,
+          vertical: screenHeight * 0.22,
+        ),
+        actions: [
+          TextButton(
+            style: TextButton.styleFrom(
+              overlayColor: statusInfoAndColor(expense)[1],
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text(
+              "Close",
+              style: TextStyle(
+                color: statusInfoAndColor(expense)[1],
+                fontSize: 25,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          )
+        ],
+        content: SizedBox(
+          width: double.maxFinite,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              FutureBuilder<String>(
+                future: UserModel.getNameSurnameByEmail(expense.userEmail),
+                builder: (context, snapshot) {
+                  return Row(
+                    children: [
+                      Icon(
+                        Icons.info_outline,
+                        color: statusInfoAndColor(expense)[1],
+                        size: 30,
+                      ),
+                      SizedBox(
+                        width: screenWidth * 0.035,
+                      ),
+                      Expanded(
+                        child: AutoSizeText.rich(
+                          maxLines: 4,
+                          overflow: TextOverflow.ellipsis,
+                          maxFontSize: 20,
+                          minFontSize: 20,
+                          TextSpan(
+                            children: [
+                              TextSpan(
+                                text: "This expense was incurred by ",
+                              ),
+                              TextSpan(
+                                text: snapshot.data,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              TextSpan(
+                                text: statusInfoAndColor(expense)[0],
+                              ),
+                            ],
+                          ),
+                          style: TextStyle(
+                            color: statusInfoAndColor(expense)[1],
+                            fontSize: 20,
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
+              Divider(
+                color: Color.fromARGB(255, 52, 52, 52),
+                thickness: 1.5,
+              ),
+              infoValuePair(
+                "Title",
+                expense.title,
+                expense,
+              ),
+              infoValuePair(
+                "Description",
+                expense.description,
+                expense,
+              ),
+              infoValuePair(
+                "Date",
+                expense.date,
+                expense,
+              ),
+              infoValuePair(
+                "Price",
+                expense.price,
+                expense,
+              ),
+            ],
           ),
         ),
       ),
