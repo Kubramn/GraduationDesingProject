@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:math';
 import 'package:bitirme/models/expense_model.dart';
 import 'package:bitirme/models/user_model.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:bitirme/view/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 
@@ -18,8 +18,6 @@ class EditInvoicePage extends StatefulWidget {
 }
 
 class _EditInvoicePageState extends State<EditInvoicePage> {
-  User? user = FirebaseAuth.instance.currentUser;
-
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   TextEditingController categoryController = TextEditingController();
@@ -246,9 +244,12 @@ class _EditInvoicePageState extends State<EditInvoicePage> {
   }
 
   Future<void> addExpense() async {
-    String checkerUserEmail =
-        await UserModel.decideCheckerUserEmailByRole(user?.email ?? "");
-    String status = await UserModel.decideStatusByRole(user?.email ?? "");
+    String checkerUserEmail = await UserModel.decideCheckerUserEmailByRole(
+      LoginPage.currentUserEmail ?? "",
+    );
+    String status = await UserModel.decideStatusByRole(
+      LoginPage.currentUserEmail ?? "",
+    );
 
     ExpenseModel(
       title: titleController.text,
@@ -256,7 +257,7 @@ class _EditInvoicePageState extends State<EditInvoicePage> {
       price: priceController.text,
       date: dateController.text,
       description: descriptionController.text,
-      userEmail: user?.email ?? "",
+      userEmail: LoginPage.currentUserEmail ?? "",
       checkerUserEmail: checkerUserEmail,
       category: categoryController.text,
     ).createExpense();

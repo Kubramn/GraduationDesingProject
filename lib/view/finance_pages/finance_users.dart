@@ -11,6 +11,7 @@ class FinanceUsers extends StatefulWidget {
 class _FinanceUsersState extends State<FinanceUsers> {
   UserModel? _selectedUser;
 
+  TextEditingController emailController = TextEditingController();
   TextEditingController nameController = TextEditingController();
   TextEditingController surnameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -43,6 +44,7 @@ class _FinanceUsersState extends State<FinanceUsers> {
                   if (snapshot.hasData) {
                     final users = snapshot.data!;
                     return DropdownMenu<UserModel>(
+                      controller: emailController,
                       width: screenWidth - 60,
                       leadingIcon: Icon(
                         Icons.person_search,
@@ -332,65 +334,84 @@ class _FinanceUsersState extends State<FinanceUsers> {
                 ),
               ),
               SizedBox(height: 40),
-              SizedBox(
-                height: 60,
-                width: screenWidth - 60,
-                child: ElevatedButton(
-                  onPressed: () async {
-                    if (await UserModel.updateUser(
-                      _selectedUser?.email,
-                      nameController.text,
-                      surnameController.text,
-                      passwordController.text,
-                      roleController.text,
-                      jobController.text,
-                      departmentController.text,
-                      teamNameController.text,
-                    )) {
-                      nameController.clear();
-                      surnameController.clear();
-                      passwordController.clear();
-                      roleController.clear();
-                      jobController.clear();
-                      departmentController.clear();
-                      teamNameController.clear();
-                    }
-                  },
-                  child: Text(
-                    "Update User",
-                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color.fromARGB(255, 49, 102, 101),
-                    foregroundColor: Color.fromARGB(255, 157, 203, 201),
-                    //fixedSize: ,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                  ),
-                ),
-              ),
+              updateUserButton(screenWidth),
               SizedBox(height: 40),
-              SizedBox(
-                height: 60,
-                width: screenWidth - 60,
-                child: ElevatedButton(
-                  onPressed: (() => {}),
-                  child: Text(
-                    "Delete User",
-                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color.fromARGB(255, 49, 102, 101),
-                    foregroundColor: Colors.red,
-                    //fixedSize: ,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                  ),
-                ),
-              ),
+              deleteUserButton(screenWidth),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void resetAllFields() {
+    setState(() {
+      emailController.clear();
+      nameController.clear();
+      surnameController.clear();
+      passwordController.clear();
+      roleController.clear();
+      jobController.clear();
+      departmentController.clear();
+      teamNameController.clear();
+    });
+  }
+
+  Widget updateUserButton(double screenWidth) {
+    return SizedBox(
+      height: 60,
+      width: screenWidth - 60,
+      child: ElevatedButton(
+        onPressed: () async {
+          if (await UserModel.updateUser(
+            _selectedUser?.email,
+            nameController.text,
+            surnameController.text,
+            passwordController.text,
+            roleController.text,
+            jobController.text,
+            departmentController.text,
+            teamNameController.text,
+          )) {
+            resetAllFields();
+          }
+        },
+        child: Text(
+          "Update User",
+          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+        ),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Color.fromARGB(255, 49, 102, 101),
+          foregroundColor: Color.fromARGB(255, 157, 203, 201),
+          //fixedSize: ,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+        ),
+      ),
+    );
+  }
+
+  SizedBox deleteUserButton(double screenWidth) {
+    return SizedBox(
+      height: 60,
+      width: screenWidth - 60,
+      child: ElevatedButton(
+        onPressed: () async {
+          if (await UserModel.deleteUser(_selectedUser?.email)) {
+            resetAllFields();
+          }
+        },
+        child: Text(
+          "Delete User",
+          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+        ),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Color.fromARGB(255, 49, 102, 101),
+          foregroundColor: Colors.red,
+          //fixedSize: ,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
           ),
         ),
       ),

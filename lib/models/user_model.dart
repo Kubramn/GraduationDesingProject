@@ -1,6 +1,5 @@
 import "package:bitirme/alert_message.dart";
 import "package:cloud_firestore/cloud_firestore.dart";
-import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter/material.dart";
 
 class UserModel {
@@ -154,27 +153,32 @@ class UserModel {
     String teamName,
   ) async {
     try {
-      DocumentSnapshot<Map<String, dynamic>> snapshot =
-          await FirebaseFirestore.instance.collection("users").doc(email).get();
-
-      if (snapshot.exists) {
-        await FirebaseFirestore.instance.collection("users").doc(email).update({
-          "name": name,
-          "surname": surname,
-          "password": password,
-          "role": role,
-          "job": job,
-          "department": department,
-          "teamName": teamName,
-        });
-        print("User data updated successfully!");
-        return true;
-      } else {
-        print("User not found!");
-        return false;
-      }
+      await FirebaseFirestore.instance.collection("users").doc(email).update({
+        "name": name,
+        "surname": surname,
+        "password": password,
+        "role": role,
+        "job": job,
+        "department": department,
+        "teamName": teamName,
+      });
+      print("User data updated successfully!");
+      return true;
     } catch (e) {
       print("Error fetching or updating user data: $e");
+      return false;
+    }
+  }
+
+  static Future<bool> deleteUser(
+    String? email,
+  ) async {
+    try {
+      await FirebaseFirestore.instance.collection("users").doc(email).delete();
+      print("User data deleted successfully!");
+      return true;
+    } catch (e) {
+      print("Error fetching or deleting user data: $e");
       return false;
     }
   }
@@ -203,10 +207,6 @@ class UserModel {
     );
 
     try {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
       Navigator.pop(context); //Navigator.of(context).pop;
       alertMessage(
         "${name} ${surname} is registered successfully.",
@@ -225,7 +225,7 @@ class UserModel {
         teamName: teamName,
       ).createUser();
       return true;
-    } on FirebaseAuthException catch (e) {
+    } catch (e) {
       Navigator.pop(context);
       alertMessage(
         "User Registration failed!",
@@ -234,6 +234,55 @@ class UserModel {
       );
       print("ERROR -> $e");
       return false;
+    }
+  }
+
+  static Future<String?> login(
+      String email, String password, BuildContext context) async {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return const Center(
+          child: CircularProgressIndicator(
+            color: Colors.white,
+          ),
+        );
+      },
+    );
+
+    try {
+      final userDoc = await FirebaseFirestore.instance
+          .collection("users")
+          .where(
+            Filter.and(
+              Filter("email", isEqualTo: email),
+              Filter("password", isEqualTo: password),
+            ),
+          )
+          .get();
+
+      if (userDoc.docs.isNotEmpty) {
+        Navigator.pop(context);
+        return email;
+      } else {
+        Navigator.pop(context);
+        return null;
+      }
+    } catch (e) {
+      Navigator.pop(context);
+      print("********ERROR********${e}********ERROR********");
+
+/*       if (e.code == "invalid-credential") {
+        alertMessage("Wrong password email etc", Colors.red, context);
+      } else if (e.code == "invalid-email") {
+        alertMessage("Email @ vs typo", Colors.red, context);
+      } else if (e.code == "missing-password") {
+        alertMessage("missing-password", Colors.red, context);
+      } else if (e.code == "too-many-requests") {
+        alertMessage("too-many-requests", Colors.red, context);
+      }
+ */
+      return null;
     }
   }
 }

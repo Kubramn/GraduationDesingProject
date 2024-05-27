@@ -1,6 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:bitirme/models/expense_model.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:bitirme/view/login_page.dart';
 import 'package:flutter/material.dart';
 
 class ExpensesPage extends StatefulWidget {
@@ -11,7 +11,6 @@ class ExpensesPage extends StatefulWidget {
 }
 
 class _ExpensesPageState extends State<ExpensesPage> {
-  User? user = FirebaseAuth.instance.currentUser;
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +75,7 @@ class _ExpensesPageState extends State<ExpensesPage> {
                       StreamBuilder<List<ExpenseModel>>(
                         stream: ExpenseModel.fetchOneMemberExpenses(
                           "previous",
-                          user?.email,
+                          LoginPage.currentUserEmail,
                         ),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
@@ -129,7 +128,7 @@ class _ExpensesPageState extends State<ExpensesPage> {
                       StreamBuilder<List<ExpenseModel>>(
                         stream: ExpenseModel.fetchOneMemberExpenses(
                           "waiting",
-                          user?.email,
+                          LoginPage.currentUserEmail,
                         ),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==

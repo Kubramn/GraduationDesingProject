@@ -1,13 +1,13 @@
-import 'package:bitirme/alert_message.dart';
+import 'package:bitirme/models/user_model.dart';
 import 'package:bitirme/view/finance_pages/finance_navbar.dart';
 import 'package:bitirme/view/leader_pages/leader_navbar.dart';
 import 'package:bitirme/view/member_pages/member_navbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
+  static String? currentUserEmail;
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -89,7 +89,17 @@ class _LoginPageState extends State<LoginPage> {
                   height: screenHeight * 0.02,
                 ),
                 ElevatedButton(
-                  onPressed: (() => login()),
+                  onPressed: () async {
+                    String? email = await UserModel.login(
+                      emailController.text,
+                      passwordController.text,
+                      context,
+                    );
+                    if (email != null) {
+                      LoginPage.currentUserEmail = email;
+                      route();
+                    }
+                  },
                   child: Text(
                     "Log In",
                     style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
@@ -112,10 +122,9 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void route() {
-    User? user = FirebaseAuth.instance.currentUser;
     FirebaseFirestore.instance
         .collection('users')
-        .doc(user!.email)
+        .doc(LoginPage.currentUserEmail)
         .get()
         .then((DocumentSnapshot documentSnapshot) {
       if (documentSnapshot.exists) {
@@ -145,41 +154,5 @@ class _LoginPageState extends State<LoginPage> {
         print('Document does not exist on the database');
       }
     });
-  }
-
-  void login() async {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return const Center(
-          child: CircularProgressIndicator(
-            color: Colors.white,
-          ),
-        );
-      },
-    );
-
-    try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: emailController.text,
-        password: passwordController.text,
-      );
-      Navigator.pop(context);
-      //Navigator.of(context).pop;
-      route();
-    } on FirebaseAuthException catch (e) {
-      Navigator.pop(context);
-      print("***************************${e.code}***************************");
-
-      if (e.code == "invalid-credential") {
-        alertMessage("Wrong password email etc", Colors.red, context);
-      } else if (e.code == "invalid-email") {
-        alertMessage("Email @ vs typo", Colors.red, context);
-      } else if (e.code == "missing-password") {
-        alertMessage("missing-password", Colors.red, context);
-      } else if (e.code == "too-many-requests") {
-        alertMessage("too-many-requests", Colors.red, context);
-      }
-    }
   }
 }
