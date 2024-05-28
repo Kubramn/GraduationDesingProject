@@ -5,7 +5,9 @@ void alertMessage(String message, Color backgroundColor, BuildContext context) {
     context: context,
     builder: (context) {
       return AlertDialog(
+        shadowColor: Colors.black,
         surfaceTintColor: backgroundColor,
+        backgroundColor: Colors.white,
         title: Text(
           message,
           style: TextStyle(

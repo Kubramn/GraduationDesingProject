@@ -24,9 +24,9 @@ class _LeaderRequestsState extends State<LeaderRequests> {
         child: Column(
           children: [
             SizedBox(height: screenHeight * 0.02),
-            Container(
+            SizedBox(
               //color: Colors.black,
-              height: screenHeight * 0.8,
+              height: screenHeight * 0.72,
               child: StreamBuilder<List<ExpenseModel>>(
                 stream: ExpenseModel.fetchRequestsForLeader(
                     LoginPage.currentUserEmail),
