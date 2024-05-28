@@ -205,8 +205,8 @@ class UserModel {
         );
       },
     );
-
     try {
+      String lMail= await decideLeaderEmailByTeamName(role, teamName);
       Navigator.pop(context); //Navigator.of(context).pop;
       alertMessage(
         "${name} ${surname} is registered successfully.",
@@ -219,7 +219,7 @@ class UserModel {
         email: email,
         password: password,
         role: role,
-        leaderEmail: leaderEmail,
+        leaderEmail: lMail,
         job: job,
         department: department,
         teamName: teamName,

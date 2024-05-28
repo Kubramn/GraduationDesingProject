@@ -275,11 +275,6 @@ class _FinanceRegisterState extends State<FinanceRegister> {
               SizedBox(height: 40),
               ElevatedButton(
                 onPressed: () async {
-                  String leaderEmail =
-                      await UserModel.decideLeaderEmailByTeamName(
-                    roleController.text,
-                    teamNameController.text,
-                  );
 
                   if (await UserModel.register(
                     nameController.text,
@@ -287,7 +282,7 @@ class _FinanceRegisterState extends State<FinanceRegister> {
                     emailController.text,
                     passwordController.text,
                     roleController.text,
-                    leaderEmail,
+                    "",
                     jobController.text,
                     departmentController.text,
                     teamNameController.text,
