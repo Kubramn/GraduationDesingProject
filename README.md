@@ -1,1 +1,1 @@
-# 💵 Expense Management Application
+# 💸 Expense Management Application
