@@ -7,6 +7,11 @@
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Allow to select invoice photos from your photo library.</string>
 
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+  	<string>tel</string>
+	</array>
+
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>

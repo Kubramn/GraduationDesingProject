@@ -11,7 +11,6 @@ class ExpensesPage extends StatefulWidget {
 }
 
 class _ExpensesPageState extends State<ExpensesPage> {
-
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
@@ -69,7 +68,7 @@ class _ExpensesPageState extends State<ExpensesPage> {
                   endIndent: screenWidth * 0.01,
                 ),
                 SizedBox(
-                  height: screenHeight * 0.7,
+                  height: screenHeight * 0.72,
                   child: TabBarView(
                     children: [
                       StreamBuilder<List<ExpenseModel>>(
