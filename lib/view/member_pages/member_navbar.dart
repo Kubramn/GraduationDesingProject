@@ -3,6 +3,7 @@ import 'package:bitirme/view/invoice_page.dart';
 import 'package:bitirme/view/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MemberNavBar extends StatefulWidget {
   const MemberNavBar({super.key});
@@ -75,7 +76,6 @@ class _MemberNavBarState extends State<MemberNavBar> {
                 ),
                 GButton(
                   icon: Icons.logout_outlined,
-                  //iconColor: Color.fromARGB(255, 85, 39, 41),
                   iconColor: Color.fromARGB(255, 139, 0, 0),
                 ),
               ],
@@ -86,9 +86,13 @@ class _MemberNavBarState extends State<MemberNavBar> {
     );
   }
 
-  void goToPage(index) {
+  void goToPage(index) async {
     if (index == 2) {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove("email");
+      await prefs.remove("password");
       LoginPage.currentUserEmail = null;
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(

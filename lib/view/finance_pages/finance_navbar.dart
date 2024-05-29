@@ -5,6 +5,7 @@ import 'package:bitirme/view/finance_pages/finance_users.dart';
 import 'package:bitirme/view/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class FinanceNavBar extends StatefulWidget {
   const FinanceNavBar({super.key});
@@ -107,9 +108,13 @@ class _FinanceNavBarState extends State<FinanceNavBar> {
     );
   }
 
-  void goToPage(index) {
+  void goToPage(index) async {
     if (index == 4) {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove("email");
+      await prefs.remove("password");
       LoginPage.currentUserEmail = null;
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(

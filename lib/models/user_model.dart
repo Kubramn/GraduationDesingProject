@@ -75,6 +75,16 @@ class UserModel {
     return "${data['name']} ${data['surname']}";
   }
 
+  static Future<String> getRoleByEmail(String email) async {
+    final userDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .where('email', isEqualTo: email)
+        .get();
+
+    final data = userDoc.docs.first.data();
+    return "${data['role']}";
+  }
+
   static Future<String> decideCheckerUserEmailByRole(String email) async {
     final userDoc = await FirebaseFirestore.instance
         .collection("users")
