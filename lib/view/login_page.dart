@@ -3,10 +3,10 @@ import 'package:bitirme/models/user_model.dart';
 import 'package:bitirme/view/finance_pages/finance_navbar.dart';
 import 'package:bitirme/view/leader_pages/leader_navbar.dart';
 import 'package:bitirme/view/member_pages/member_navbar.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localization/flutter_localization.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -26,6 +26,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
+    _checkUserLoggedIn();
     _flutterLocalization = FlutterLocalization.instance;
     _currentLocale = _flutterLocalization.currentLocale!.languageCode;
   }
@@ -122,8 +123,12 @@ class _LoginPageState extends State<LoginPage> {
                     context,
                   );
                   if (email != null) {
+                    //String role = await UserModel.getRoleByEmail(email);
+                    final prefs = await SharedPreferences.getInstance();
+                    await prefs.setString("email", emailController.text);
+                    await prefs.setString("password", passwordController.text);
                     LoginPage.currentUserEmail = email;
-                    route();
+                    route(email);
                   }
                 },
                 child: Text(
@@ -238,6 +243,19 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  void _checkUserLoggedIn() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? email = prefs.getString("email");
+    final String? password = prefs.getString("password");
+
+    if (email != null && password != null) {
+      setState(() {
+        LoginPage.currentUserEmail = email;
+      });
+      route(email);
+    }
+  }
+
   void _changeLocale(String currentLocale) {
     if (currentLocale == "tr") {
       _flutterLocalization.translate("en");
@@ -266,38 +284,31 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  void route() {
-    FirebaseFirestore.instance
-        .collection('users')
-        .doc(LoginPage.currentUserEmail)
-        .get()
-        .then((DocumentSnapshot documentSnapshot) {
-      if (documentSnapshot.exists) {
-        if (documentSnapshot.get("role") == "Member") {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => MemberNavBar(),
-            ),
-          );
-        } else if (documentSnapshot.get("role") == "Leader") {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => LeaderNavBar(),
-            ),
-          );
-        } else if (documentSnapshot.get("role") == "Finance") {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => FinanceNavBar(),
-            ),
-          );
-        }
-      } else {
-        print('Document does not exist on the database');
-      }
-    });
+  void route(String email) async {
+    String role = await UserModel.getRoleByEmail(email);
+
+    if (role == "Member") {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => MemberNavBar(),
+        ),
+      );
+    } else if (role == "Leader") {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => LeaderNavBar(),
+        ),
+      );
+    } else if (role == "Finance") {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => FinanceNavBar(),
+        ),
+      );
+    }
+    ;
   }
 }

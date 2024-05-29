@@ -5,6 +5,7 @@ import 'package:bitirme/view/leader_pages/leader_requests.dart';
 import 'package:bitirme/view/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LeaderNavBar extends StatefulWidget {
   const LeaderNavBar({super.key});
@@ -107,9 +108,13 @@ class _LeaderNavBarState extends State<LeaderNavBar> {
     );
   }
 
-  void goToPage(index) {
+  void goToPage(index) async {
     if (index == 4) {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove("email");
+      await prefs.remove("password");
       LoginPage.currentUserEmail = null;
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
