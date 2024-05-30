@@ -1,3 +1,4 @@
+import 'package:bitirme/models/team_model.dart';
 import 'package:bitirme/models/user_model.dart';
 import 'package:flutter/material.dart';
 
@@ -17,6 +18,7 @@ class _FinanceRegisterState extends State<FinanceRegister> {
   TextEditingController jobController = TextEditingController();
   TextEditingController departmentController = TextEditingController();
   TextEditingController teamNameController = TextEditingController();
+  TextEditingController budgetController = TextEditingController();
 
   //String? _selectedRole;
 
@@ -273,10 +275,28 @@ class _FinanceRegisterState extends State<FinanceRegister> {
                 ),
               ),
               SizedBox(height: 40),
+              TextField(
+                keyboardType: TextInputType.number,
+                controller: budgetController,
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                      borderSide: BorderSide.none,
+                      borderRadius: BorderRadius.circular(20)),
+                  hintText: "Budget",
+                  hintStyle: TextStyle(color: Colors.black38),
+                  prefixIcon: Icon(
+                    Icons.money,
+                    color: Color.fromARGB(255, 68, 60, 95),
+                  ),
+                ),
+              ),
+              SizedBox(height: 40),
               ElevatedButton(
                 onPressed: () async {
                   String leaderEmail =
-                      await UserModel.decideLeaderEmailByTeamName(
+                      await TeamModel.decideLeaderEmailByTeamName(
                     roleController.text,
                     teamNameController.text,
                   );
@@ -293,6 +313,12 @@ class _FinanceRegisterState extends State<FinanceRegister> {
                     teamNameController.text,
                     context,
                   )) {
+                    TeamModel(
+                      teamName: teamNameController.text,
+                      leaderEmail: emailController.text,
+                      budget: double.parse(budgetController.text),
+                    ).createTeam(roleController.text);
+
                     nameController.clear();
                     surnameController.clear();
                     emailController.clear();
@@ -301,6 +327,7 @@ class _FinanceRegisterState extends State<FinanceRegister> {
                     jobController.clear();
                     departmentController.clear();
                     teamNameController.clear();
+                    budgetController.clear();
                   }
                 },
                 child: Text(
