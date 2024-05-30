@@ -26,7 +26,7 @@ class _FinanceRequestsState extends State<FinanceRequests> {
             SizedBox(height: screenHeight * 0.02),
             SizedBox(
               //color: Colors.black,
-              height: screenHeight * 0.72,
+              height: screenHeight * 0.75,
               child: StreamBuilder<List<ExpenseModel>>(
                 stream: ExpenseModel.fetchRequestsForFinance(
                   LoginPage.currentUserEmail,
