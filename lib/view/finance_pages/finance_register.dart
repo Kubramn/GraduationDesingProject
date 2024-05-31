@@ -287,7 +287,6 @@ class _FinanceRegisterState extends State<FinanceRegister> {
                     emailController.text,
                     passwordController.text,
                     roleController.text,
-                    leaderEmail,
                     jobController.text,
                     departmentController.text,
                     teamNameController.text,
