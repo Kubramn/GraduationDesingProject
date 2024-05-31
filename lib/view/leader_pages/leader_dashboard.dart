@@ -5,7 +5,6 @@ import 'package:bitirme/view/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 
 class LeaderDashboard extends StatefulWidget {
@@ -233,41 +232,6 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
                             )
                           ],
                         ),
-=======
-                      StaggeredGrid.count(
-                        crossAxisCount: 4,
-                        mainAxisSpacing: 4,
-                        crossAxisSpacing: 4,
-                        children: [
-                          StaggeredGridTile.count(
-                            crossAxisCellCount: 2,
-                            mainAxisCellCount: 2,
-                            child: Padding(
-                              padding: EdgeInsets.all(6),
-                              child: Container(color: Colors.blue),
-                            ),
-                          ),
-                          StaggeredGridTile.count(
-                            crossAxisCellCount: 2,
-                            mainAxisCellCount: 1,
-                            child: Text("2"),
-                          ),
-                          StaggeredGridTile.count(
-                            crossAxisCellCount: 1,
-                            mainAxisCellCount: 1,
-                            child: Text("3"),
-                          ),
-                          StaggeredGridTile.count(
-                            crossAxisCellCount: 1,
-                            mainAxisCellCount: 1,
-                            child: Text("3"),
-                          ),
-                          StaggeredGridTile.count(
-                            crossAxisCellCount: 4,
-                            mainAxisCellCount: 2,
-                            child: Text("4"),
-                          ),
-                        ],
                       ),
                       StreamBuilder<List<ExpenseModel>>(
                         stream: ExpenseModel.fetchTeamExpenses(
