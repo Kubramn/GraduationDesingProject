@@ -295,39 +295,45 @@ class _FinanceRegisterState extends State<FinanceRegister> {
               SizedBox(height: 40),
               ElevatedButton(
                 onPressed: () async {
-                  String leaderEmail =
-                      await TeamModel.decideLeaderEmailByTeamName(
-                    roleController.text,
-                    teamNameController.text,
-                  );
-
                   if (await UserModel.register(
                     nameController.text,
                     surnameController.text,
                     emailController.text,
                     passwordController.text,
                     roleController.text,
-                    leaderEmail,
                     jobController.text,
                     departmentController.text,
                     teamNameController.text,
                     context,
                   )) {
-                    TeamModel(
-                      teamName: teamNameController.text,
-                      leaderEmail: emailController.text,
-                      budget: double.parse(budgetController.text),
-                    ).createTeam(roleController.text);
+                    if(budgetController.text==""){
+                      nameController.clear();
+                      surnameController.clear();
+                      emailController.clear();
+                      passwordController.clear();
+                      roleController.clear();
+                      jobController.clear();
+                      departmentController.clear();
+                      teamNameController.clear();
+                      budgetController.clear();
+                    }else{
+                      TeamModel(
+                        teamName: teamNameController.text,
+                        leaderEmail: emailController.text,
+                        budget: double.parse(budgetController.text),
+                      ).createTeam(roleController.text);
 
-                    nameController.clear();
-                    surnameController.clear();
-                    emailController.clear();
-                    passwordController.clear();
-                    roleController.clear();
-                    jobController.clear();
-                    departmentController.clear();
-                    teamNameController.clear();
-                    budgetController.clear();
+                      nameController.clear();
+                      surnameController.clear();
+                      emailController.clear();
+                      passwordController.clear();
+                      roleController.clear();
+                      jobController.clear();
+                      departmentController.clear();
+                      teamNameController.clear();
+                      budgetController.clear();
+                    }
+
                   }
                 },
                 child: Text(

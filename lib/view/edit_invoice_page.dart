@@ -244,7 +244,7 @@ class _EditInvoicePageState extends State<EditInvoicePage> {
   }
 
   Future<void> addExpense() async {
-    String checkerUserEmail = await UserModel.decideCheckerUserEmailByRole(
+    String checkerUserEmail = await UserModel.decideCheckerUserEmailByTeam(
       LoginPage.currentUserEmail ?? "",
     );
     String status = await UserModel.decideStatusByRole(
@@ -260,6 +260,7 @@ class _EditInvoicePageState extends State<EditInvoicePage> {
       userEmail: LoginPage.currentUserEmail ?? "",
       checkerUserEmail: checkerUserEmail,
       category: categoryController.text,
+      image: widget.imagePath
     ).createExpense();
   }
 

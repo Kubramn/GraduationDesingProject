@@ -1,5 +1,9 @@
-import "package:cloud_firestore/cloud_firestore.dart";
+import 'dart:io';
+import 'dart:math';
 
+import "package:cloud_firestore/cloud_firestore.dart";
+import 'package:collection/collection.dart';
+import "package:firebase_storage/firebase_storage.dart";
 class ExpenseModel {
   String id;
   String title;
@@ -10,6 +14,7 @@ class ExpenseModel {
   String userEmail;
   String checkerUserEmail;
   String category;
+  String image;
 
   ExpenseModel({
     this.id = "",
@@ -21,6 +26,7 @@ class ExpenseModel {
     required this.userEmail,
     required this.checkerUserEmail,
     required this.category,
+    required this.image,
   });
 
   Map<String, dynamic> toJson() => {
@@ -33,6 +39,7 @@ class ExpenseModel {
         "userEmail": userEmail,
         "checkerUserEmail": checkerUserEmail,
         "category": category,
+        "image":image,
       };
 
   static ExpenseModel fromJson(Map<String, dynamic> json) => ExpenseModel(
@@ -45,10 +52,15 @@ class ExpenseModel {
         userEmail: json["userEmail"],
         checkerUserEmail: json["checkerUserEmail"],
         category: json["category"],
+        image: json["image"],
       );
 
   Future createExpense() async {
     final newExpense = FirebaseFirestore.instance.collection('expenses').doc();
+    String fileName = 'images/${DateTime.now().millisecondsSinceEpoch}.png';
+    UploadTask uploadTask = FirebaseStorage.instance.ref(fileName).putFile(File(image));
+    TaskSnapshot snapshot = await uploadTask;
+    String downloadUrl = await snapshot.ref.getDownloadURL();
     final expense = ExpenseModel(
       id: newExpense.id,
       title: title,
@@ -59,6 +71,7 @@ class ExpenseModel {
       userEmail: userEmail,
       checkerUserEmail: checkerUserEmail,
       category: category,
+      image: downloadUrl,
     );
     await newExpense.set(expense.toJson());
   }
@@ -106,9 +119,15 @@ class ExpenseModel {
     return FirebaseFirestore.instance
         .collection('expenses')
         .where(
-          Filter.or(
-            Filter("checkerUserEmail", isEqualTo: email),
-            Filter("userEmail", isEqualTo: email),
+          Filter.and(
+            Filter.or(
+              Filter("checkerUserEmail", isEqualTo: email),
+              Filter("userEmail", isEqualTo: email),
+            ),
+            Filter.or(
+              Filter("status",isEqualTo: "acceptedByLeader"),
+              Filter("status",isEqualTo: "acceptedByLeaderAndFinance"),
+            ),
           ),
         )
         .snapshots()
@@ -118,7 +137,13 @@ class ExpenseModel {
   }
 
   static Stream<List<ExpenseModel>> fetchAllExpenses() {
-    return FirebaseFirestore.instance.collection('expenses').snapshots().map(
+    return FirebaseFirestore.instance.collection('expenses')
+        .where(
+          Filter.or(
+              Filter("status", isEqualTo: "acceptedByLeaderAndFinance"),
+              Filter("status", isEqualTo: "acceptedByLeader"))
+        )
+        .snapshots().map(
         (snapshot) => snapshot.docs
             .map((doc) => ExpenseModel.fromJson(doc.data()))
             .toList());
@@ -159,5 +184,182 @@ class ExpenseModel {
     } catch (e) {
       print("Error updating request status: $e");
     }
+  }
+
+  static Future<List<Data>> getFinanceData() async {
+    List<Data> list = [];
+    List<ExpenseModel> data = await fetchAllExpenses().first;
+    for (var element in data) {
+      String email = element.userEmail;
+      DocumentSnapshot ds = await FirebaseFirestore.instance.collection("users").doc(email).get();
+      Map<String, dynamic> doc = ds.data() as Map<String, dynamic>;
+      String department = doc["department"];
+      String teamName = doc["teamName"];
+      List<String> ts = element.date.split("/");
+      DateTime date = DateTime(int.parse(ts[2]),int.parse(ts[1]),int.parse(ts[0]));
+      double price = double.parse(element.price);
+      String category = element.category;
+      if(element.status=="acceptedByLeaderAndFinance"){
+        if (date.isAfter(DateTime(1700)) && date.isBefore(DateTime(2100))) {
+          list.add(Data(date, price, category,teamName,department));
+        }
+      }
+    }
+    return list;
+  }
+
+  static Future<List<Data>> getLeaderData(String? email) async {
+    List<Data> list = [];
+    List<ExpenseModel> data = await fetchTeamExpenses(email).first;
+    for (var element in data) {
+      String email = element.userEmail;
+      DocumentSnapshot ds = await FirebaseFirestore.instance.collection("users").doc(email).get();
+      Map<String, dynamic> doc = ds.data() as Map<String, dynamic>;
+      String department = doc["department"];
+      String teamName = doc["teamName"];
+      List<String> ts = element.date.split("/");
+      DateTime date = DateTime(int.parse(ts[2]),int.parse(ts[1]),int.parse(ts[0]));
+      double price = double.parse(element.price);
+      String category = element.category;
+      if(element.status=="acceptedByLeaderAndFinance"){
+        if (date.isAfter(DateTime(1700)) && date.isBefore(DateTime(2100))) {
+          list.add(Data(date, price, category,teamName,department));
+        }
+      }
+
+    }
+    return list;
+  }
+
+
+  static Future<List<Data>> sortTime(Future<List<Data>> list,DateTime? startDate,DateTime? endDate) async {
+    List<Data> a = await list;
+    List<Data> data=[];
+    for(var x in a){
+      if (x.time.isAfter(startDate!) && x.time.isBefore(endDate!)) {
+        data.add(Data(x.time, x.price, x.category,x.teamName,x.department));
+      }
+    }
+
+    data.sort((a, b) => a.time.compareTo(b.time));
+    var groupedData = groupBy<Data, DateTime>(
+      data,
+          (data) => data.dateOnly,
+    );
+    var summedData = groupedData.entries.map((entry) {
+      var firstEntry = entry.value.first;
+      var totalSum = entry.value.fold<num>(0, (sum, data) => sum + data.price);
+      return Data(firstEntry.dateOnly, totalSum, 'Total',"s","s");
+    }).toList();
+    return summedData;
+  }
+
+
+  static Future<List<Data>> categorySum(Future<List<Data>> list,DateTime? startDate,DateTime? endDate) async {
+    List<Data> a = await list;
+    List<Data> data=[];
+    for(var x in a){
+      if (x.time.isAfter(startDate!) && x.time.isBefore(endDate!)) {
+        data.add(Data(x.time, x.price, x.category,x.teamName,x.department));
+      }
+    }
+
+    Map<String, num> totalPrices = {};
+    for (var data in data) {
+      if (totalPrices.containsKey(data.category)) {
+        totalPrices[data.category] = (totalPrices[data.category]! + data.price);
+      } else {
+        totalPrices[data.category] = data.price;
+      }
+    }
+    List<Data> result = totalPrices.entries.map((e) => Data(DateTime(0), e.value, e.key,"s","s")).toList();
+    return result;
+  }
+  static Future<List<Data>> departmentSum(Future<List<Data>> list,DateTime? startDate,DateTime? endDate) async {
+    List<Data> a = await list;
+    List<Data> data=[];
+    for(var x in a){
+      if (x.time.isAfter(startDate!) && x.time.isBefore(endDate!)) {
+        data.add(Data(x.time, x.price, x.category,x.teamName,x.department));
+      }
+    }
+
+    Map<String, num> totalPrices = {};
+    for (var data in data) {
+      if (totalPrices.containsKey(data.department)) {
+        totalPrices[data.department] = (totalPrices[data.department]! + data.price);
+      } else {
+        totalPrices[data.department] = data.price;
+      }
+    }
+    List<Data> result = totalPrices.entries.map((e) => Data(DateTime(0),  e.value,"s","s", e.key)).toList();
+    return result;
+  }
+
+
+
+  static List<List<Data>> regression(List<Data> list){
+    int tx=0,tx2=0;
+    double ty=0,txy=0;
+    int n= list.length;
+    int ft= (list.first.time.millisecondsSinceEpoch/86400000).floor();
+    int lt= (list.last.time.millisecondsSinceEpoch/86400000).floor();
+    for (var data in list){
+      tx = tx + (data.time.millisecondsSinceEpoch/86400000).floor()-ft;
+      ty = ty + (data.price as double);
+      txy = txy + (((data.time.millisecondsSinceEpoch/86400000).floor()-ft)*(data.price as double));
+      tx2 = tx2 +pow(((data.time.millisecondsSinceEpoch/86400000).floor()-ft), 2).floor();
+    }
+    double a = (((ty * tx2) - (tx * txy)) / ((n * tx2) - pow(tx, 2)));
+    double b = (((n * txy) - (tx * ty)) / ((n * tx2) - pow(tx, 2)));
+    List<Data> est=[];
+    for(var data in list){
+      double t= (data.time.millisecondsSinceEpoch/86400000)-ft;
+      num price= a+(t*b);
+
+      Data x= Data(DateTime.fromMillisecondsSinceEpoch((t+ft).floor()*86400000), price, "s","s","s");
+      est.add(x);
+    }
+    List<double> x=[];
+    for(int i=0;i<est.length;i++){
+      x.add((list[i].price-est[i].price) as double);
+    }
+    x.sort((a,b)=> a.compareTo(b));
+    List<Data> upper=[];
+    int t= lt-ft;
+    for(int i=0;i<(t*4/3).floor();i++){
+
+      DateTime date= DateTime.fromMillisecondsSinceEpoch((i+ft)*86400000);
+      upper.add(Data(date, a+(i*b)+(x[(9*x.length/10).floor()]), "category", "teamName", "department"));
+    }
+    List<Data> lower=[];
+    for(int i=0;i<(t*4/3).floor();i++){
+
+      DateTime date= DateTime.fromMillisecondsSinceEpoch((i+ft)*86400000);
+      lower.add(Data(date, a+(i*b)+(x[(x.length/10).floor()]), "category", "teamName", "department"));
+    }
+    return [lower,upper,est];
+  }
+
+}
+class Data {
+  Data(this.time, this.price, this.category, this.teamName, this.department);
+  final DateTime time;
+  final num price;
+  final String category;
+  final String teamName;
+  final String department;
+
+  DateTime get dateOnly => DateTime(time.year, time.month, time.day);
+
+  String get compare => "$time $category $teamName";
+
+  DateTime getDate() {
+    return DateTime(time.year, time.month, time.day);
+  }
+
+  @override
+  String toString() {
+    return "category: $category price: $price time: ${getDate()}";
   }
 }

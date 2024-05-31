@@ -8,7 +8,6 @@ class UserModel {
   String email;
   String password;
   String role;
-  String leaderEmail;
   String job;
   String department;
   String teamName;
@@ -19,7 +18,6 @@ class UserModel {
     required this.email,
     required this.password,
     required this.role,
-    required this.leaderEmail,
     required this.job,
     required this.department,
     required this.teamName,
@@ -31,7 +29,6 @@ class UserModel {
         "email": email,
         "password": password,
         "role": role,
-        "leaderEmail": leaderEmail,
         "job": job,
         "department": department,
         "teamName": teamName,
@@ -43,7 +40,6 @@ class UserModel {
         email: json["email"],
         password: json["password"],
         role: json["role"],
-        leaderEmail: json["leaderEmail"],
         job: json["job"],
         department: json["department"],
         teamName: json["teamName"],
@@ -57,7 +53,6 @@ class UserModel {
       email: email,
       password: password,
       role: role,
-      leaderEmail: leaderEmail,
       job: job,
       department: department,
       teamName: teamName,
@@ -85,15 +80,20 @@ class UserModel {
     return "${data['role']}";
   }
 
-  static Future<String> decideCheckerUserEmailByRole(String email) async {
+  static Future<String> decideCheckerUserEmailByTeam(String email) async {
     final userDoc = await FirebaseFirestore.instance
         .collection("users")
         .where("email", isEqualTo: email)
         .get();
 
     final data = userDoc.docs.first.data();
+    final teamDoc = await FirebaseFirestore.instance
+        .collection("teams")
+        .where("teamName", isEqualTo: data["teamName"])
+        .get();
+    final teamData = teamDoc.docs.first.data();
     if (data["role"] == "Member") {
-      return data["leaderEmail"];
+      return teamData["leaderEmail"];
     } else {
       return "No Leader";
     }
@@ -179,7 +179,6 @@ class UserModel {
     String email,
     String password,
     String role,
-    String leaderEmail,
     String job,
     String department,
     String teamName,
@@ -209,7 +208,6 @@ class UserModel {
         email: email,
         password: password,
         role: role,
-        leaderEmail: leaderEmail,
         job: job,
         department: department,
         teamName: teamName,
