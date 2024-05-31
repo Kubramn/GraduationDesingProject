@@ -110,26 +110,6 @@ class UserModel {
     }
   }
 
-  static Future<String> decideLeaderEmailByTeamName(
-      String role, String teamName) async {
-    final userDoc = await FirebaseFirestore.instance
-        .collection("users")
-        .where(
-          Filter.and(
-            Filter("teamName", isEqualTo: teamName),
-            Filter("role", isEqualTo: "Leader"),
-          ),
-        )
-        .get();
-
-    final data = userDoc.docs.first.data();
-    if (role == "Member") {
-      return data["email"];
-    } else {
-      return "No Leader";
-    }
-  }
-
   static Stream<List<UserModel>> fetchAllUsers() {
     return FirebaseFirestore.instance.collection('users').snapshots().map(
         (snapshot) => snapshot.docs

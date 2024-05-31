@@ -17,6 +17,11 @@ void alertMessage(String message, Color backgroundColor, BuildContext context) {
         ),
         actions: [
           TextButton(
+            style: ButtonStyle(
+              overlayColor: WidgetStatePropertyAll(
+                backgroundColor,
+              ),
+            ),
             onPressed: () {
               Navigator.pop(context);
             },

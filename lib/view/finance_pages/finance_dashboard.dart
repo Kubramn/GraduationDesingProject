@@ -91,7 +91,7 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
                   endIndent: screenWidth * 0.01,
                 ),
                 SizedBox(
-                  height: screenHeight * 0.72,
+                  height: screenHeight * 0.75,
                   child: TabBarView(
                     children: [
                       Container(
