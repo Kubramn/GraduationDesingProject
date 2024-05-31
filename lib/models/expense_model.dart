@@ -1,7 +1,9 @@
+import 'dart:io';
 import 'dart:math';
 
 import "package:cloud_firestore/cloud_firestore.dart";
 import 'package:collection/collection.dart';
+import "package:firebase_storage/firebase_storage.dart";
 class ExpenseModel {
   String id;
   String title;
@@ -12,6 +14,7 @@ class ExpenseModel {
   String userEmail;
   String checkerUserEmail;
   String category;
+  String image;
 
   ExpenseModel({
     this.id = "",
@@ -23,6 +26,7 @@ class ExpenseModel {
     required this.userEmail,
     required this.checkerUserEmail,
     required this.category,
+    required this.image,
   });
 
   Map<String, dynamic> toJson() => {
@@ -35,6 +39,7 @@ class ExpenseModel {
         "userEmail": userEmail,
         "checkerUserEmail": checkerUserEmail,
         "category": category,
+        "image":image,
       };
 
   static ExpenseModel fromJson(Map<String, dynamic> json) => ExpenseModel(
@@ -47,10 +52,15 @@ class ExpenseModel {
         userEmail: json["userEmail"],
         checkerUserEmail: json["checkerUserEmail"],
         category: json["category"],
+        image: json["image"],
       );
 
   Future createExpense() async {
     final newExpense = FirebaseFirestore.instance.collection('expenses').doc();
+    String fileName = 'images/${DateTime.now().millisecondsSinceEpoch}.png';
+    UploadTask uploadTask = FirebaseStorage.instance.ref(fileName).putFile(File(image));
+    TaskSnapshot snapshot = await uploadTask;
+    String downloadUrl = await snapshot.ref.getDownloadURL();
     final expense = ExpenseModel(
       id: newExpense.id,
       title: title,
@@ -61,6 +71,7 @@ class ExpenseModel {
       userEmail: userEmail,
       checkerUserEmail: checkerUserEmail,
       category: category,
+      image: downloadUrl,
     );
     await newExpense.set(expense.toJson());
   }
