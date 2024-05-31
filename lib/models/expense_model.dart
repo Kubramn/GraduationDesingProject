@@ -236,9 +236,7 @@ class ExpenseModel {
     List<Data> a = await list;
     List<Data> data=[];
     for(var x in a){
-      print(x);
       if (x.time.isAfter(startDate!) && x.time.isBefore(endDate!)) {
-        print("dsa");
         data.add(Data(x.time, x.price, x.category,x.teamName,x.department));
       }
     }
@@ -253,7 +251,6 @@ class ExpenseModel {
       var totalSum = entry.value.fold<num>(0, (sum, data) => sum + data.price);
       return Data(firstEntry.dateOnly, totalSum, 'Total',"s","s");
     }).toList();
-    print(summedData.length);
     return summedData;
   }
 

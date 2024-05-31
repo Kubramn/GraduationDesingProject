@@ -80,15 +80,20 @@ class UserModel {
     return "${data['role']}";
   }
 
-  static Future<String> decideCheckerUserEmailByRole(String email) async {
+  static Future<String> decideCheckerUserEmailByTeam(String email) async {
     final userDoc = await FirebaseFirestore.instance
         .collection("users")
         .where("email", isEqualTo: email)
         .get();
 
     final data = userDoc.docs.first.data();
+    final teamDoc = await FirebaseFirestore.instance
+        .collection("teams")
+        .where("teamName", isEqualTo: data["teamName"])
+        .get();
+    final teamData = teamDoc.docs.first.data();
     if (data["role"] == "Member") {
-      return data["leaderEmail"];
+      return teamData["leaderEmail"];
     } else {
       return "No Leader";
     }
