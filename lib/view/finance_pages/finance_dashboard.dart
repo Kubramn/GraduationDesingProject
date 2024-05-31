@@ -101,7 +101,7 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
                               color: const Color.fromARGB(255, 185, 185, 132),
                               child: SizedBox(
                                 child: FutureBuilder<List<Data>>(
-                                  future: ExpenseModel.sortTime(filterStartDate,filterEndDate),
+                                  future: ExpenseModel.sortTime(ExpenseModel.getFinanceData(),filterStartDate,filterEndDate),
                                   builder: (context, snapshot) {
                                     if (snapshot.connectionState == ConnectionState.waiting) {
                                       return const Center(child: CircularProgressIndicator());
@@ -166,7 +166,7 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
                                       color: const Color.fromARGB(255, 108, 206, 169),
                                       child: SizedBox(
                                         child: FutureBuilder<List<Data>>(
-                                          future: ExpenseModel.departmentSum(filterStartDate,filterEndDate),
+                                          future: ExpenseModel.departmentSum(ExpenseModel.getFinanceData(),filterStartDate,filterEndDate),
                                           builder: (context, snapshot) {
                                             if (snapshot.connectionState == ConnectionState.waiting) {
                                               return const Center(child: CircularProgressIndicator());
@@ -196,7 +196,7 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
                                       color: const Color.fromARGB(255, 174, 224, 116),
                                       child: SizedBox(
                                         child: FutureBuilder<List<Data>>(
-                                          future: ExpenseModel.categorySum(filterStartDate,filterEndDate),
+                                          future: ExpenseModel.categorySum(ExpenseModel.getFinanceData(),filterStartDate,filterEndDate),
                                           builder: (context, snapshot) {
                                             if (snapshot.connectionState == ConnectionState.waiting) {
                                               return const Center(child: CircularProgressIndicator());
