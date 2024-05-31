@@ -328,61 +328,64 @@ class _ExpensesPageState extends State<ExpensesPage> {
         ],
         content: SizedBox(
           width: double.maxFinite,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Visibility(
-                visible: previousOrWaiting,
-                child: Row(
-                  //mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.info_outline,
-                      color: statusInfoAndColor(expense)[1],
-                      size: 30,
-                    ),
-                    SizedBox(
-                      width: screenWidth * 0.015,
-                    ),
-                    Text(
-                      statusInfoAndColor(expense)[0],
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Visibility(
+                  visible: previousOrWaiting,
+                  child: Row(
+                    //mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.info_outline,
                         color: statusInfoAndColor(expense)[1],
-                        fontSize: 20,
+                        size: 30,
                       ),
-                    ),
-                  ],
+                      SizedBox(
+                        width: screenWidth * 0.015,
+                      ),
+                      Text(
+                        statusInfoAndColor(expense)[0],
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: statusInfoAndColor(expense)[1],
+                          fontSize: 20,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              Visibility(
-                visible: previousOrWaiting,
-                child: Divider(
-                  color: Color.fromARGB(255, 52, 52, 52),
-                  thickness: 1.5,
+                Visibility(
+                  visible: previousOrWaiting,
+                  child: Divider(
+                    color: Color.fromARGB(255, 52, 52, 52),
+                    thickness: 1.5,
+                  ),
                 ),
-              ),
-              infoValuePair(
-                "Title",
-                expense.title,
-                expense,
-              ),
-              infoValuePair(
-                "Description",
-                expense.description,
-                expense,
-              ),
-              infoValuePair(
-                "Date",
-                expense.date,
-                expense,
-              ),
-              infoValuePair(
-                "Price",
-                expense.price,
-                expense,
-              ),
-            ],
+                Image.network(expense.image,width: 200,height: 200,),
+                infoValuePair(
+                  "Title",
+                  expense.title,
+                  expense,
+                ),
+                infoValuePair(
+                  "Description",
+                  expense.description,
+                  expense,
+                ),
+                infoValuePair(
+                  "Date",
+                  expense.date,
+                  expense,
+                ),
+                infoValuePair(
+                  "Price",
+                  expense.price,
+                  expense,
+                ),
+              ],
+            ),
           ),
         ),
       ),

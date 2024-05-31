@@ -610,79 +610,82 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
         ],
         content: SizedBox(
           width: double.maxFinite,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              FutureBuilder<String>(
-                future: UserModel.getNameSurnameByEmail(expense.userEmail),
-                builder: (context, snapshot) {
-                  return Row(
-                    children: [
-                      Icon(
-                        Icons.info_outline,
-                        color: statusInfoAndColor(expense)[1],
-                        size: 30,
-                      ),
-                      SizedBox(
-                        width: screenWidth * 0.035,
-                      ),
-                      Expanded(
-                        child: AutoSizeText.rich(
-                          maxLines: 4,
-                          overflow: TextOverflow.ellipsis,
-                          maxFontSize: 20,
-                          minFontSize: 20,
-                          TextSpan(
-                            children: [
-                              TextSpan(
-                                text: "This expense was incurred by ",
-                              ),
-                              TextSpan(
-                                text: snapshot.data,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                FutureBuilder<String>(
+                  future: UserModel.getNameSurnameByEmail(expense.userEmail),
+                  builder: (context, snapshot) {
+                    return Row(
+                      children: [
+                        Icon(
+                          Icons.info_outline,
+                          color: statusInfoAndColor(expense)[1],
+                          size: 30,
+                        ),
+                        SizedBox(
+                          width: screenWidth * 0.035,
+                        ),
+                        Expanded(
+                          child: AutoSizeText.rich(
+                            maxLines: 4,
+                            overflow: TextOverflow.ellipsis,
+                            maxFontSize: 20,
+                            minFontSize: 20,
+                            TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: "This expense was incurred by ",
                                 ),
-                              ),
-                              TextSpan(
-                                text: statusInfoAndColor(expense)[0],
-                              ),
-                            ],
-                          ),
-                          style: TextStyle(
-                            color: statusInfoAndColor(expense)[1],
-                            fontSize: 20,
+                                TextSpan(
+                                  text: snapshot.data,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: statusInfoAndColor(expense)[0],
+                                ),
+                              ],
+                            ),
+                            style: TextStyle(
+                              color: statusInfoAndColor(expense)[1],
+                              fontSize: 20,
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  );
-                },
-              ),
-              Divider(
-                color: Color.fromARGB(255, 52, 52, 52),
-                thickness: 1.5,
-              ),
-              infoValuePair(
-                "Title",
-                expense.title,
-                expense,
-              ),
-              infoValuePair(
-                "Description",
-                expense.description,
-                expense,
-              ),
-              infoValuePair(
-                "Date",
-                expense.date,
-                expense,
-              ),
-              infoValuePair(
-                "Price",
-                expense.price,
-                expense,
-              ),
-            ],
+                      ],
+                    );
+                  },
+                ),
+                Divider(
+                  color: Color.fromARGB(255, 52, 52, 52),
+                  thickness: 1.5,
+                ),
+                Image.network(expense.image,width: 200,height: 200,),
+                infoValuePair(
+                  "Title",
+                  expense.title,
+                  expense,
+                ),
+                infoValuePair(
+                  "Description",
+                  expense.description,
+                  expense,
+                ),
+                infoValuePair(
+                  "Date",
+                  expense.date,
+                  expense,
+                ),
+                infoValuePair(
+                  "Price",
+                  expense.price,
+                  expense,
+                ),
+              ],
+            ),
           ),
         ),
       ),

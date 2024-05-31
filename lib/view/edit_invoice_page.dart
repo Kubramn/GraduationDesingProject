@@ -260,6 +260,7 @@ class _EditInvoicePageState extends State<EditInvoicePage> {
       userEmail: LoginPage.currentUserEmail ?? "",
       checkerUserEmail: checkerUserEmail,
       category: categoryController.text,
+      image: widget.imagePath
     ).createExpense();
   }
 

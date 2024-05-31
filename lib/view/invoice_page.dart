@@ -63,7 +63,7 @@ class _InvoicePageState extends State<InvoicePage> {
                     ),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(20),
-                      child: CameraPreview(_controller),
+                      child: CameraPreview(_controller),//burası sıkıntılı
                     ),
                   );
                 } else {

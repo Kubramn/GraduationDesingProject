@@ -241,60 +241,63 @@ class _FinanceRequestsState extends State<FinanceRequests> {
         ],
         content: SizedBox(
           width: double.maxFinite,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              FutureBuilder<String>(
-                future: UserModel.getNameSurnameByEmail(request.userEmail),
-                builder: (context, snapshot) {
-                  return Row(
-                    children: [
-                      Icon(
-                        Icons.info_outline,
-                        color: Color.fromARGB(255, 76, 89, 23),
-                        size: 30,
-                      ),
-                      SizedBox(
-                        width: screenWidth * 0.025,
-                      ),
-                      Expanded(
-                        child: AutoSizeText.rich(
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          maxFontSize: 20,
-                          minFontSize: 20,
-                          TextSpan(
-                            children: [
-                              TextSpan(
-                                text: "This expense was incurred by ",
-                              ),
-                              TextSpan(
-                                text: snapshot.data,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                FutureBuilder<String>(
+                  future: UserModel.getNameSurnameByEmail(request.userEmail),
+                  builder: (context, snapshot) {
+                    return Row(
+                      children: [
+                        Icon(
+                          Icons.info_outline,
+                          color: Color.fromARGB(255, 76, 89, 23),
+                          size: 30,
+                        ),
+                        SizedBox(
+                          width: screenWidth * 0.025,
+                        ),
+                        Expanded(
+                          child: AutoSizeText.rich(
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            maxFontSize: 20,
+                            minFontSize: 20,
+                            TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: "This expense was incurred by ",
                                 ),
-                              ),
-                            ],
-                          ),
-                          style: TextStyle(
-                            color: Color.fromARGB(255, 52, 52, 52),
-                            fontSize: 20,
+                                TextSpan(
+                                  text: snapshot.data,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            style: TextStyle(
+                              color: Color.fromARGB(255, 52, 52, 52),
+                              fontSize: 20,
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  );
-                },
-              ),
-              Divider(
-                color: Color.fromARGB(255, 52, 52, 52),
-                thickness: 1.5,
-              ),
-              infoValuePair("Title", request.title),
-              infoValuePair("Description", request.description),
-              infoValuePair("Date", request.date),
-              infoValuePair("Price", request.price),
-            ],
+                      ],
+                    );
+                  },
+                ),
+                Divider(
+                  color: Color.fromARGB(255, 52, 52, 52),
+                  thickness: 1.5,
+                ),
+                Image.network(request.image,width: 200,height: 200,),
+                infoValuePair("Title", request.title),
+                infoValuePair("Description", request.description),
+                infoValuePair("Date", request.date),
+                infoValuePair("Price", request.price),
+              ],
+            ),
           ),
         ),
       ),
