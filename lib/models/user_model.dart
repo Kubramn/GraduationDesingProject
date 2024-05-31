@@ -8,7 +8,6 @@ class UserModel {
   String email;
   String password;
   String role;
-  String leaderEmail;
   String job;
   String department;
   String teamName;
@@ -19,7 +18,6 @@ class UserModel {
     required this.email,
     required this.password,
     required this.role,
-    required this.leaderEmail,
     required this.job,
     required this.department,
     required this.teamName,
@@ -31,7 +29,6 @@ class UserModel {
         "email": email,
         "password": password,
         "role": role,
-        "leaderEmail": leaderEmail,
         "job": job,
         "department": department,
         "teamName": teamName,
@@ -43,7 +40,6 @@ class UserModel {
         email: json["email"],
         password: json["password"],
         role: json["role"],
-        leaderEmail: json["leaderEmail"],
         job: json["job"],
         department: json["department"],
         teamName: json["teamName"],
@@ -57,7 +53,6 @@ class UserModel {
       email: email,
       password: password,
       role: role,
-      leaderEmail: leaderEmail,
       job: job,
       department: department,
       teamName: teamName,
@@ -179,7 +174,6 @@ class UserModel {
     String email,
     String password,
     String role,
-    String leaderEmail,
     String job,
     String department,
     String teamName,
@@ -209,7 +203,6 @@ class UserModel {
         email: email,
         password: password,
         role: role,
-        leaderEmail: leaderEmail,
         job: job,
         department: department,
         teamName: teamName,
