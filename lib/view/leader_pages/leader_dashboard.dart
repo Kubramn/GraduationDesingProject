@@ -3,8 +3,10 @@ import 'package:bitirme/models/expense_model.dart';
 import 'package:bitirme/models/user_model.dart';
 import 'package:bitirme/view/login_page.dart';
 import 'package:flutter/material.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+
 
 class LeaderDashboard extends StatefulWidget {
   const LeaderDashboard({super.key});
@@ -14,8 +16,8 @@ class LeaderDashboard extends StatefulWidget {
 }
 
 class _LeaderDashboardState extends State<LeaderDashboard> {
-  DateTime? filterStartDate;
-  DateTime? filterEndDate;
+  DateTime? filterStartDate=DateTime(1700);
+  DateTime? filterEndDate=DateTime(2100);
   TextEditingController teamController = TextEditingController();
   TextEditingController categoryController = TextEditingController();
 
@@ -96,6 +98,142 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
                   height: screenHeight * 0.75,
                   child: TabBarView(
                     children: [
+                      Container(
+                        child: Column(
+                          children: [
+                            Card(
+                              color: const Color.fromARGB(255, 185, 185, 132),
+                              child: SizedBox(
+                                child: FutureBuilder<List<Data>>(
+                                  future: ExpenseModel.sortTime(ExpenseModel.getLeaderData(LoginPage.currentUserEmail),filterStartDate,filterEndDate),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState == ConnectionState.waiting) {
+                                      return const Center(child: CircularProgressIndicator());
+                                    } else if (snapshot.hasError) {
+                                      return Center(child: Text('Error: ${snapshot.error}'));
+                                    } else if (snapshot.hasData) {
+                                      if(snapshot.data!.length<2){
+                                        return Text("Not Enough Data");
+                                      }else{
+                                        return SfCartesianChart(
+                                          series: <LineSeries<Data, DateTime>>[
+                                            LineSeries<Data, DateTime>(
+                                              dataSource: snapshot.data!,
+                                              color: const Color.fromRGBO(192, 108, 132, 1),
+                                              xValueMapper: (Data sales, _) => sales.dateOnly,
+                                              yValueMapper: (Data sales, _) => sales.price,
+                                            ),
+                                            LineSeries<Data, DateTime>(
+                                              dataSource: ExpenseModel.regression(snapshot.data!)[0],
+                                              color: const Color.fromRGBO(41, 252, 83, 1.0),
+                                              xValueMapper: (Data sales, _) => sales.dateOnly,
+                                              yValueMapper: (Data sales, _) => sales.price,
+                                            ),
+                                            LineSeries<Data, DateTime>(
+                                              dataSource: ExpenseModel.regression(snapshot.data!)[1],
+                                              color: const Color.fromRGBO(41, 252, 83, 1.0),
+                                              xValueMapper: (Data sales, _) => sales.dateOnly,
+                                              yValueMapper: (Data sales, _) => sales.price,
+                                            ),
+                                            LineSeries<Data, DateTime>(
+                                              dataSource: ExpenseModel.regression(snapshot.data!)[2],
+                                              color: const Color.fromRGBO(41, 252, 83, 1.0),
+                                              xValueMapper: (Data sales, _) => sales.dateOnly,
+                                              yValueMapper: (Data sales, _) => sales.price,
+                                            )
+                                          ],
+                                          primaryXAxis: const DateTimeAxis(
+                                            majorGridLines: MajorGridLines(width: 0),
+                                            edgeLabelPlacement: EdgeLabelPlacement.shift,
+                                            interval: 1,
+                                          ),
+                                          primaryYAxis: const NumericAxis(
+                                            axisLine: AxisLine(width: 0),
+                                            majorTickLines: MajorTickLines(size: 0),
+                                          ),
+                                        );
+                                      }
+                                    } else {
+                                      return const Center(child: Text('No data available'));
+                                    }
+                                  },
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: screenWidth * 0.9,
+                              height: screenWidth * 0.45,
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Card(
+                                      color: const Color.fromARGB(255, 108, 206, 169),
+                                      child: SizedBox(
+                                        child: FutureBuilder<List<Data>>(
+                                          future: ExpenseModel.departmentSum(ExpenseModel.getLeaderData(LoginPage.currentUserEmail),filterStartDate,filterEndDate),
+                                          builder: (context, snapshot) {
+                                            if (snapshot.connectionState == ConnectionState.waiting) {
+                                              return const Center(child: CircularProgressIndicator());
+                                            } else if (snapshot.hasError) {
+                                              return Center(child: Text('Error: ${snapshot.error}'));
+                                            } else if (snapshot.hasData) {
+                                              return SfCartesianChart(
+                                                primaryXAxis: const CategoryAxis(),
+                                                series: [
+                                                  StackedColumnSeries<Data, String>(
+                                                    dataSource: snapshot.data!,
+                                                    xValueMapper: (Data sales, _) => sales.department,
+                                                    yValueMapper: (Data sales, _) => sales.price,
+                                                  ),
+                                                ],
+                                              );
+                                            } else {
+                                              return const Center(child: Text('No data available'));
+                                            }
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Card(
+                                      color: const Color.fromARGB(255, 174, 224, 116),
+                                      child: SizedBox(
+                                        child: FutureBuilder<List<Data>>(
+                                          future: ExpenseModel.categorySum(ExpenseModel.getLeaderData(LoginPage.currentUserEmail),filterStartDate,filterEndDate),
+                                          builder: (context, snapshot) {
+                                            if (snapshot.connectionState == ConnectionState.waiting) {
+                                              return const Center(child: CircularProgressIndicator());
+                                            } else if (snapshot.hasError) {
+                                              return Center(child: Text('Error: ${snapshot.error}'));
+                                            } else if (snapshot.hasData) {
+                                              return SfCircularChart(
+                                                legend: const Legend(isVisible: true),
+                                                series: <PieSeries<Data, String>>[
+                                                  PieSeries<Data, String>(
+                                                    explode: true,
+                                                    explodeIndex: 0,
+                                                    dataSource: snapshot.data!,
+                                                    xValueMapper: (Data data, _) => data.category,
+                                                    yValueMapper: (Data data, _) => data.price,
+                                                    dataLabelSettings: const DataLabelSettings(isVisible: true),
+                                                  ),
+                                                ],
+                                              );
+                                            } else {
+                                              return const Center(child: Text('No data available'));
+                                            }
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+=======
                       StaggeredGrid.count(
                         crossAxisCount: 4,
                         mainAxisSpacing: 4,

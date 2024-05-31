@@ -119,9 +119,15 @@ class ExpenseModel {
     return FirebaseFirestore.instance
         .collection('expenses')
         .where(
-          Filter.or(
-            Filter("checkerUserEmail", isEqualTo: email),
-            Filter("userEmail", isEqualTo: email),
+          Filter.and(
+            Filter.or(
+              Filter("checkerUserEmail", isEqualTo: email),
+              Filter("userEmail", isEqualTo: email),
+            ),
+            Filter.or(
+              Filter("status",isEqualTo: "acceptedByLeader"),
+              Filter("status",isEqualTo: "acceptedByLeaderAndFinance"),
+            ),
           ),
         )
         .snapshots()
@@ -131,7 +137,13 @@ class ExpenseModel {
   }
 
   static Stream<List<ExpenseModel>> fetchAllExpenses() {
-    return FirebaseFirestore.instance.collection('expenses').snapshots().map(
+    return FirebaseFirestore.instance.collection('expenses')
+        .where(
+          Filter.or(
+              Filter("status", isEqualTo: "acceptedByLeaderAndFinance"),
+              Filter("status", isEqualTo: "acceptedByLeader"))
+        )
+        .snapshots().map(
         (snapshot) => snapshot.docs
             .map((doc) => ExpenseModel.fromJson(doc.data()))
             .toList());
@@ -174,7 +186,7 @@ class ExpenseModel {
     }
   }
 
-  static Future<List<Data>> getData() async {
+  static Future<List<Data>> getFinanceData() async {
     List<Data> list = [];
     List<ExpenseModel> data = await fetchAllExpenses().first;
     for (var element in data) {
@@ -187,18 +199,46 @@ class ExpenseModel {
       DateTime date = DateTime(int.parse(ts[2]),int.parse(ts[1]),int.parse(ts[0]));
       double price = double.parse(element.price);
       String category = element.category;
-      if (date.isAfter(DateTime(1700)) && date.isBefore(DateTime(2100))) {
-        list.add(Data(date, price, category,teamName,department));
+      if(element.status=="acceptedByLeaderAndFinance"){
+        if (date.isAfter(DateTime(1700)) && date.isBefore(DateTime(2100))) {
+          list.add(Data(date, price, category,teamName,department));
+        }
       }
     }
     return list;
   }
 
-  static Future<List<Data>> sortTime(DateTime? startDate,DateTime? endDate) async {
-    List<Data> a = await getData();
+  static Future<List<Data>> getLeaderData(String? email) async {
+    List<Data> list = [];
+    List<ExpenseModel> data = await fetchTeamExpenses(email).first;
+    for (var element in data) {
+      String email = element.userEmail;
+      DocumentSnapshot ds = await FirebaseFirestore.instance.collection("users").doc(email).get();
+      Map<String, dynamic> doc = ds.data() as Map<String, dynamic>;
+      String department = doc["department"];
+      String teamName = doc["teamName"];
+      List<String> ts = element.date.split("/");
+      DateTime date = DateTime(int.parse(ts[2]),int.parse(ts[1]),int.parse(ts[0]));
+      double price = double.parse(element.price);
+      String category = element.category;
+      if(element.status=="acceptedByLeaderAndFinance"){
+        if (date.isAfter(DateTime(1700)) && date.isBefore(DateTime(2100))) {
+          list.add(Data(date, price, category,teamName,department));
+        }
+      }
+
+    }
+    return list;
+  }
+
+
+  static Future<List<Data>> sortTime(Future<List<Data>> list,DateTime? startDate,DateTime? endDate) async {
+    List<Data> a = await list;
     List<Data> data=[];
     for(var x in a){
+      print(x);
       if (x.time.isAfter(startDate!) && x.time.isBefore(endDate!)) {
+        print("dsa");
         data.add(Data(x.time, x.price, x.category,x.teamName,x.department));
       }
     }
@@ -213,12 +253,13 @@ class ExpenseModel {
       var totalSum = entry.value.fold<num>(0, (sum, data) => sum + data.price);
       return Data(firstEntry.dateOnly, totalSum, 'Total',"s","s");
     }).toList();
+    print(summedData.length);
     return summedData;
   }
 
 
-  static Future<List<Data>> categorySum(DateTime? startDate,DateTime? endDate) async {
-    List<Data> a = await getData();
+  static Future<List<Data>> categorySum(Future<List<Data>> list,DateTime? startDate,DateTime? endDate) async {
+    List<Data> a = await list;
     List<Data> data=[];
     for(var x in a){
       if (x.time.isAfter(startDate!) && x.time.isBefore(endDate!)) {
@@ -237,8 +278,8 @@ class ExpenseModel {
     List<Data> result = totalPrices.entries.map((e) => Data(DateTime(0), e.value, e.key,"s","s")).toList();
     return result;
   }
-  static Future<List<Data>> departmentSum(DateTime? startDate,DateTime? endDate) async {
-    List<Data> a = await getData();
+  static Future<List<Data>> departmentSum(Future<List<Data>> list,DateTime? startDate,DateTime? endDate) async {
+    List<Data> a = await list;
     List<Data> data=[];
     for(var x in a){
       if (x.time.isAfter(startDate!) && x.time.isBefore(endDate!)) {
@@ -257,6 +298,8 @@ class ExpenseModel {
     List<Data> result = totalPrices.entries.map((e) => Data(DateTime(0),  e.value,"s","s", e.key)).toList();
     return result;
   }
+
+
 
   static List<List<Data>> regression(List<Data> list){
     int tx=0,tx2=0;
