@@ -122,7 +122,7 @@ class _FinanceUsersState extends State<FinanceUsers> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   SizedBox(
-                    width: 185,
+                    width: 160,
                     child: TextField(
                       keyboardType: TextInputType.text,
                       controller: nameController,
@@ -142,7 +142,7 @@ class _FinanceUsersState extends State<FinanceUsers> {
                     ),
                   ),
                   SizedBox(
-                    width: 185,
+                    width: 160,
                     child: TextField(
                       keyboardType: TextInputType.text,
                       controller: surnameController,
@@ -168,7 +168,7 @@ class _FinanceUsersState extends State<FinanceUsers> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   SizedBox(
-                    width: 185,
+                    width: 160,
                     child: TextField(
                       keyboardType: TextInputType.text,
                       controller: passwordController,
@@ -207,7 +207,7 @@ class _FinanceUsersState extends State<FinanceUsers> {
                           borderSide: BorderSide.none),
                     ),
                     hintText: "Role",
-                    width: 185,
+                    width: 160,
                     controller: roleController,
                     menuStyle: MenuStyle(
                       shape: WidgetStatePropertyAll(RoundedRectangleBorder(
@@ -274,7 +274,7 @@ class _FinanceUsersState extends State<FinanceUsers> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   SizedBox(
-                    width: 185,
+                    width: 160,
                     child: TextField(
                       keyboardType: TextInputType.text,
                       controller: jobController,
@@ -294,7 +294,7 @@ class _FinanceUsersState extends State<FinanceUsers> {
                     ),
                   ),
                   SizedBox(
-                    width: 185,
+                    width: 160,
                     child: TextField(
                       keyboardType: TextInputType.text,
                       controller: departmentController,

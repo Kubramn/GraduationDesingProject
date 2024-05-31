@@ -179,7 +179,7 @@ class _LeaderRequestsState extends State<LeaderRequests> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.lightGreen,
                       foregroundColor: Colors.white,
-                      fixedSize: Size(screenWidth * 0.36, screenHeight * 0.056),
+                      fixedSize: Size(screenWidth * 0.35, screenHeight * 0.056),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15),
                       ),
@@ -201,7 +201,7 @@ class _LeaderRequestsState extends State<LeaderRequests> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red,
                       foregroundColor: Colors.white,
-                      fixedSize: Size(screenWidth * 0.36, screenHeight * 0.056),
+                      fixedSize: Size(screenWidth * 0.35, screenHeight * 0.056),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15),
                       ),

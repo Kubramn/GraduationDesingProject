@@ -141,7 +141,7 @@ class _EditInvoicePageState extends State<EditInvoicePage> {
         ),
       ),
       hintText: "Category",
-      width: 394,
+      width: 344,
       menuStyle: MenuStyle(
         shape: WidgetStatePropertyAll(
           RoundedRectangleBorder(

@@ -348,9 +348,10 @@ class _ExpensesPageState extends State<ExpensesPage> {
                       Text(
                         statusInfoAndColor(expense)[0],
                         textAlign: TextAlign.center,
+                        maxLines: 4,
                         style: TextStyle(
                           color: statusInfoAndColor(expense)[1],
-                          fontSize: 20,
+                          fontSize: 15,
                         ),
                       ),
                     ],

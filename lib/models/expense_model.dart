@@ -289,6 +289,7 @@ class ExpenseModel {
       if (totalPrices.containsKey(data.department)) {
         totalPrices[data.department] = (totalPrices[data.department]! + data.price);
       } else {
+        print(data.department);
         totalPrices[data.department] = data.price;
       }
     }
