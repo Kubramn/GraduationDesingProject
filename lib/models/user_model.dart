@@ -251,11 +251,13 @@ class UserModel {
         }else{
           Navigator.pop(context);
           alertMessage("Password is wrong", Colors.red, context);
+          return null;
         }
 
       } else {
         Navigator.pop(context);
-        alertMessage("Email @ vs typo", Colors.red, context);
+        alertMessage("There is no User with that email.", Colors.red, context);
+        return null;
       }
     } catch (e) {
       Navigator.pop(context);
