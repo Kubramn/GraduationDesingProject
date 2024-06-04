@@ -16,6 +16,8 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
   DateTime? filterEndDate = DateTime(2100);
   TextEditingController teamController = TextEditingController();
   TextEditingController categoryController = TextEditingController();
+  String? selectedTeam;
+  String? selectedCategory;
 
   @override
   Widget build(BuildContext context) {
@@ -101,7 +103,7 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
                               color: const Color.fromARGB(255, 185, 185, 132),
                               child: SizedBox(
                                 child: FutureBuilder<List<Data>>(
-                                  future: ExpenseModel.sortTime(ExpenseModel.getFinanceData(),filterStartDate,filterEndDate),
+                                  future: ExpenseModel.sortTime(ExpenseModel.getFinanceData()),
                                   builder: (context, snapshot) {
                                     if (snapshot.connectionState == ConnectionState.waiting) {
                                       return const Center(child: CircularProgressIndicator());
@@ -196,7 +198,7 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
                                       color: const Color.fromARGB(255, 174, 224, 116),
                                       child: SizedBox(
                                         child: FutureBuilder<List<Data>>(
-                                          future: ExpenseModel.categorySum(ExpenseModel.getFinanceData(),filterStartDate,filterEndDate),
+                                          future: ExpenseModel.categorySum(ExpenseModel.getFinanceData()),
                                           builder: (context, snapshot) {
                                             if (snapshot.connectionState == ConnectionState.waiting) {
                                               return const Center(child: CircularProgressIndicator());
@@ -232,7 +234,7 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
                       ),
 
                       StreamBuilder<List<ExpenseModel>>(
-                        stream: ExpenseModel.fetchAllExpenses(),
+                        stream: ExpenseModel.fetchAllExpenses(selectedTeam,selectedCategory),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
@@ -373,6 +375,9 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
                 ),
                 onPressed: () {
                   Navigator.pop(context);
+                  setState(() {
+
+                  });
                 },
                 child: Text(
                   "Apply",
@@ -392,6 +397,8 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
                   categoryController.clear();
                   filterStartDate = DateTime(2000);
                   filterEndDate = DateTime.now();
+                  selectedCategory=null;
+                  selectedTeam=null;
                 },
                 child: Text(
                   "Reset",
@@ -484,19 +491,8 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
               surfaceTintColor: WidgetStatePropertyAll(Colors.transparent),
               backgroundColor: WidgetStatePropertyAll(Colors.white),
             ),
-            onSelected: (_) {
-              setState(() {});
-              /*
-
-
-
-
-                      İŞLEMLEEEEEERRRRRRR
-
-
-
-
-         */
+            onSelected: (String? mail) {
+              selectedTeam=mail;
             },
             dropdownMenuEntries: leaders.map((UserModel leader) {
               return DropdownMenuEntry<String>(
@@ -570,8 +566,8 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
         surfaceTintColor: WidgetStatePropertyAll(Colors.transparent),
         backgroundColor: WidgetStatePropertyAll(Colors.white),
       ),
-      onSelected: (_) {
-        setState(() {});
+      onSelected: (String? category) {
+        selectedCategory=category;
       },
       dropdownMenuEntries: const [
         DropdownMenuEntry(

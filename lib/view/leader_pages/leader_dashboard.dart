@@ -104,7 +104,7 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
                               color: const Color.fromARGB(255, 185, 185, 132),
                               child: SizedBox(
                                 child: FutureBuilder<List<Data>>(
-                                  future: ExpenseModel.sortTime(ExpenseModel.getLeaderData(LoginPage.currentUserEmail),filterStartDate,filterEndDate),
+                                  future: ExpenseModel.sortTime(ExpenseModel.getLeaderData(LoginPage.currentUserEmail)),
                                   builder: (context, snapshot) {
                                     if (snapshot.connectionState == ConnectionState.waiting) {
                                       return const Center(child: CircularProgressIndicator());
@@ -199,7 +199,7 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
                                       color: const Color.fromARGB(255, 174, 224, 116),
                                       child: SizedBox(
                                         child: FutureBuilder<List<Data>>(
-                                          future: ExpenseModel.categorySum(ExpenseModel.getLeaderData(LoginPage.currentUserEmail),filterStartDate,filterEndDate),
+                                          future: ExpenseModel.categorySum(ExpenseModel.getLeaderData(LoginPage.currentUserEmail)),
                                           builder: (context, snapshot) {
                                             if (snapshot.connectionState == ConnectionState.waiting) {
                                               return const Center(child: CircularProgressIndicator());
@@ -391,10 +391,12 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
                   overlayColor: Color.fromARGB(255, 227, 185, 117),
                 ),
                 onPressed: () {
-                  teamController.clear();
-                  categoryController.clear();
-                  filterStartDate = DateTime(2000);
-                  filterEndDate = DateTime.now();
+                  setState(() {
+                    teamController.clear();
+                    categoryController.clear();
+                    filterStartDate = DateTime(2000);
+                    filterEndDate = DateTime.now();
+                  });
                 },
                 child: Text(
                   "Reset",
