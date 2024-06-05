@@ -95,7 +95,7 @@ class UserModel {
     if (data["role"] == "Member") {
       return teamData["leaderEmail"];
     } else {
-      return "No Leader";
+      return email;
     }
   }
 
@@ -120,6 +120,16 @@ class UserModel {
         (snapshot) => snapshot.docs
             .map((doc) => UserModel.fromJson(doc.data()))
             .toList());
+  }
+
+  static Stream<List<UserModel>> fetchLeaderInfo(String? mail) {
+    return FirebaseFirestore.instance
+        .collection('users')
+        .where("email",isEqualTo: mail)
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+        .map((doc) => UserModel.fromJson(doc.data()))
+        .toList());
   }
 
   static Stream<List<UserModel>> fetchAllLeaders() {

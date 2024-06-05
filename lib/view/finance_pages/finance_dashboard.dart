@@ -4,6 +4,8 @@ import 'package:bitirme/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
+import '../../models/team_model.dart';
+
 class FinanceDashboard extends StatefulWidget {
   const FinanceDashboard({super.key});
 
@@ -16,6 +18,8 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
   DateTime? filterEndDate = DateTime(2100);
   TextEditingController teamController = TextEditingController();
   TextEditingController categoryController = TextEditingController();
+  String? selectedTeam;
+  String? selectedCategory;
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +108,9 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
                                   future: ExpenseModel.sortTime(
                                       ExpenseModel.getFinanceData(),
                                       filterStartDate,
-                                      filterEndDate),
+                                      filterEndDate,
+                                      teamController.text,
+                                      selectedCategory),
                                   builder: (context, snapshot) {
                                     if (snapshot.connectionState ==
                                         ConnectionState.waiting) {
@@ -199,7 +205,9 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
                                           future: ExpenseModel.departmentSum(
                                               ExpenseModel.getFinanceData(),
                                               filterStartDate,
-                                              filterEndDate),
+                                              filterEndDate,
+                                              teamController.text,
+                                              selectedCategory),
                                           builder: (context, snapshot) {
                                             if (snapshot.connectionState ==
                                                 ConnectionState.waiting) {
@@ -246,7 +254,9 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
                                           future: ExpenseModel.categorySum(
                                               ExpenseModel.getFinanceData(),
                                               filterStartDate,
-                                              filterEndDate),
+                                              filterEndDate,
+                                              teamController.text,
+                                              selectedCategory),
                                           builder: (context, snapshot) {
                                             if (snapshot.connectionState ==
                                                 ConnectionState.waiting) {
@@ -291,12 +301,97 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
                                   ),
                                 ],
                               ),
+                            ),
+                            StreamBuilder(
+                                stream: ExpenseModel.fetchAllExpenses(selectedTeam, selectedCategory),
+                                builder: (context,snapshot){
+                                  if (snapshot.connectionState == ConnectionState.waiting) {
+                                    return const Center(child: CircularProgressIndicator());
+                                  } else if (snapshot.hasError) {
+                                    return Center(child: Text('Error: ${snapshot.error}'));
+                                  } else if (snapshot.hasData) {
+                                    List<ExpenseModel>? expenses = ExpenseModel.dateSort(snapshot.data!, filterStartDate, filterEndDate);
+                                    double sum=0;
+                                    for(int i=0;i<snapshot.data!.length;i++){
+                                      sum+=double.parse(expenses[i].price);
+                                    }
+                                    if(selectedTeam==null){
+                                      return Row(
+                                        children: [
+                                          Card(
+                                            color: const Color.fromARGB(255, 174, 224, 116),
+                                            child: Container(
+                                              width: screenWidth * 0.42,
+                                              height: screenWidth * 0.22,
+                                              child: Center(child: Text("${expenses.length}")),
+                                            ),
+                                          ),
+                                          Card(
+                                            color: const Color.fromARGB(255, 174, 224, 116),
+                                            child: Container(
+                                              width: screenWidth * 0.42,
+                                              height: screenWidth * 0.22,
+                                              child: Center(child: Text("$sum")),
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    }else{
+                                      return Row(
+                                        children: [
+                                          Card(
+                                            color: const Color.fromARGB(255, 174, 224, 116),
+                                            child: Container(
+                                              width: screenWidth * 0.27,
+                                              height: screenWidth * 0.22,
+                                              child: Center(child: Text("${expenses.length}")),
+                                            ),
+                                          ),
+                                          Card(
+                                            color: const Color.fromARGB(255, 174, 224, 116),
+                                            child: Container(
+                                              width: screenWidth * 0.27,
+                                              height: screenWidth * 0.22,
+                                              child: Center(child: Text("$sum")),
+                                            ),
+                                          ),
+                                          FutureBuilder(
+                                              future: TeamModel.getTeamBudget(selectedTeam),
+                                              builder: (context,snapshot){
+                                                if (snapshot.connectionState == ConnectionState.waiting) {
+                                                  return const Center(child: CircularProgressIndicator());
+                                                } else if (snapshot.hasError) {
+                                                  print(snapshot.error);
+                                                  return Center(child: Text('Error: ${snapshot.error}'));
+                                                } else if (snapshot.hasData) {
+                                                  return Card(
+                                                    color: const Color.fromARGB(
+                                                        255, 60, 66, 53),
+                                                    child: Container(
+                                                      width: screenWidth * 0.27,
+                                                      height: screenWidth * 0.22,
+                                                      child: Center(child: Text("${snapshot.data}")),
+                                                    ),
+                                                  );
+                                                } else {
+                                                  return const Center(child: Text('No data available'));
+                                                }
+                                              }
+                                          )
+                                        ],
+                                      );
+                                    }
+                                  } else {
+                                    return const Center(child: Text('No data available'));
+                                  }
+
+                                }
                             )
                           ],
                         ),
                       ),
                       StreamBuilder<List<ExpenseModel>>(
-                        stream: ExpenseModel.fetchAllExpenses(),
+                        stream: ExpenseModel.fetchAllExpenses(selectedTeam,selectedCategory),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
@@ -325,7 +420,7 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
                               ),
                             );
                           } else {
-                            final expenses = snapshot.data!;
+                            final expenses = ExpenseModel.dateFilter(snapshot.data!, filterStartDate, filterEndDate);
                             return ListView.builder(
                                 padding: EdgeInsets.zero,
                                 itemCount: expenses.length,
@@ -439,6 +534,7 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
                   overlayColor: Color.fromARGB(255, 227, 185, 117),
                 ),
                 onPressed: () {
+                  setState(() {});
                   Navigator.pop(context);
                 },
                 child: Text(
@@ -459,6 +555,8 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
                   categoryController.clear();
                   filterStartDate = DateTime(2000);
                   filterEndDate = DateTime.now();
+                  selectedTeam=null;
+                  selectedCategory=null;
                 },
                 child: Text(
                   "Reset",
@@ -551,19 +649,8 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
               surfaceTintColor: WidgetStatePropertyAll(Colors.transparent),
               backgroundColor: WidgetStatePropertyAll(Colors.white),
             ),
-            onSelected: (_) {
-              setState(() {});
-              /*
-
-
-
-
-                      İŞLEMLEEEEEERRRRRRR
-
-
-
-
-         */
+            onSelected: (String? team) {
+              selectedTeam= team;
             },
             dropdownMenuEntries: leaders.map((UserModel leader) {
               return DropdownMenuEntry<String>(
@@ -637,8 +724,8 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
         surfaceTintColor: WidgetStatePropertyAll(Colors.transparent),
         backgroundColor: WidgetStatePropertyAll(Colors.white),
       ),
-      onSelected: (_) {
-        setState(() {});
+      onSelected: (String? category) {
+        selectedCategory= category;
       },
       dropdownMenuEntries: const [
         DropdownMenuEntry(

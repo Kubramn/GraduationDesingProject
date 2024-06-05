@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localization/flutter_localization.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
+import '../../models/team_model.dart';
+
 class LeaderDashboard extends StatefulWidget {
   const LeaderDashboard({super.key});
 
@@ -19,6 +21,8 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
   DateTime? filterEndDate = DateTime(2100);
   TextEditingController teamController = TextEditingController();
   TextEditingController categoryController = TextEditingController();
+  String? selectedTeam;
+  String? selectedCategory;
 
   @override
   Widget build(BuildContext context) {
@@ -108,7 +112,9 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
                                       ExpenseModel.getLeaderData(
                                           LoginPage.currentUserEmail),
                                       filterStartDate,
-                                      filterEndDate),
+                                      filterEndDate,
+                                      teamController.text,
+                                      selectedCategory),
                                   builder: (context, snapshot) {
                                     if (snapshot.connectionState ==
                                         ConnectionState.waiting) {
@@ -212,7 +218,9 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
                                               ExpenseModel.getLeaderData(
                                                   LoginPage.currentUserEmail),
                                               filterStartDate,
-                                              filterEndDate),
+                                              filterEndDate,
+                                              teamController.text,
+                                              selectedCategory),
                                           builder: (context, snapshot) {
                                             if (snapshot.connectionState ==
                                                 ConnectionState.waiting) {
@@ -266,7 +274,9 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
                                               ExpenseModel.getLeaderData(
                                                   LoginPage.currentUserEmail),
                                               filterStartDate,
-                                              filterEndDate),
+                                              filterEndDate,
+                                              teamController.text,
+                                              selectedCategory),
                                           builder: (context, snapshot) {
                                             if (snapshot.connectionState ==
                                                 ConnectionState.waiting) {
@@ -318,13 +328,80 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
                                   ),
                                 ],
                               ),
+                            ),
+                            Row(
+                              children: [
+                                StreamBuilder(
+                                    stream: ExpenseModel.fetchTeamExpenses(LoginPage.currentUserEmail, selectedCategory),
+                                    builder: (context,snapshot){
+                                      if (snapshot.connectionState == ConnectionState.waiting) {
+                                        return const Center(child: CircularProgressIndicator());
+                                      } else if (snapshot.hasError) {
+                                        return Center(child: Text('Error: ${snapshot.error}'));
+                                      } else if (snapshot.hasData) {
+                                        List<ExpenseModel>? expenses = ExpenseModel.dateSort(snapshot.data!, filterStartDate, filterEndDate);
+                                        double sum=0;
+                                        for(int i=0;i<snapshot.data!.length;i++){
+                                          sum+=double.parse(expenses[i].price);
+                                        }
+                                        return Row(
+                                          children: [
+                                            Card(
+                                              color: const Color.fromARGB(
+                                                  255, 60, 66, 53),
+                                              child: Container(
+                                                width: screenWidth * 0.27,
+                                                height: screenWidth * 0.22,
+                                                child: Center(child: Text("${expenses.length}")),
+                                              ),
+                                            ),
+                                            Card(
+                                              color: const Color.fromARGB(255, 174, 224, 116),
+                                              child: Container(
+                                                width: screenWidth * 0.27,
+                                                height: screenWidth * 0.22,
+                                                child: Center(child: Text("$sum")),
+                                              ),
+                                            ),
+                                          ],
+                                        );
+                                      } else {
+                                        return const Center(child: Text('No data available'));
+                                      }
+
+                                    }
+                                ),
+                                FutureBuilder(
+                                    future: TeamModel.getTeamBudget(LoginPage.currentUserEmail),
+                                    builder: (context,snapshot){
+                                      if (snapshot.connectionState == ConnectionState.waiting) {
+                                        return const Center(child: CircularProgressIndicator());
+                                      } else if (snapshot.hasError) {
+                                        return Center(child: Text('Error: ${snapshot.error}'));
+                                      } else if (snapshot.hasData) {
+                                        return Card(
+                                          color: const Color.fromARGB(
+                                              255, 60, 66, 53),
+                                          child: Container(
+                                            width: screenWidth * 0.27,
+                                            height: screenWidth * 0.22,
+                                            child: Center(child: Text("${snapshot.data}")),
+                                          ),
+                                        );
+                                      } else {
+                                        return const Center(child: Text('No data available'));
+                                      }
+
+                                    }
+                                )
+                              ],
                             )
                           ],
                         ),
                       ),
                       StreamBuilder<List<ExpenseModel>>(
                         stream: ExpenseModel.fetchTeamExpenses(
-                            LoginPage.currentUserEmail),
+                            LoginPage.currentUserEmail,selectedCategory),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
@@ -354,7 +431,7 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
                               ),
                             );
                           } else {
-                            final expenses = snapshot.data!;
+                            final expenses = ExpenseModel.dateFilter(snapshot.data!, filterStartDate, filterEndDate);
                             return ListView.builder(
                                 padding: EdgeInsets.zero,
                                 itemCount: expenses.length,
@@ -469,6 +546,9 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
                   overlayColor: Color.fromARGB(255, 227, 185, 117),
                 ),
                 onPressed: () {
+                  setState(() {
+
+                  });
                   Navigator.pop(context);
                 },
                 child: Text(
@@ -489,6 +569,8 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
                   categoryController.clear();
                   filterStartDate = DateTime(2000);
                   filterEndDate = DateTime.now();
+                  selectedCategory=null;
+                  selectedTeam=null;
                 },
                 child: Text(
                   LocaleData.dialogResetButton.getString(context),
@@ -525,10 +607,8 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               SizedBox(height: 15),
-              teamDropdownMenu(screenWidth),
-              SizedBox(height: 40),
               categoryDropdownMenu(),
-              SizedBox(height: 40),
+              SizedBox(height: 150),
               dateRangeButton(context),
             ],
           ),
@@ -581,19 +661,8 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
               surfaceTintColor: WidgetStatePropertyAll(Colors.transparent),
               backgroundColor: WidgetStatePropertyAll(Colors.white),
             ),
-            onSelected: (_) {
-              setState(() {});
-              /*
-
-
-
-
-                      İŞLEMLEEEEEERRRRRRR
-
-
-
-
-         */
+            onSelected: (String? team) {
+              selectedTeam=team;
             },
             dropdownMenuEntries: leaders.map((UserModel leader) {
               return DropdownMenuEntry<String>(
@@ -667,8 +736,8 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
         surfaceTintColor: WidgetStatePropertyAll(Colors.transparent),
         backgroundColor: WidgetStatePropertyAll(Colors.white),
       ),
-      onSelected: (_) {
-        setState(() {});
+      onSelected: (String? category) {
+        selectedCategory=category;
       },
       dropdownMenuEntries: const [
         DropdownMenuEntry(

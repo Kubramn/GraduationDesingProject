@@ -1,3 +1,4 @@
+import 'package:bitirme/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class TeamModel {
@@ -26,6 +27,13 @@ class TeamModel {
         leaderEmail: json["leaderEmail"],
         budget: json["budget"],
       );
+
+  static Future<num> getTeamBudget(String? email) async {
+    String teamName= (await UserModel.fetchLeaderInfo(email).first).first.teamName;
+    QuerySnapshot qs =await FirebaseFirestore.instance.collection("teams").where("teamName",isEqualTo: teamName).get();
+    QueryDocumentSnapshot doc = qs.docs.first;
+    return doc.get("budget");
+  }
 
   Future createTeam(String role) async {
     if (role == "Leader") {
