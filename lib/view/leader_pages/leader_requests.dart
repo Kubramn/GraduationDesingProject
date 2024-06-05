@@ -168,7 +168,7 @@ class _LeaderRequestsState extends State<LeaderRequests> {
         backgroundColor: Colors.white,
         insetPadding: EdgeInsets.symmetric(
           horizontal: 30,
-          vertical: 50,
+          vertical: 45,
         ),
         actions: [
           Column(

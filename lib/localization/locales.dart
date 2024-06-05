@@ -72,7 +72,7 @@ mixin LocaleData {
     //
     "navbarExpenses": "Harcamalar",
     "navbarInvoice": "Fatura",
-    "navbarDashboard": "Gösterge Paneli",
+    "navbarDashboard": "Panel",
     "navbarRequests": "Talepler",
     "navbarUsers": "Kullanıcılar",
     "navbarRegister": "Kayıt",
