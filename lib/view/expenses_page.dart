@@ -1,7 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:bitirme/localization/locales.dart';
 import 'package:bitirme/models/expense_model.dart';
 import 'package:bitirme/view/login_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 
 class ExpensesPage extends StatefulWidget {
   const ExpensesPage({super.key});
@@ -27,7 +29,7 @@ class _ExpensesPageState extends State<ExpensesPage> {
             ),
             child: Column(
               children: [
-                SizedBox(height: screenHeight * 0.06),
+                SizedBox(height: screenHeight * 0.08),
                 TabBar(
                   labelColor: Color.fromARGB(255, 76, 89, 23),
                   labelStyle: TextStyle(
@@ -53,15 +55,15 @@ class _ExpensesPageState extends State<ExpensesPage> {
                   ),
                   tabs: [
                     Tab(
-                      text: "Previous",
+                      text: LocaleData.previousTab.getString(context),
                     ),
                     Tab(
-                      text: "Waiting",
+                      text: LocaleData.waitingTab.getString(context),
                     ),
                   ],
                 ),
                 Divider(
-                  height: screenHeight * 0.04,
+                  height: 40,
                   color: Color.fromARGB(255, 76, 89, 23),
                   thickness: 1.5,
                   indent: screenWidth * 0.01,
@@ -86,7 +88,7 @@ class _ExpensesPageState extends State<ExpensesPage> {
                             );
                           } else if (snapshot.hasError) {
                             return Center(
-                              child: Text('ERROR!'),
+                              child: Text(LocaleData.error.getString(context)),
                             );
                           } else if (!snapshot.hasData ||
                               snapshot.data!.isEmpty) {
@@ -94,7 +96,8 @@ class _ExpensesPageState extends State<ExpensesPage> {
                               child: SizedBox(
                                 width: screenWidth * 0.8,
                                 child: Text(
-                                  "There is no previous expense of yours right now.",
+                                  LocaleData.errorNoPreviousExpense
+                                      .getString(context),
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontSize: 25,
@@ -117,7 +120,7 @@ class _ExpensesPageState extends State<ExpensesPage> {
                                         screenHeight,
                                         screenWidth,
                                       ),
-                                      SizedBox(height: screenHeight * 0.01),
+                                      SizedBox(height: 10),
                                     ],
                                   );
                                 });
@@ -139,7 +142,7 @@ class _ExpensesPageState extends State<ExpensesPage> {
                             );
                           } else if (snapshot.hasError) {
                             return Center(
-                              child: Text('ERROR!'),
+                              child: Text(LocaleData.error.getString(context)),
                             );
                           } else if (!snapshot.hasData ||
                               snapshot.data!.isEmpty) {
@@ -147,7 +150,8 @@ class _ExpensesPageState extends State<ExpensesPage> {
                               child: SizedBox(
                                 width: screenWidth * 0.8,
                                 child: Text(
-                                  "There is no expense of yours awaiting approval right now.",
+                                  LocaleData.errorNoWaitingExpense
+                                      .getString(context),
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontSize: 25,
@@ -170,7 +174,7 @@ class _ExpensesPageState extends State<ExpensesPage> {
                                         screenHeight,
                                         screenWidth,
                                       ),
-                                      SizedBox(height: screenHeight * 0.01),
+                                      SizedBox(height: 10),
                                     ],
                                   );
                                 });
@@ -189,21 +193,36 @@ class _ExpensesPageState extends State<ExpensesPage> {
   }
 
   List<dynamic> statusInfoAndColor(ExpenseModel expense) {
-    if (expense.status == "acceptedByLeaderAndFinance") {
-      return [
-        "This expense has been accepted.",
-        Colors.lightGreen,
-      ];
-    } else if (expense.status == "denied") {
-      return [
-        "This expense has been denied.",
-        Colors.red,
-      ];
-    } else {
-      return [
-        "",
-        Color.fromARGB(255, 76, 89, 23),
-      ];
+    switch (expense.status) {
+      case "waiting":
+        return [
+          LocaleData.statusWaiting.getString(context),
+          Colors.lightBlue,
+        ];
+
+      case "acceptedByLeader":
+        return [
+          LocaleData.statusAcceptedByLeader.getString(context),
+          Colors.teal,
+        ];
+
+      case "acceptedByLeaderAndFinance":
+        return [
+          LocaleData.statusAcceptedByLeaderAndFinance.getString(context),
+          Colors.lightGreen,
+        ];
+
+      case "denied":
+        return [
+          LocaleData.statusDenied.getString(context),
+          Colors.red,
+        ];
+
+      default:
+        return [
+          "",
+          Color.fromARGB(255, 76, 89, 23),
+        ];
     }
   }
 
@@ -244,21 +263,25 @@ class _ExpensesPageState extends State<ExpensesPage> {
     double screenWidth,
   ) {
     return SizedBox(
-      height: screenHeight * 0.08,
+      height: 80,
       child: Card(
         elevation: 3,
-        shadowColor: Color.fromARGB(255, 191, 203, 155),
-        color: Colors.white,
-        surfaceTintColor: Color.fromARGB(255, 191, 203, 155),
+        shadowColor: Colors.black,
+        color: Color.lerp(
+          statusInfoAndColor(expense)[1],
+          Colors.white,
+          0.93,
+        ),
+        surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(20),
         ),
         child: Center(
           child: ListTile(
             textColor: Color.fromARGB(255, 52, 52, 52),
             leading: Icon(
               Icons.attach_money,
-              color: Color.fromARGB(255, 76, 89, 23),
+              color: statusInfoAndColor(expense)[1],
               size: 34,
             ),
             title: Text(
@@ -269,12 +292,16 @@ class _ExpensesPageState extends State<ExpensesPage> {
             ),
             trailing: IconButton(
               icon: Icon(
-                Icons.search,
-                color: Color.fromARGB(255, 76, 89, 23),
+                Icons.menu,
+                color: Color.lerp(
+                  statusInfoAndColor(expense)[1],
+                  Colors.white,
+                  0.93,
+                ),
                 size: 30,
               ),
               style: IconButton.styleFrom(
-                backgroundColor: Color.fromARGB(255, 191, 203, 155),
+                backgroundColor: statusInfoAndColor(expense)[1],
               ),
               onPressed: () {
                 showExpenseDialog(
@@ -292,32 +319,27 @@ class _ExpensesPageState extends State<ExpensesPage> {
     return showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        surfaceTintColor: Color.fromARGB(255, 191, 203, 155),
+        surfaceTintColor: Colors.transparent,
         shadowColor: Colors.black,
-        backgroundColor: previousOrWaiting
-            ? Color.lerp(
-                statusInfoAndColor(expense)[1],
-                Colors.white,
-                0.96,
-              )
-            : Colors.white,
+        backgroundColor: Color.lerp(
+          statusInfoAndColor(expense)[1],
+          Colors.white,
+          0.93,
+        ),
         insetPadding: EdgeInsets.symmetric(
-          horizontal: screenWidth * 0.06,
-          vertical:
-              previousOrWaiting ? screenHeight * 0.25 : screenHeight * 0.3,
+          horizontal: 30,
+          vertical: previousOrWaiting ? 70 : 50,
         ),
         actions: [
           TextButton(
             style: TextButton.styleFrom(
-              overlayColor: previousOrWaiting
-                  ? statusInfoAndColor(expense)[1]
-                  : Color.fromARGB(255, 191, 203, 155),
+              overlayColor: statusInfoAndColor(expense)[1],
             ),
             onPressed: () {
               Navigator.pop(context);
             },
             child: Text(
-              "Close",
+              LocaleData.dialogCloseButton.getString(context),
               style: TextStyle(
                 color: statusInfoAndColor(expense)[1],
                 fontSize: 25,
@@ -328,65 +350,70 @@ class _ExpensesPageState extends State<ExpensesPage> {
         ],
         content: SizedBox(
           width: double.maxFinite,
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Visibility(
-                  visible: previousOrWaiting,
-                  child: Row(
-                    //mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.info_outline,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Row(
+                children: [
+                  Icon(
+                    Icons.info_outline,
+                    color: statusInfoAndColor(expense)[1],
+                    size: 30,
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Expanded(
+                    child: AutoSizeText(
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                      maxFontSize: 20,
+                      minFontSize: 20,
+                      statusInfoAndColor(expense)[0],
+                      style: TextStyle(
                         color: statusInfoAndColor(expense)[1],
-                        size: 30,
+                        fontSize: 20,
                       ),
-                      SizedBox(
-                        width: screenWidth * 0.015,
-                      ),
-                      Text(
-                        statusInfoAndColor(expense)[0],
-                        textAlign: TextAlign.center,
-                        maxLines: 4,
-                        style: TextStyle(
-                          color: statusInfoAndColor(expense)[1],
-                          fontSize: 15,
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
+                ],
+              ),
+              Divider(
+                color: statusInfoAndColor(expense)[1],
+                thickness: 1.5,
+              ),
+              SizedBox(height: 5),
+              ConstrainedBox(
+                constraints: BoxConstraints(maxHeight: 350),
+                child: Image.network(
+                  expense.image,
                 ),
-                Visibility(
-                  visible: previousOrWaiting,
-                  child: Divider(
-                    color: Color.fromARGB(255, 52, 52, 52),
-                    thickness: 1.5,
-                  ),
-                ),
-                Image.network(expense.image,width: 200,height: 200,),
-                infoValuePair(
-                  "Title",
-                  expense.title,
-                  expense,
-                ),
-                infoValuePair(
-                  "Description",
-                  expense.description,
-                  expense,
-                ),
-                infoValuePair(
-                  "Date",
-                  expense.date,
-                  expense,
-                ),
-                infoValuePair(
-                  "Price",
-                  expense.price,
-                  expense,
-                ),
-              ],
-            ),
+              ),
+              SizedBox(height: 10),
+              infoValuePair(
+                LocaleData.dialogTitle.getString(context),
+                expense.title,
+                expense,
+              ),
+              SizedBox(height: 2),
+              infoValuePair(
+                LocaleData.dialogDescription.getString(context),
+                expense.description,
+                expense,
+              ),
+              SizedBox(height: 2),
+              infoValuePair(
+                LocaleData.dialogDate.getString(context),
+                expense.date,
+                expense,
+              ),
+              SizedBox(height: 2),
+              infoValuePair(
+                LocaleData.dialogPrice.getString(context),
+                expense.price,
+                expense,
+              ),
+            ],
           ),
         ),
       ),

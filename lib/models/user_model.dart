@@ -160,6 +160,34 @@ class UserModel {
     }
   }
 
+  static Future<void> updateTeamNamesOfUsers(
+    String oldTeamName,
+    String newTeamName,
+  ) async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .where("teamName", isEqualTo: oldTeamName)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        for (QueryDocumentSnapshot doc in querySnapshot.docs) {
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(doc.id)
+              .update({
+            "teamName": newTeamName,
+          });
+        }
+        print('Team names updated successfully');
+      } else {
+        print('No users found with the team name $oldTeamName');
+      }
+    } catch (e) {
+      print('Failed to update team names: $e');
+    }
+  }
+
   static Future<bool> deleteUser(
     String? email,
   ) async {

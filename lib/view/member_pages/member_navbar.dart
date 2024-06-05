@@ -1,7 +1,9 @@
+import 'package:bitirme/localization/locales.dart';
 import 'package:bitirme/view/expenses_page.dart';
 import 'package:bitirme/view/invoice_page.dart';
 import 'package:bitirme/view/login_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -27,7 +29,7 @@ class _MemberNavBarState extends State<MemberNavBar> {
         padding: EdgeInsets.only(
           right: screenWidth * 0.13,
           left: screenWidth * 0.13,
-          bottom: screenWidth * 0.06,
+          bottom: 25,
         ),
         child: Container(
           decoration: BoxDecoration(
@@ -37,7 +39,7 @@ class _MemberNavBarState extends State<MemberNavBar> {
           child: Padding(
             padding: EdgeInsets.symmetric(
               horizontal: screenWidth * 0.037,
-              vertical: screenHeight * 0.017,
+              vertical: 17,
             ),
             child: GNav(
               tabBorderRadius: 22,
@@ -50,7 +52,7 @@ class _MemberNavBarState extends State<MemberNavBar> {
               //textStyle: TextStyle(fontSize: 15, color: Colors.white),
               padding: EdgeInsets.symmetric(
                 horizontal: screenWidth * 0.03,
-                vertical: screenHeight * 0.015,
+                vertical: 15,
               ),
               //duration: Duration(milliseconds: 800),
               tabs: [
@@ -62,7 +64,7 @@ class _MemberNavBarState extends State<MemberNavBar> {
                   icon: (_currentIndex) == 0
                       ? Icons.attach_money
                       : Icons.attach_money_outlined,
-                  text: "Expenses",
+                  text: LocaleData.navbarExpenses.getString(context),
                 ),
                 GButton(
                   iconColor: Color.fromARGB(255, 49, 102, 101),
@@ -72,7 +74,7 @@ class _MemberNavBarState extends State<MemberNavBar> {
                   icon: (_currentIndex) == 1
                       ? Icons.receipt_long
                       : Icons.receipt_long_outlined,
-                  text: "Invoice",
+                  text: LocaleData.navbarInvoice.getString(context),
                 ),
                 GButton(
                   icon: Icons.logout_outlined,

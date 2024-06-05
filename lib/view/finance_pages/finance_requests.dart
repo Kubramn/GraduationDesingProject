@@ -20,10 +20,10 @@ class _FinanceRequestsState extends State<FinanceRequests> {
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 229, 229, 225),
       body: Padding(
-        padding: EdgeInsets.all(screenWidth * 0.06),
+        padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06),
         child: Column(
           children: [
-            SizedBox(height: screenHeight * 0.02),
+            SizedBox(height: screenHeight * 0.05),
             SizedBox(
               //color: Colors.black,
               height: screenHeight * 0.75,
@@ -61,8 +61,16 @@ class _FinanceRequestsState extends State<FinanceRequests> {
                     return ListView.builder(
                       itemCount: requests.length,
                       itemBuilder: (context, index) {
-                        return requestTile(
-                            requests[index], screenHeight, screenWidth);
+                        return Column(
+                          children: [
+                            requestTile(
+                              requests[index],
+                              screenHeight,
+                              screenWidth,
+                            ),
+                            SizedBox(height: 10),
+                          ],
+                        );
                       },
                     );
                   }
@@ -111,14 +119,14 @@ class _FinanceRequestsState extends State<FinanceRequests> {
     double screenWidth,
   ) =>
       SizedBox(
-        height: screenHeight * 0.08,
+        height: 80,
         child: Card(
           elevation: 3,
           shadowColor: Color.fromARGB(255, 191, 203, 155),
           color: Colors.white,
           surfaceTintColor: Color.fromARGB(255, 191, 203, 155),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(20),
           ),
           child: Center(
             child: ListTile(
@@ -134,10 +142,9 @@ class _FinanceRequestsState extends State<FinanceRequests> {
                   fontSize: 22,
                 ),
               ),
-              //subtitle: Text(request.description),
               trailing: IconButton(
                 icon: Icon(
-                  Icons.search,
+                  Icons.menu,
                   color: Color.fromARGB(255, 76, 89, 23),
                   size: 30,
                 ),
@@ -158,12 +165,12 @@ class _FinanceRequestsState extends State<FinanceRequests> {
     return showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        shadowColor: Colors.black,
         surfaceTintColor: Color.fromARGB(255, 191, 203, 155),
+        shadowColor: Colors.black,
         backgroundColor: Colors.white,
         insetPadding: EdgeInsets.symmetric(
-          horizontal: screenWidth * 0.06,
-          vertical: screenHeight * 0.2,
+          horizontal: 30,
+          vertical: 50,
         ),
         actions: [
           Column(
@@ -182,7 +189,7 @@ class _FinanceRequestsState extends State<FinanceRequests> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.lightGreen,
                       foregroundColor: Colors.white,
-                      fixedSize: Size(screenWidth * 0.36, screenHeight * 0.056),
+                      fixedSize: Size(160, 55),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15),
                       ),
@@ -194,7 +201,7 @@ class _FinanceRequestsState extends State<FinanceRequests> {
                     ),
                   ),
                   SizedBox(
-                    width: screenWidth * 0.04,
+                    width: 15,
                   ),
                   ElevatedButton(
                     onPressed: (() {
@@ -204,7 +211,7 @@ class _FinanceRequestsState extends State<FinanceRequests> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red,
                       foregroundColor: Colors.white,
-                      fixedSize: Size(screenWidth * 0.36, screenHeight * 0.056),
+                      fixedSize: Size(160, 55),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15),
                       ),
@@ -217,9 +224,7 @@ class _FinanceRequestsState extends State<FinanceRequests> {
                   ),
                 ],
               ),
-              SizedBox(
-                height: screenHeight * 0.015,
-              ),
+              SizedBox(height: 15),
               TextButton(
                 style: TextButton.styleFrom(
                   overlayColor: Color.fromARGB(255, 191, 203, 155),
@@ -241,63 +246,68 @@ class _FinanceRequestsState extends State<FinanceRequests> {
         ],
         content: SizedBox(
           width: double.maxFinite,
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                FutureBuilder<String>(
-                  future: UserModel.getNameSurnameByEmail(request.userEmail),
-                  builder: (context, snapshot) {
-                    return Row(
-                      children: [
-                        Icon(
-                          Icons.info_outline,
-                          color: Color.fromARGB(255, 76, 89, 23),
-                          size: 30,
-                        ),
-                        SizedBox(
-                          width: screenWidth * 0.025,
-                        ),
-                        Expanded(
-                          child: AutoSizeText.rich(
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            maxFontSize: 20,
-                            minFontSize: 20,
-                            TextSpan(
-                              children: [
-                                TextSpan(
-                                  text: "This expense was incurred by ",
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              FutureBuilder<String>(
+                future: UserModel.getNameSurnameByEmail(request.userEmail),
+                builder: (context, snapshot) {
+                  return Row(
+                    children: [
+                      Icon(
+                        Icons.info_outline,
+                        color: Color.fromARGB(255, 76, 89, 23),
+                        size: 30,
+                      ),
+                      SizedBox(width: 10),
+                      Expanded(
+                        child: AutoSizeText.rich(
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          maxFontSize: 20,
+                          minFontSize: 20,
+                          TextSpan(
+                            children: [
+                              TextSpan(
+                                text: "This expense was incurred by ",
+                              ),
+                              TextSpan(
+                                text: snapshot.data,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
                                 ),
-                                TextSpan(
-                                  text: snapshot.data,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            style: TextStyle(
-                              color: Color.fromARGB(255, 52, 52, 52),
-                              fontSize: 20,
-                            ),
+                              ),
+                            ],
+                          ),
+                          style: TextStyle(
+                            color: Color.fromARGB(255, 52, 52, 52),
+                            fontSize: 20,
                           ),
                         ),
-                      ],
-                    );
-                  },
-                ),
-                Divider(
-                  color: Color.fromARGB(255, 52, 52, 52),
-                  thickness: 1.5,
-                ),
-                Image.network(request.image,width: 200,height: 200,),
-                infoValuePair("Title", request.title),
-                infoValuePair("Description", request.description),
-                infoValuePair("Date", request.date),
-                infoValuePair("Price", request.price),
-              ],
-            ),
+                      ),
+                    ],
+                  );
+                },
+              ),
+              Divider(
+                color: Color.fromARGB(255, 76, 89, 23),
+                thickness: 1.5,
+              ),
+              SizedBox(height: 5),
+              Image.network(
+                request.image,
+                height: 350,
+                width: double.maxFinite,
+              ),
+              SizedBox(height: 10),
+              infoValuePair("Title", request.title),
+              SizedBox(height: 2),
+              infoValuePair("Description", request.description),
+              SizedBox(height: 2),
+              infoValuePair("Date", request.date),
+              SizedBox(height: 2),
+              infoValuePair("Price", request.price),
+            ],
           ),
         ),
       ),
