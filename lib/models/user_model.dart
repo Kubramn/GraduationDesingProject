@@ -269,24 +269,27 @@ class UserModel {
     try {
       final userDoc = await FirebaseFirestore.instance
           .collection("users")
-          .where(
-            Filter.and(
-              Filter("email", isEqualTo: email),
-              Filter("password", isEqualTo: password),
-            ),
-          )
+          .doc(email)
           .get();
 
-      if (userDoc.docs.isNotEmpty) {
-        Navigator.pop(context);
-        return email;
+      if (userDoc.data()!=null) {
+        if(userDoc.data()?["password"]==password){
+          Navigator.pop(context);
+          return email;
+        }else{
+          Navigator.pop(context);
+          alertMessage("Password is wrong", Colors.red, context);
+          return null;
+        }
+
       } else {
         Navigator.pop(context);
+        alertMessage("There is no User with that email.", Colors.red, context);
         return null;
       }
     } catch (e) {
       Navigator.pop(context);
-      print("********ERROR********${e}********ERROR********");
+      alertMessage("Connection Error! \nYou may try to check your internet connection.", Colors.red, context);
 
 /*       if (e.code == "invalid-credential") {
         alertMessage("Wrong password email etc", Colors.red, context);

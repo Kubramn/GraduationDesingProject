@@ -78,6 +78,7 @@ class _FinanceRegisterState extends State<FinanceRegister> {
                       prefixIcon: Icon(
                         Icons.person_outline,
                         color: Color.fromARGB(255, 68, 60, 95),
+
                       ),
                     ),
                   ),
