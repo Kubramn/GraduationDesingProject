@@ -228,6 +228,44 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
                                   ),
                                 ],
                               ),
+                            ),
+                            StreamBuilder(
+                                stream: ExpenseModel.fetchAllExpenses(null, null),
+                                builder: (context,snapshot){
+                                  if (snapshot.connectionState == ConnectionState.waiting) {
+                                    return const Center(child: CircularProgressIndicator());
+                                  } else if (snapshot.hasError) {
+                                    return Center(child: Text('Error: ${snapshot.error}'));
+                                  } else if (snapshot.hasData) {
+                                    double sum=0;
+                                    for(int i=0;i<snapshot.data!.length;i++){
+                                      sum+=double.parse(snapshot.data![i].price);
+                                    }
+                                    return Row(
+                                      children: [
+                                        Card(
+                                          color: const Color.fromARGB(255, 174, 224, 116),
+                                          child: Container(
+                                            width: screenWidth * 0.42,
+                                            height: screenWidth * 0.22,
+                                            child: Center(child: Text("${snapshot.data?.length}")),
+                                          ),
+                                        ),
+                                        Card(
+                                          color: const Color.fromARGB(255, 174, 224, 116),
+                                          child: Container(
+                                            width: screenWidth * 0.42,
+                                            height: screenWidth * 0.22,
+                                            child: Center(child: Text("$sum")),
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  } else {
+                                    return const Center(child: Text('No data available'));
+                                  }
+
+                                }
                             )
                           ],
                         ),
@@ -264,14 +302,22 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
                             );
                           } else {
                             final expenses = snapshot.data!;
+                            List<ExpenseModel> list=[];
+                            for (var data in expenses){
+                              List<String> ts = data.date.split("/");
+                              DateTime date = DateTime(int.parse(ts[2]),int.parse(ts[1]),int.parse(ts[0]));
+                              if (date.isAfter(filterStartDate!) && date.isBefore(filterEndDate!)) {
+                                list.add(data);
+                              }
+                            }
                             return ListView.builder(
                                 padding: EdgeInsets.zero,
-                                itemCount: expenses.length,
+                                itemCount: list.length,
                                 itemBuilder: (context, index) {
                                   return Column(
                                     children: [
                                       expenseTile(
-                                        expenses[index],
+                                        list[index],
                                         screenHeight,
                                         screenWidth,
                                       ),
@@ -619,10 +665,8 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
           );
 
           if (dateRange != null) {
-            setState(() {
-              filterStartDate = dateRange.start;
-              filterEndDate = dateRange.end;
-            });
+            filterStartDate = dateRange.start;
+            filterEndDate = dateRange.end;
           }
         }),
         child: Row(

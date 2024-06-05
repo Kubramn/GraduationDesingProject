@@ -1,4 +1,6 @@
+import 'package:bitirme/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 
 class TeamModel {
   String teamName;
@@ -34,6 +36,13 @@ class TeamModel {
       );
       await newTeam.set(team.toJson());
     }
+  }
+
+  static Future<double> getTeamBudget(Stream<List<UserModel>> list) async {
+    String teamName= (await list.first).first.teamName;
+    DocumentSnapshot ds =await FirebaseFirestore.instance.collection("teams").doc(teamName).get();
+    Map<String, dynamic> doc = ds.data() as Map<String, dynamic>;
+    return doc["budget"];
   }
 
   static Future<String> decideLeaderEmailByTeamName(

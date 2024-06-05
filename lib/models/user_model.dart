@@ -131,6 +131,15 @@ class UserModel {
             .map((doc) => UserModel.fromJson(doc.data()))
             .toList());
   }
+  static Stream<List<UserModel>> fetchLeaderInfo(String? mail) {
+    return FirebaseFirestore.instance
+        .collection('users')
+        .where("email",isEqualTo: mail)
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+        .map((doc) => UserModel.fromJson(doc.data()))
+        .toList());
+  }
 
   static Future<bool> updateUser(
     String? email,

@@ -115,20 +115,24 @@ class ExpenseModel {
     }
   }
 
-  static Stream<List<ExpenseModel>> fetchTeamExpenses(String? email) {
+  static Stream<List<ExpenseModel>> fetchTeamExpenses(String? email, String? category) {
+    Filter filt=Filter.and(
+      Filter.or(
+        Filter("checkerUserEmail", isEqualTo: email),
+        Filter("userEmail", isEqualTo: email),
+      ),
+      Filter.or(
+        Filter("status",isEqualTo: "acceptedByLeader"),
+        Filter("status",isEqualTo: "acceptedByLeaderAndFinance"),
+      ),
+    );
+    if(category!=null){
+      filt=Filter.and(filt,Filter("category",isEqualTo: category));
+    }
     return FirebaseFirestore.instance
         .collection('expenses')
         .where(
-          Filter.and(
-            Filter.or(
-              Filter("checkerUserEmail", isEqualTo: email),
-              Filter("userEmail", isEqualTo: email),
-            ),
-            Filter.or(
-              Filter("status",isEqualTo: "acceptedByLeader"),
-              Filter("status",isEqualTo: "acceptedByLeaderAndFinance"),
-            ),
-          ),
+          filt
         )
         .snapshots()
         .map((snapshot) => snapshot.docs
@@ -196,7 +200,7 @@ class ExpenseModel {
 
   static Future<List<Data>> getFinanceData() async {
     List<Data> list = [];
-    List<ExpenseModel> data = await fetchAllExpenses("","").first;
+    List<ExpenseModel> data = await fetchAllExpenses(null,null).first;
     for (var element in data) {
       String email = element.userEmail;
       DocumentSnapshot ds = await FirebaseFirestore.instance.collection("users").doc(email).get();
@@ -218,7 +222,7 @@ class ExpenseModel {
 
   static Future<List<Data>> getLeaderData(String? email) async {
     List<Data> list = [];
-    List<ExpenseModel> data = await fetchTeamExpenses(email).first;
+    List<ExpenseModel> data = await fetchTeamExpenses(email,null).first;
     for (var element in data) {
       String email = element.userEmail;
       DocumentSnapshot ds = await FirebaseFirestore.instance.collection("users").doc(email).get();
