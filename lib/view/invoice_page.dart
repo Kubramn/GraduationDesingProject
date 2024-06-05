@@ -14,7 +14,6 @@ class InvoicePage extends StatefulWidget {
 class _InvoicePageState extends State<InvoicePage> {
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
-  //late File _selectedImage;
   bool _flashToggle = false;
 
   @override
@@ -44,7 +43,7 @@ class _InvoicePageState extends State<InvoicePage> {
         child: Column(
           children: [
             SizedBox(
-              height: screenHeight * 0.07,
+              height: screenHeight * 0.08,
             ),
             FutureBuilder<void>(
               future: _initializeControllerFuture,
@@ -63,7 +62,7 @@ class _InvoicePageState extends State<InvoicePage> {
                     ),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(20),
-                      child: CameraPreview(_controller),//burası sıkıntılı
+                      child: CameraPreview(_controller), //burası sıkıntılı
                     ),
                   );
                 } else {

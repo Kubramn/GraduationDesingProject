@@ -1,11 +1,11 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:bitirme/localization/locales.dart';
 import 'package:bitirme/models/expense_model.dart';
 import 'package:bitirme/models/user_model.dart';
 import 'package:bitirme/view/login_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:flutter/widgets.dart';
-
 
 class LeaderDashboard extends StatefulWidget {
   const LeaderDashboard({super.key});
@@ -15,8 +15,8 @@ class LeaderDashboard extends StatefulWidget {
 }
 
 class _LeaderDashboardState extends State<LeaderDashboard> {
-  DateTime? filterStartDate=DateTime(1700);
-  DateTime? filterEndDate=DateTime(2100);
+  DateTime? filterStartDate = DateTime(1700);
+  DateTime? filterEndDate = DateTime(2100);
   TextEditingController teamController = TextEditingController();
   TextEditingController categoryController = TextEditingController();
 
@@ -79,15 +79,15 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
                   ),
                   tabs: [
                     Tab(
-                      text: "Graphic",
+                      text: LocaleData.graphicTab.getString(context),
                     ),
                     Tab(
-                      text: "List",
+                      text: LocaleData.listTab.getString(context),
                     ),
                   ],
                 ),
                 Divider(
-                  height: screenHeight * 0.04,
+                  height: 40,
                   color: Color.fromARGB(255, 96, 71, 36),
                   thickness: 1.5,
                   indent: screenWidth * 0.01,
@@ -101,59 +101,98 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
                         child: Column(
                           children: [
                             Card(
-                              color: const Color.fromARGB(255, 185, 185, 132),
+                              color: Colors.white,
                               child: SizedBox(
                                 child: FutureBuilder<List<Data>>(
-                                  future: ExpenseModel.sortTime(ExpenseModel.getLeaderData(LoginPage.currentUserEmail),filterStartDate,filterEndDate),
+                                  future: ExpenseModel.sortTime(
+                                      ExpenseModel.getLeaderData(
+                                          LoginPage.currentUserEmail),
+                                      filterStartDate,
+                                      filterEndDate),
                                   builder: (context, snapshot) {
-                                    if (snapshot.connectionState == ConnectionState.waiting) {
-                                      return const Center(child: CircularProgressIndicator());
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      return const Center(
+                                        child: CircularProgressIndicator(
+                                          color:
+                                              Color.fromARGB(255, 96, 71, 36),
+                                        ),
+                                      );
                                     } else if (snapshot.hasError) {
-                                      return Center(child: Text('Error: ${snapshot.error}'));
+                                      return Center(
+                                        child: Text(
+                                          "${LocaleData.error.getString(context)}: ${snapshot.error}",
+                                        ),
+                                      );
                                     } else if (snapshot.hasData) {
-                                      if(snapshot.data!.length<2){
-                                        return Text("Not Enough Data");
-                                      }else{
+                                      if (snapshot.data!.length < 2) {
+                                        return Text(LocaleData
+                                            .errorNotEnoughData
+                                            .getString(context));
+                                      } else {
                                         return SfCartesianChart(
                                           series: <LineSeries<Data, DateTime>>[
                                             LineSeries<Data, DateTime>(
                                               dataSource: snapshot.data!,
-                                              color: const Color.fromRGBO(192, 108, 132, 1),
-                                              xValueMapper: (Data sales, _) => sales.dateOnly,
-                                              yValueMapper: (Data sales, _) => sales.price,
+                                              color: const Color.fromRGBO(
+                                                  192, 108, 132, 1),
+                                              xValueMapper: (Data sales, _) =>
+                                                  sales.dateOnly,
+                                              yValueMapper: (Data sales, _) =>
+                                                  sales.price,
                                             ),
                                             LineSeries<Data, DateTime>(
-                                              dataSource: ExpenseModel.regression(snapshot.data!)[0],
-                                              color: const Color.fromRGBO(41, 252, 83, 1.0),
-                                              xValueMapper: (Data sales, _) => sales.dateOnly,
-                                              yValueMapper: (Data sales, _) => sales.price,
+                                              dataSource:
+                                                  ExpenseModel.regression(
+                                                      snapshot.data!)[0],
+                                              color: const Color.fromRGBO(
+                                                  41, 252, 83, 1.0),
+                                              xValueMapper: (Data sales, _) =>
+                                                  sales.dateOnly,
+                                              yValueMapper: (Data sales, _) =>
+                                                  sales.price,
                                             ),
                                             LineSeries<Data, DateTime>(
-                                              dataSource: ExpenseModel.regression(snapshot.data!)[1],
-                                              color: const Color.fromRGBO(41, 252, 83, 1.0),
-                                              xValueMapper: (Data sales, _) => sales.dateOnly,
-                                              yValueMapper: (Data sales, _) => sales.price,
+                                              dataSource:
+                                                  ExpenseModel.regression(
+                                                      snapshot.data!)[1],
+                                              color: const Color.fromRGBO(
+                                                  41, 252, 83, 1.0),
+                                              xValueMapper: (Data sales, _) =>
+                                                  sales.dateOnly,
+                                              yValueMapper: (Data sales, _) =>
+                                                  sales.price,
                                             ),
                                             LineSeries<Data, DateTime>(
-                                              dataSource: ExpenseModel.regression(snapshot.data!)[2],
-                                              color: const Color.fromRGBO(41, 252, 83, 1.0),
-                                              xValueMapper: (Data sales, _) => sales.dateOnly,
-                                              yValueMapper: (Data sales, _) => sales.price,
+                                              dataSource:
+                                                  ExpenseModel.regression(
+                                                      snapshot.data!)[2],
+                                              color: const Color.fromRGBO(
+                                                  41, 252, 83, 1.0),
+                                              xValueMapper: (Data sales, _) =>
+                                                  sales.dateOnly,
+                                              yValueMapper: (Data sales, _) =>
+                                                  sales.price,
                                             )
                                           ],
                                           primaryXAxis: const DateTimeAxis(
-                                            majorGridLines: MajorGridLines(width: 0),
-                                            edgeLabelPlacement: EdgeLabelPlacement.shift,
+                                            majorGridLines:
+                                                MajorGridLines(width: 0),
+                                            edgeLabelPlacement:
+                                                EdgeLabelPlacement.shift,
                                             interval: 1,
                                           ),
                                           primaryYAxis: const NumericAxis(
                                             axisLine: AxisLine(width: 0),
-                                            majorTickLines: MajorTickLines(size: 0),
+                                            majorTickLines:
+                                                MajorTickLines(size: 0),
                                           ),
                                         );
                                       }
                                     } else {
-                                      return const Center(child: Text('No data available'));
+                                      return Center(
+                                          child: Text(LocaleData.errorNoData
+                                              .getString(context)));
                                     }
                                   },
                                 ),
@@ -166,28 +205,52 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
                                 children: [
                                   Expanded(
                                     child: Card(
-                                      color: const Color.fromARGB(255, 108, 206, 169),
+                                      color: Colors.white,
                                       child: SizedBox(
                                         child: FutureBuilder<List<Data>>(
-                                          future: ExpenseModel.departmentSum(ExpenseModel.getLeaderData(LoginPage.currentUserEmail),filterStartDate,filterEndDate),
+                                          future: ExpenseModel.departmentSum(
+                                              ExpenseModel.getLeaderData(
+                                                  LoginPage.currentUserEmail),
+                                              filterStartDate,
+                                              filterEndDate),
                                           builder: (context, snapshot) {
-                                            if (snapshot.connectionState == ConnectionState.waiting) {
-                                              return const Center(child: CircularProgressIndicator());
+                                            if (snapshot.connectionState ==
+                                                ConnectionState.waiting) {
+                                              return const Center(
+                                                child:
+                                                    CircularProgressIndicator(
+                                                  color: Color.fromARGB(
+                                                      255, 96, 71, 36),
+                                                ),
+                                              );
                                             } else if (snapshot.hasError) {
-                                              return Center(child: Text('Error: ${snapshot.error}'));
+                                              return Center(
+                                                child: Text(
+                                                  "${LocaleData.error.getString(context)}: ${snapshot.error}",
+                                                ),
+                                              );
                                             } else if (snapshot.hasData) {
                                               return SfCartesianChart(
-                                                primaryXAxis: const CategoryAxis(),
+                                                primaryXAxis:
+                                                    const CategoryAxis(),
                                                 series: [
-                                                  StackedColumnSeries<Data, String>(
+                                                  StackedColumnSeries<Data,
+                                                      String>(
                                                     dataSource: snapshot.data!,
-                                                    xValueMapper: (Data sales, _) => sales.department,
-                                                    yValueMapper: (Data sales, _) => sales.price,
+                                                    xValueMapper:
+                                                        (Data sales, _) =>
+                                                            sales.department,
+                                                    yValueMapper:
+                                                        (Data sales, _) =>
+                                                            sales.price,
                                                   ),
                                                 ],
                                               );
                                             } else {
-                                              return const Center(child: Text('No data available'));
+                                              return Center(
+                                                  child: Text(LocaleData
+                                                      .errorNoData
+                                                      .getString(context)));
                                             }
                                           },
                                         ),
@@ -196,31 +259,57 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
                                   ),
                                   Expanded(
                                     child: Card(
-                                      color: const Color.fromARGB(255, 174, 224, 116),
+                                      color: Colors.white,
                                       child: SizedBox(
                                         child: FutureBuilder<List<Data>>(
-                                          future: ExpenseModel.categorySum(ExpenseModel.getLeaderData(LoginPage.currentUserEmail),filterStartDate,filterEndDate),
+                                          future: ExpenseModel.categorySum(
+                                              ExpenseModel.getLeaderData(
+                                                  LoginPage.currentUserEmail),
+                                              filterStartDate,
+                                              filterEndDate),
                                           builder: (context, snapshot) {
-                                            if (snapshot.connectionState == ConnectionState.waiting) {
-                                              return const Center(child: CircularProgressIndicator());
+                                            if (snapshot.connectionState ==
+                                                ConnectionState.waiting) {
+                                              return const Center(
+                                                child:
+                                                    CircularProgressIndicator(
+                                                  color: Color.fromARGB(
+                                                      255, 96, 71, 36),
+                                                ),
+                                              );
                                             } else if (snapshot.hasError) {
-                                              return Center(child: Text('Error: ${snapshot.error}'));
+                                              return Center(
+                                                child: Text(
+                                                  "${LocaleData.error.getString(context)}: ${snapshot.error}",
+                                                ),
+                                              );
                                             } else if (snapshot.hasData) {
                                               return SfCircularChart(
-                                                legend: const Legend(isVisible: true),
-                                                series: <PieSeries<Data, String>>[
+                                                legend: const Legend(
+                                                    isVisible: true),
+                                                series: <PieSeries<Data,
+                                                    String>>[
                                                   PieSeries<Data, String>(
                                                     explode: true,
                                                     explodeIndex: 0,
                                                     dataSource: snapshot.data!,
-                                                    xValueMapper: (Data data, _) => data.category,
-                                                    yValueMapper: (Data data, _) => data.price,
-                                                    dataLabelSettings: const DataLabelSettings(isVisible: true),
+                                                    xValueMapper:
+                                                        (Data data, _) =>
+                                                            data.category,
+                                                    yValueMapper:
+                                                        (Data data, _) =>
+                                                            data.price,
+                                                    dataLabelSettings:
+                                                        const DataLabelSettings(
+                                                            isVisible: true),
                                                   ),
                                                 ],
                                               );
                                             } else {
-                                              return const Center(child: Text('No data available'));
+                                              return Center(
+                                                  child: Text(LocaleData
+                                                      .errorNoData
+                                                      .getString(context)));
                                             }
                                           },
                                         ),
@@ -246,7 +335,7 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
                             );
                           } else if (snapshot.hasError) {
                             return Center(
-                              child: Text('ERROR!'),
+                              child: Text(LocaleData.error.getString(context)),
                             );
                           } else if (!snapshot.hasData ||
                               snapshot.data!.isEmpty) {
@@ -254,7 +343,8 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
                               child: SizedBox(
                                 width: screenWidth * 0.8,
                                 child: Text(
-                                  "There is no expense from your team right now.",
+                                  LocaleData.errorNoTeamExpense
+                                      .getString(context),
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontSize: 25,
@@ -276,7 +366,7 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
                                         screenHeight,
                                         screenWidth,
                                       ),
-                                      SizedBox(height: screenHeight * 0.01),
+                                      SizedBox(height: 10),
                                     ],
                                   );
                                 });
@@ -298,30 +388,34 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
     switch (expense.status) {
       case "waiting":
         return [
-          " and is currently awaiting approval.",
+          LocaleData.statusDashboardWaiting.getString(context),
           Colors.lightBlue,
         ];
 
       case "acceptedByLeader":
         return [
-          " and has been accepted by you but is currently awaiting approval from Finance.",
+          LocaleData.statusDashboardAcceptedByLeader.getString(context),
           Colors.teal,
         ];
 
       case "acceptedByLeaderAndFinance":
         return [
-          " and has been accepted.",
+          LocaleData.statusDashboardAcceptedByLeaderAndFinance
+              .getString(context),
           Colors.lightGreen,
         ];
 
       case "denied":
         return [
-          " and has been denied.",
+          LocaleData.statusDashboardDenied.getString(context),
           Colors.red,
         ];
 
       default:
-        return [];
+        return [
+          "",
+          Color.fromARGB(255, 96, 71, 36),
+        ];
     }
   }
 
@@ -378,7 +472,7 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
                   Navigator.pop(context);
                 },
                 child: Text(
-                  "Apply",
+                  LocaleData.dialogApplyButton.getString(context),
                   style: TextStyle(
                     color: Color.fromARGB(255, 96, 71, 36),
                     fontSize: 25,
@@ -397,7 +491,7 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
                   filterEndDate = DateTime.now();
                 },
                 child: Text(
-                  "Reset",
+                  LocaleData.dialogResetButton.getString(context),
                   style: TextStyle(
                     color: Color.fromARGB(255, 96, 71, 36),
                     fontSize: 25,
@@ -413,7 +507,7 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
                   Navigator.pop(context);
                 },
                 child: Text(
-                  "Close",
+                  LocaleData.dialogCloseButton.getString(context),
                   style: TextStyle(
                     color: Color.fromARGB(255, 96, 71, 36),
                     fontSize: 25,
@@ -525,7 +619,7 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
         } else {
           return Center(
             child: CircularProgressIndicator(
-              color: Colors.white,
+              color: Color.fromARGB(255, 96, 71, 36),
             ),
           );
         }
@@ -667,23 +761,30 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
   }
 
   Widget expenseTile(
-      ExpenseModel expense, double screenHeight, double screenWidth) {
+    ExpenseModel expense,
+    double screenHeight,
+    double screenWidth,
+  ) {
     return SizedBox(
-      height: screenHeight * 0.08,
+      height: 80,
       child: Card(
         elevation: 3,
-        shadowColor: Color.fromARGB(255, 227, 185, 117),
-        color: Colors.white,
-        surfaceTintColor: Color.fromARGB(255, 227, 185, 117),
+        shadowColor: Colors.black,
+        color: Color.lerp(
+          statusInfoAndColor(expense)[1],
+          Colors.white,
+          0.93,
+        ),
+        surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(20),
         ),
         child: Center(
           child: ListTile(
             textColor: Color.fromARGB(255, 52, 52, 52),
             leading: Icon(
               Icons.attach_money,
-              color: Color.fromARGB(255, 96, 71, 36),
+              color: statusInfoAndColor(expense)[1],
               size: 34,
             ),
             title: Text(
@@ -692,15 +793,18 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
                 fontSize: 22,
               ),
             ),
-            //subtitle: Text(expense.description),
             trailing: IconButton(
               icon: Icon(
-                Icons.search,
-                color: Color.fromARGB(255, 96, 71, 36),
+                Icons.menu,
+                color: Color.lerp(
+                  statusInfoAndColor(expense)[1],
+                  Colors.white,
+                  0.93,
+                ),
                 size: 30,
               ),
               style: IconButton.styleFrom(
-                backgroundColor: Color.fromARGB(255, 227, 185, 117),
+                backgroundColor: statusInfoAndColor(expense)[1],
               ),
               onPressed: () {
                 showExpenseDialog(expense, screenWidth, screenHeight);
@@ -722,11 +826,11 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
         backgroundColor: Color.lerp(
           statusInfoAndColor(expense)[1],
           Colors.white,
-          0.96,
+          0.93,
         ),
         insetPadding: EdgeInsets.symmetric(
-          horizontal: screenWidth * 0.06,
-          vertical: screenHeight * 0.22,
+          horizontal: 30,
+          vertical: 50,
         ),
         actions: [
           TextButton(
@@ -748,82 +852,89 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
         ],
         content: SizedBox(
           width: double.maxFinite,
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                FutureBuilder<String>(
-                  future: UserModel.getNameSurnameByEmail(expense.userEmail),
-                  builder: (context, snapshot) {
-                    return Row(
-                      children: [
-                        Icon(
-                          Icons.info_outline,
-                          color: statusInfoAndColor(expense)[1],
-                          size: 30,
-                        ),
-                        SizedBox(
-                          width: screenWidth * 0.035,
-                        ),
-                        Expanded(
-                          child: AutoSizeText.rich(
-                            maxLines: 4,
-                            overflow: TextOverflow.ellipsis,
-                            maxFontSize: 20,
-                            minFontSize: 20,
-                            TextSpan(
-                              children: [
-                                TextSpan(
-                                  text: "This expense was incurred by ",
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              FutureBuilder<String>(
+                future: UserModel.getNameSurnameByEmail(expense.userEmail),
+                builder: (context, snapshot) {
+                  return Row(
+                    children: [
+                      Icon(
+                        Icons.info_outline,
+                        color: statusInfoAndColor(expense)[1],
+                        size: 30,
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Expanded(
+                        child: AutoSizeText.rich(
+                          maxLines: 4,
+                          overflow: TextOverflow.ellipsis,
+                          maxFontSize: 20,
+                          minFontSize: 20,
+                          TextSpan(
+                            children: [
+                              TextSpan(
+                                text: "This expense was incurred by ",
+                              ),
+                              TextSpan(
+                                text: snapshot.data,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
                                 ),
-                                TextSpan(
-                                  text: snapshot.data,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                TextSpan(
-                                  text: statusInfoAndColor(expense)[0],
-                                ),
-                              ],
-                            ),
-                            style: TextStyle(
-                              color: statusInfoAndColor(expense)[1],
-                              fontSize: 20,
-                            ),
+                              ),
+                              TextSpan(
+                                text: statusInfoAndColor(expense)[0],
+                              ),
+                            ],
+                          ),
+                          style: TextStyle(
+                            color: statusInfoAndColor(expense)[1],
+                            fontSize: 20,
                           ),
                         ),
-                      ],
-                    );
-                  },
-                ),
-                Divider(
-                  color: Color.fromARGB(255, 52, 52, 52),
-                  thickness: 1.5,
-                ),
-                Image.network(expense.image,width: 200,height: 200,),
-                infoValuePair(
-                  "Title",
-                  expense.title,
-                  expense,
-                ),
-                infoValuePair(
-                  "Description",
-                  expense.description,
-                  expense,
-                ),
-                infoValuePair(
-                  "Date",
-                  expense.date,
-                  expense,
-                ),
-                infoValuePair(
-                  "Price",
-                  expense.price,
-                  expense,
-                ),
-              ],
-            ),
+                      ),
+                    ],
+                  );
+                },
+              ),
+              Divider(
+                color: statusInfoAndColor(expense)[1],
+                thickness: 1.5,
+              ),
+              SizedBox(height: 5),
+              Image.network(
+                expense.image,
+                height: 350,
+                width: double.maxFinite,
+              ),
+              SizedBox(height: 10),
+              infoValuePair(
+                "Title",
+                expense.title,
+                expense,
+              ),
+              SizedBox(height: 2),
+              infoValuePair(
+                "Description",
+                expense.description,
+                expense,
+              ),
+              SizedBox(height: 2),
+              infoValuePair(
+                "Date",
+                expense.date,
+                expense,
+              ),
+              SizedBox(height: 2),
+              infoValuePair(
+                "Price",
+                expense.price,
+                expense,
+              ),
+            ],
           ),
         ),
       ),

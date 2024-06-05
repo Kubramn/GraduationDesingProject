@@ -1,9 +1,14 @@
 import 'dart:io';
 import 'dart:math';
+import 'package:bitirme/localization/locales.dart';
 import 'package:bitirme/models/expense_model.dart';
 import 'package:bitirme/models/user_model.dart';
+import 'package:bitirme/view/expenses_page.dart';
+import 'package:bitirme/view/leader_pages/leader_navbar.dart';
 import 'package:bitirme/view/login_page.dart';
+import 'package:bitirme/view/member_pages/member_navbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 
 class EditInvoicePage extends StatefulWidget {
@@ -56,26 +61,27 @@ class _EditInvoicePageState extends State<EditInvoicePage> {
       ),
       backgroundColor: Color.fromARGB(255, 229, 229, 225),
       body: Padding(
-        padding: EdgeInsets.all(screenWidth * 0.06),
+        padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06),
         child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.file(
-                File(widget.imagePath),
-                //height: 300,
-                //width: 300,
+              ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: screenWidth),
+                child: Image.file(
+                  File(widget.imagePath),
+                ),
               ),
-              SizedBox(height: screenHeight * 0.06),
+              SizedBox(height: screenHeight * 0.04),
               invoiceInfoTextField(
                 titleController,
-                "Title",
+                LocaleData.dialogTitle.getString(context),
                 Icons.title,
               ),
               SizedBox(height: screenHeight * 0.02),
               invoiceInfoTextField(
                 descriptionController,
-                "Description",
+                LocaleData.dialogDescription.getString(context),
                 Icons.description_outlined,
               ),
               SizedBox(height: screenHeight * 0.02),
@@ -83,20 +89,44 @@ class _EditInvoicePageState extends State<EditInvoicePage> {
               SizedBox(height: screenHeight * 0.02),
               invoiceInfoTextField(
                 dateController,
-                "Date",
+                LocaleData.dialogDate.getString(context),
                 Icons.date_range,
               ),
               SizedBox(height: screenHeight * 0.02),
               invoiceInfoTextField(
                 priceController,
-                "Price",
+                LocaleData.dialogPrice.getString(context),
                 Icons.price_change_outlined,
               ),
               SizedBox(height: screenHeight * 0.04),
               ElevatedButton(
-                onPressed: () => addExpense(),
+                onPressed: () async {
+                  addExpense();
+                  String role = await UserModel.getRoleByEmail(
+                      LoginPage.currentUserEmail ?? "");
+
+                  switch (role) {
+                    case "Member":
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const MemberNavBar(),
+                        ),
+                      );
+                      break;
+
+                    case "Leader":
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const LeaderNavBar(),
+                        ),
+                      );
+                      break;
+                  }
+                },
                 child: Text(
-                  "Add Expense",
+                  LocaleData.addExpenseButton.getString(context),
                   style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
@@ -111,6 +141,7 @@ class _EditInvoicePageState extends State<EditInvoicePage> {
                   ),
                 ),
               ),
+              SizedBox(height: screenHeight * 0.04),
             ],
           ),
         ),
@@ -140,7 +171,7 @@ class _EditInvoicePageState extends State<EditInvoicePage> {
           borderSide: BorderSide.none,
         ),
       ),
-      hintText: "Category",
+      hintText: LocaleData.dialogCategory.getString(context),
       width: 394,
       menuStyle: MenuStyle(
         shape: WidgetStatePropertyAll(
@@ -155,25 +186,26 @@ class _EditInvoicePageState extends State<EditInvoicePage> {
       onSelected: (_) {
         setState(() {});
         switch (categoryController.text) {
-          case "Travel and Transportation":
+          case "Seyahat ve Ulaşım" || "Travel and Transportation":
             categoryIcon = Icon(
               Icons.emoji_transportation,
               color: Color.fromARGB(255, 49, 102, 101),
             );
             break;
-          case "Meals and Entertainment":
+          case "Yemek ve Eğlence" || "Meals and Entertainment":
             categoryIcon = Icon(
               Icons.fastfood_outlined,
               color: Color.fromARGB(255, 49, 102, 101),
             );
             break;
-          case "Office Supplies and Equipment":
+          case "Ofis Malzemeleri ve Ekipmanları" ||
+                "Office Supplies and Equipment":
             categoryIcon = Icon(
               Icons.meeting_room_outlined,
               color: Color.fromARGB(255, 49, 102, 101),
             );
             break;
-          case "Other Expenses":
+          case "Diğer Harcamalar" || "Other Expenses":
             categoryIcon = Icon(
               Icons.attach_money,
               color: Color.fromARGB(255, 49, 102, 101),
@@ -181,34 +213,34 @@ class _EditInvoicePageState extends State<EditInvoicePage> {
             break;
         }
       },
-      dropdownMenuEntries: const [
+      dropdownMenuEntries: [
         DropdownMenuEntry(
-          value: "Travel and Transportation",
-          label: "Travel and Transportation",
+          value: LocaleData.categoryTravel.getString(context),
+          label: LocaleData.categoryTravel.getString(context),
           leadingIcon: Icon(
             Icons.emoji_transportation,
             color: Color.fromARGB(255, 49, 102, 101),
           ),
         ),
         DropdownMenuEntry(
-          value: "Meals and Entertainment",
-          label: "Meals and Entertainment",
+          value: LocaleData.categoryMeal.getString(context),
+          label: LocaleData.categoryMeal.getString(context),
           leadingIcon: Icon(
             Icons.fastfood_outlined,
             color: Color.fromARGB(255, 49, 102, 101),
           ),
         ),
         DropdownMenuEntry(
-          value: "Office Supplies and Equipment",
-          label: "Office Supplies and Equipment",
+          value: LocaleData.categoryOffice.getString(context),
+          label: LocaleData.categoryOffice.getString(context),
           leadingIcon: Icon(
             Icons.meeting_room_outlined,
             color: Color.fromARGB(255, 49, 102, 101),
           ),
         ),
         DropdownMenuEntry(
-          value: "Other Expenses",
-          label: "Other Expenses",
+          value: LocaleData.categoryOther.getString(context),
+          label: LocaleData.categoryOther.getString(context),
           leadingIcon: Icon(
             Icons.attach_money,
             color: Color.fromARGB(255, 49, 102, 101),
@@ -252,16 +284,16 @@ class _EditInvoicePageState extends State<EditInvoicePage> {
     );
 
     ExpenseModel(
-      title: titleController.text,
-      status: status,
-      price: priceController.text,
-      date: dateController.text,
-      description: descriptionController.text,
-      userEmail: LoginPage.currentUserEmail ?? "",
-      checkerUserEmail: checkerUserEmail,
-      category: categoryController.text,
-      image: widget.imagePath
-    ).createExpense();
+            title: titleController.text,
+            status: status,
+            price: priceController.text,
+            date: dateController.text,
+            description: descriptionController.text,
+            userEmail: LoginPage.currentUserEmail ?? "",
+            checkerUserEmail: checkerUserEmail,
+            category: categoryController.text,
+            image: widget.imagePath)
+        .createExpense();
   }
 
   List<WordBox> getText(RecognizedText recognisedText) {

@@ -11,8 +11,12 @@ import 'firebase_options.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  final cameras = await availableCameras();
-  InvoicePage.firstCamera = cameras.first;
+  //final cameras = await availableCameras();
+  InvoicePage.firstCamera = const CameraDescription(
+    name: "name",
+    lensDirection: CameraLensDirection.back,
+    sensorOrientation: 10,
+  );
 
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
@@ -51,12 +55,12 @@ class _ExpenseManagementApplicationState
       debugShowCheckedModeBanner: false,
       supportedLocales: localization.supportedLocales,
       localizationsDelegates: localization.localizationsDelegates,
-      home: LoginPage(),
+      home: const LoginPage(),
     );
   }
 
   void configureLocalization() {
-    localization.init(mapLocales: LOCALES, initLanguageCode: "tr");
+    localization.init(mapLocales: locales, initLanguageCode: "en");
     localization.onTranslatedLanguage = onTranslatedLanguage;
   }
 

@@ -1,9 +1,11 @@
+import 'package:bitirme/localization/locales.dart';
 import 'package:bitirme/view/finance_pages/finance_dashboard.dart';
 import 'package:bitirme/view/finance_pages/finance_register.dart';
 import 'package:bitirme/view/finance_pages/finance_requests.dart';
 import 'package:bitirme/view/finance_pages/finance_users.dart';
 import 'package:bitirme/view/login_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -29,7 +31,7 @@ class _FinanceNavBarState extends State<FinanceNavBar> {
         padding: EdgeInsets.only(
           right: screenWidth * 0.04,
           left: screenWidth * 0.04,
-          bottom: screenWidth * 0.06,
+          bottom: 25,
         ),
         child: Container(
           decoration: BoxDecoration(
@@ -39,7 +41,7 @@ class _FinanceNavBarState extends State<FinanceNavBar> {
           child: Padding(
             padding: EdgeInsets.symmetric(
               horizontal: screenWidth * 0.037,
-              vertical: screenHeight * 0.017,
+              vertical: 17,
             ),
             child: GNav(
               tabBorderRadius: 22,
@@ -52,7 +54,7 @@ class _FinanceNavBarState extends State<FinanceNavBar> {
               //textStyle: TextStyle(fontSize: 15, color: Colors.white),
               padding: EdgeInsets.symmetric(
                 horizontal: screenWidth * 0.03,
-                vertical: screenHeight * 0.015,
+                vertical: 15,
               ),
               //duration: Duration(milliseconds: 800),
               tabs: [
@@ -64,7 +66,7 @@ class _FinanceNavBarState extends State<FinanceNavBar> {
                   icon: (_currentIndex) == 0
                       ? Icons.pie_chart_rounded
                       : Icons.pie_chart_outline_rounded,
-                  text: "Dashboard",
+                  text: LocaleData.navbarDashboard.getString(context),
                 ),
                 GButton(
                   iconColor: Color.fromARGB(255, 76, 89, 23),
@@ -74,7 +76,7 @@ class _FinanceNavBarState extends State<FinanceNavBar> {
                   icon: (_currentIndex) == 1
                       ? Icons.request_quote
                       : Icons.request_quote_outlined,
-                  text: "Requests",
+                  text: LocaleData.navbarRequests.getString(context),
                 ),
                 GButton(
                   iconColor: Color.fromARGB(255, 49, 102, 101),
@@ -84,7 +86,7 @@ class _FinanceNavBarState extends State<FinanceNavBar> {
                   icon: (_currentIndex) == 2
                       ? Icons.people_alt
                       : Icons.people_alt_outlined,
-                  text: "Users",
+                  text: LocaleData.navbarUsers.getString(context),
                 ),
                 GButton(
                   iconColor: Color.fromARGB(255, 68, 60, 95),
@@ -94,7 +96,7 @@ class _FinanceNavBarState extends State<FinanceNavBar> {
                   icon: (_currentIndex) == 3
                       ? Icons.person_add
                       : Icons.person_add_outlined,
-                  text: "Register",
+                  text: LocaleData.navbarRegister.getString(context),
                 ),
                 GButton(
                   icon: Icons.logout_outlined,

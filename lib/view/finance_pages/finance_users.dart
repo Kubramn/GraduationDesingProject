@@ -1,5 +1,7 @@
+import 'package:bitirme/models/team_model.dart';
 import 'package:bitirme/models/user_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class FinanceUsers extends StatefulWidget {
   const FinanceUsers({super.key});
@@ -33,11 +35,11 @@ class _FinanceUsersState extends State<FinanceUsers> {
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 229, 229, 225),
       body: Padding(
-        padding: const EdgeInsets.all(30),
-        child: SingleChildScrollView(
+        padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06),
+        child: Center(
           child: Column(
             children: [
-              SizedBox(height: screenHeight * 0.05),
+              SizedBox(height: screenHeight * 0.08),
               StreamBuilder<List<UserModel>>(
                 stream: UserModel.fetchAllUsers(),
                 builder: (context, snapshot) {
@@ -45,7 +47,7 @@ class _FinanceUsersState extends State<FinanceUsers> {
                     final users = snapshot.data!;
                     return DropdownMenu<UserModel>(
                       controller: emailController,
-                      width: screenWidth - 60,
+                      width: screenWidth * 0.86,
                       leadingIcon: Icon(
                         Icons.person_search,
                         color: Color.fromARGB(255, 49, 102, 101),
@@ -64,13 +66,13 @@ class _FinanceUsersState extends State<FinanceUsers> {
                         hintStyle: TextStyle(
                             color: Colors.black38, fontWeight: FontWeight.w500),
                         border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20),
+                            borderRadius: BorderRadius.circular(15),
                             borderSide: BorderSide.none),
                       ),
                       hintText: "Select a user to edit or delete...",
                       menuStyle: MenuStyle(
                         shape: WidgetStatePropertyAll(RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20))),
+                            borderRadius: BorderRadius.circular(15))),
                         alignment: Alignment.bottomLeft,
                         surfaceTintColor: WidgetStatePropertyAll(
                             Color.fromARGB(255, 157, 203, 201)),
@@ -112,7 +114,7 @@ class _FinanceUsersState extends State<FinanceUsers> {
                 },
               ),
               Divider(
-                height: 70,
+                height: screenHeight * 0.07,
                 color: Color.fromARGB(255, 49, 102, 101),
                 thickness: 1.5,
                 indent: 5,
@@ -122,7 +124,7 @@ class _FinanceUsersState extends State<FinanceUsers> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   SizedBox(
-                    width: 185,
+                    width: screenWidth * 0.42,
                     child: TextField(
                       keyboardType: TextInputType.text,
                       controller: nameController,
@@ -131,7 +133,7 @@ class _FinanceUsersState extends State<FinanceUsers> {
                         fillColor: Colors.white,
                         border: OutlineInputBorder(
                             borderSide: BorderSide.none,
-                            borderRadius: BorderRadius.circular(20)),
+                            borderRadius: BorderRadius.circular(15)),
                         hintText: "Name",
                         hintStyle: TextStyle(color: Colors.black38),
                         prefixIcon: Icon(
@@ -142,7 +144,7 @@ class _FinanceUsersState extends State<FinanceUsers> {
                     ),
                   ),
                   SizedBox(
-                    width: 185,
+                    width: screenWidth * 0.42,
                     child: TextField(
                       keyboardType: TextInputType.text,
                       controller: surnameController,
@@ -151,7 +153,7 @@ class _FinanceUsersState extends State<FinanceUsers> {
                         fillColor: Colors.white,
                         border: OutlineInputBorder(
                             borderSide: BorderSide.none,
-                            borderRadius: BorderRadius.circular(20)),
+                            borderRadius: BorderRadius.circular(15)),
                         hintText: "Surname",
                         hintStyle: TextStyle(color: Colors.black38),
                         prefixIcon: Icon(
@@ -163,12 +165,12 @@ class _FinanceUsersState extends State<FinanceUsers> {
                   ),
                 ],
               ),
-              SizedBox(height: 40),
+              SizedBox(height: screenHeight * 0.04),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   SizedBox(
-                    width: 185,
+                    width: screenWidth * 0.42,
                     child: TextField(
                       keyboardType: TextInputType.text,
                       controller: passwordController,
@@ -177,7 +179,7 @@ class _FinanceUsersState extends State<FinanceUsers> {
                         fillColor: Colors.white,
                         border: OutlineInputBorder(
                             borderSide: BorderSide.none,
-                            borderRadius: BorderRadius.circular(20)),
+                            borderRadius: BorderRadius.circular(15)),
                         hintText: "Password",
                         hintStyle: TextStyle(color: Colors.black38),
                         prefixIcon: Icon(
@@ -203,15 +205,15 @@ class _FinanceUsersState extends State<FinanceUsers> {
                       hintStyle: TextStyle(
                           color: Colors.black38, fontWeight: FontWeight.w500),
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius: BorderRadius.circular(15),
                           borderSide: BorderSide.none),
                     ),
                     hintText: "Role",
-                    width: 185,
+                    width: screenWidth * 0.42,
                     controller: roleController,
                     menuStyle: MenuStyle(
                       shape: WidgetStatePropertyAll(RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20))),
+                          borderRadius: BorderRadius.circular(15))),
                       alignment: Alignment.bottomLeft,
                       surfaceTintColor:
                           WidgetStatePropertyAll(Colors.transparent),
@@ -269,12 +271,12 @@ class _FinanceUsersState extends State<FinanceUsers> {
                   )
                 ],
               ),
-              SizedBox(height: 40),
+              SizedBox(height: screenHeight * 0.04),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   SizedBox(
-                    width: 185,
+                    width: screenWidth * 0.42,
                     child: TextField(
                       keyboardType: TextInputType.text,
                       controller: jobController,
@@ -283,7 +285,7 @@ class _FinanceUsersState extends State<FinanceUsers> {
                         fillColor: Colors.white,
                         border: OutlineInputBorder(
                             borderSide: BorderSide.none,
-                            borderRadius: BorderRadius.circular(20)),
+                            borderRadius: BorderRadius.circular(15)),
                         hintText: "Job",
                         hintStyle: TextStyle(color: Colors.black38),
                         prefixIcon: Icon(
@@ -294,7 +296,7 @@ class _FinanceUsersState extends State<FinanceUsers> {
                     ),
                   ),
                   SizedBox(
-                    width: 185,
+                    width: screenWidth * 0.42,
                     child: TextField(
                       keyboardType: TextInputType.text,
                       controller: departmentController,
@@ -303,7 +305,7 @@ class _FinanceUsersState extends State<FinanceUsers> {
                         fillColor: Colors.white,
                         border: OutlineInputBorder(
                             borderSide: BorderSide.none,
-                            borderRadius: BorderRadius.circular(20)),
+                            borderRadius: BorderRadius.circular(15)),
                         hintText: "Department",
                         hintStyle: TextStyle(color: Colors.black38),
                         prefixIcon: Icon(
@@ -315,7 +317,7 @@ class _FinanceUsersState extends State<FinanceUsers> {
                   ),
                 ],
               ),
-              SizedBox(height: 40),
+              SizedBox(height: screenHeight * 0.04),
               TextField(
                 keyboardType: TextInputType.text,
                 controller: teamNameController,
@@ -324,7 +326,7 @@ class _FinanceUsersState extends State<FinanceUsers> {
                   fillColor: Colors.white,
                   border: OutlineInputBorder(
                       borderSide: BorderSide.none,
-                      borderRadius: BorderRadius.circular(20)),
+                      borderRadius: BorderRadius.circular(15)),
                   hintText: "Team Name",
                   hintStyle: TextStyle(color: Colors.black38),
                   prefixIcon: Icon(
@@ -333,9 +335,9 @@ class _FinanceUsersState extends State<FinanceUsers> {
                   ),
                 ),
               ),
-              SizedBox(height: 40),
+              SizedBox(height: screenHeight * 0.04),
               updateUserButton(screenWidth),
-              SizedBox(height: 40),
+              SizedBox(height: screenHeight * 0.04),
               deleteUserButton(screenWidth),
             ],
           ),
@@ -358,61 +360,64 @@ class _FinanceUsersState extends State<FinanceUsers> {
   }
 
   Widget updateUserButton(double screenWidth) {
-    return SizedBox(
-      height: 60,
-      width: screenWidth - 60,
-      child: ElevatedButton(
-        onPressed: () async {
-          if (await UserModel.updateUser(
-            _selectedUser?.email,
-            nameController.text,
-            surnameController.text,
-            passwordController.text,
-            roleController.text,
-            jobController.text,
-            departmentController.text,
-            teamNameController.text,
-          )) {
-            resetAllFields();
+    return ElevatedButton(
+      onPressed: () async {
+        if (await UserModel.updateUser(
+          _selectedUser?.email,
+          nameController.text,
+          surnameController.text,
+          passwordController.text,
+          roleController.text,
+          jobController.text,
+          departmentController.text,
+          teamNameController.text,
+        )) {
+          if (roleController.text == "Leader") {
+            TeamModel.updateTeamName(
+              _selectedUser!.teamName,
+              teamNameController.text,
+            );
+
+            UserModel.updateTeamNamesOfUsers(
+              _selectedUser!.teamName,
+              teamNameController.text,
+            );
           }
-        },
-        child: Text(
-          "Update User",
-          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-        ),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Color.fromARGB(255, 49, 102, 101),
-          foregroundColor: Color.fromARGB(255, 157, 203, 201),
-          //fixedSize: ,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
+          resetAllFields();
+        }
+      },
+      child: Text(
+        "Update User",
+        style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+      ),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Color.fromARGB(255, 49, 102, 101),
+        foregroundColor: Color.fromARGB(255, 157, 203, 201),
+        fixedSize: Size(double.maxFinite, 60),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
         ),
       ),
     );
   }
 
-  SizedBox deleteUserButton(double screenWidth) {
-    return SizedBox(
-      height: 60,
-      width: screenWidth - 60,
-      child: ElevatedButton(
-        onPressed: () async {
-          if (await UserModel.deleteUser(_selectedUser?.email)) {
-            resetAllFields();
-          }
-        },
-        child: Text(
-          "Delete User",
-          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-        ),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Color.fromARGB(255, 49, 102, 101),
-          foregroundColor: Colors.red,
-          //fixedSize: ,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
+  Widget deleteUserButton(double screenWidth) {
+    return ElevatedButton(
+      onPressed: () async {
+        if (await UserModel.deleteUser(_selectedUser?.email)) {
+          resetAllFields();
+        }
+      },
+      child: Text(
+        "Delete User",
+        style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+      ),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Color.fromARGB(255, 49, 102, 101),
+        foregroundColor: Colors.red,
+        fixedSize: Size(double.maxFinite, 60),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
         ),
       ),
     );
