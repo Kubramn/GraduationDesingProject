@@ -257,6 +257,19 @@ class UserModel {
           .collection('users')
           .where("email", isEqualTo: email)
           .get();
+      String teamName= querySnapshot.docs.first.get("teamName");
+      QuerySnapshot querySnapshot2 = await FirebaseFirestore.instance
+          .collection('users')
+          .where("teamName", isEqualTo: teamName)
+          .get();
+      for(var data in querySnapshot2.docs){
+        String userEmail=data.get("email");
+        await FirebaseFirestore.instance.collection("users").doc(userEmail).delete();
+      }
+      QuerySnapshot qs=await FirebaseFirestore.instance.collection("teams").where("teamName",isEqualTo: teamName).get();
+      QueryDocumentSnapshot doc = qs.docs.first;
+      Map<String, dynamic> map = doc.data() as Map<String, dynamic>;
+      await FirebaseFirestore.instance.collection("teams").doc(map["teamName"]).delete();
 
       try {
         await FirebaseFirestore.instance.collection("users").doc(email).delete();
