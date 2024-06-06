@@ -3,6 +3,7 @@ import 'package:bitirme/localization/locales.dart';
 import 'package:bitirme/models/expense_model.dart';
 import 'package:bitirme/models/user_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localization/flutter_localization.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
@@ -20,7 +21,8 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
   DateTime? filterEndDate = DateTime(2100);
   TextEditingController teamController = TextEditingController();
   TextEditingController categoryController = TextEditingController();
-  TextEditingController statusController = TextEditingController();
+  String? selectedTeam;
+  String? selectedCategory;
 
   @override
   Widget build(BuildContext context) {
@@ -102,237 +104,304 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
                       Column(
                         children: [
                           Card(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            elevation: 3,
-                            shadowColor: Colors.black,
-                            color: Colors.white,
-                            child: Padding(
-                              padding: const EdgeInsets.all(10),
+                            color: const Color.fromARGB(255, 185, 185, 132),
+                            child: SizedBox(
                               child: FutureBuilder<List<Data>>(
                                 future: ExpenseModel.sortTime(
                                     ExpenseModel.getFinanceData(),
                                     filterStartDate,
-                                    filterEndDate),
+                                    filterEndDate,
+                                    teamController.text,
+                                    selectedCategory),
                                 builder: (context, snapshot) {
                                   if (snapshot.connectionState ==
                                       ConnectionState.waiting) {
                                     return const Center(
-                                      child: CircularProgressIndicator(
-                                        color:
-                                            Color.fromARGB(255, 227, 185, 117),
-                                      ),
-                                    );
+                                        child: CircularProgressIndicator());
                                   } else if (snapshot.hasError) {
                                     return Center(
-                                      child: Text(
-                                        "${LocaleData.error.getString(context)}: ${snapshot.error}",
-                                      ),
-                                    );
+                                        child:
+                                        Text('Error: ${snapshot.error}'));
                                   } else if (snapshot.hasData) {
                                     if (snapshot.data!.length < 2) {
-                                      return Text(LocaleData.errorNotEnoughData
-                                          .getString(context));
+                                      return Text("Not Enough Data");
                                     } else {
-                                      return SfCartesianChart(
+                                      return SfCartesianChart( // çizgi grafiği
                                         series: <LineSeries<Data, DateTime>>[
-                                          LineSeries<Data, DateTime>(
+                                          LineSeries<Data, DateTime>( // asıl veri
                                             dataSource: snapshot.data!,
-                                            color:
-                                                Color.fromARGB(255, 96, 71, 36),
+                                            color: const Color.fromRGBO(
+                                                192, 108, 132, 1),
                                             xValueMapper: (Data sales, _) =>
-                                                sales.dateOnly,
+                                            sales.dateOnly,
                                             yValueMapper: (Data sales, _) =>
-                                                sales.price,
+                                            sales.price,
                                           ),
-                                          LineSeries<Data, DateTime>(
-                                            dataSource: ExpenseModel.regression(
+                                          LineSeries<Data, DateTime>( // alt regression
+                                            dataSource:
+                                            ExpenseModel.regression(
                                                 snapshot.data!)[0],
-                                            color: Color.fromARGB(
-                                                255, 227, 185, 117),
+                                            color: const Color.fromRGBO(
+                                                41, 252, 83, 1.0),
                                             xValueMapper: (Data sales, _) =>
-                                                sales.dateOnly,
+                                            sales.dateOnly,
                                             yValueMapper: (Data sales, _) =>
-                                                sales.price,
+                                            sales.price,
                                           ),
-                                          LineSeries<Data, DateTime>(
-                                            dataSource: ExpenseModel.regression(
+                                          LineSeries<Data, DateTime>( // üst regression
+                                            dataSource:
+                                            ExpenseModel.regression(
                                                 snapshot.data!)[1],
-                                            color: Color.fromARGB(
-                                                255, 227, 185, 117),
+                                            color: const Color.fromRGBO(
+                                                41, 252, 83, 1.0),
                                             xValueMapper: (Data sales, _) =>
-                                                sales.dateOnly,
+                                            sales.dateOnly,
                                             yValueMapper: (Data sales, _) =>
-                                                sales.price,
+                                            sales.price,
                                           ),
                                           LineSeries<Data, DateTime>(
-                                            dataSource: ExpenseModel.regression(
+                                            dataSource:
+                                            ExpenseModel.regression( // orta regression
                                                 snapshot.data!)[2],
-                                            color: Color.fromARGB(
-                                                255, 227, 185, 117),
+                                            color: const Color.fromRGBO(
+                                                41, 252, 83, 1.0),
                                             xValueMapper: (Data sales, _) =>
-                                                sales.dateOnly,
+                                            sales.dateOnly,
                                             yValueMapper: (Data sales, _) =>
-                                                sales.price,
+                                            sales.price,
                                           )
                                         ],
                                         primaryXAxis: const DateTimeAxis(
                                           majorGridLines:
-                                              MajorGridLines(width: 0),
+                                          MajorGridLines(width: 0),
                                           edgeLabelPlacement:
-                                              EdgeLabelPlacement.shift,
+                                          EdgeLabelPlacement.shift,
                                           interval: 1,
                                         ),
                                         primaryYAxis: const NumericAxis(
                                           axisLine: AxisLine(width: 0),
                                           majorTickLines:
-                                              MajorTickLines(size: 0),
+                                          MajorTickLines(size: 0),
                                         ),
                                       );
                                     }
                                   } else {
-                                    return Center(
-                                      child: Text(
-                                        LocaleData.errorNoData
-                                            .getString(context),
-                                      ),
-                                    );
+                                    return const Center(
+                                        child: Text('No data available'));
                                   }
                                 },
                               ),
                             ),
                           ),
-                          SizedBox(height: 10),
                           SizedBox(
-                            width: screenWidth,
+                            width: screenWidth * 0.9,
                             height: screenWidth * 0.45,
                             child: Row(
                               children: [
                                 Expanded(
                                   child: Card(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                    elevation: 3,
-                                    shadowColor: Colors.black,
-                                    color: Colors.white,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(10),
+                                    color: const Color.fromARGB(
+                                        255, 108, 206, 169),
+                                    child: SizedBox(
                                       child: FutureBuilder<List<Data>>(
                                         future: ExpenseModel.departmentSum(
                                             ExpenseModel.getFinanceData(),
                                             filterStartDate,
-                                            filterEndDate),
+                                            filterEndDate,
+                                            teamController.text,
+                                            selectedCategory),
                                         builder: (context, snapshot) {
                                           if (snapshot.connectionState ==
                                               ConnectionState.waiting) {
                                             return const Center(
-                                              child: CircularProgressIndicator(
-                                                color: Color.fromARGB(
-                                                    255, 227, 185, 117),
-                                              ),
-                                            );
+                                                child:
+                                                CircularProgressIndicator());
                                           } else if (snapshot.hasError) {
                                             return Center(
-                                              child: Text(
-                                                "${LocaleData.error.getString(context)}: ${snapshot.error}",
-                                              ),
-                                            );
+                                                child: Text(
+                                                    'Error: ${snapshot.error}'));
                                           } else if (snapshot.hasData) {
-                                            return SfCartesianChart(
+                                            return SfCartesianChart( // sütun chart
                                               primaryXAxis:
-                                                  const CategoryAxis(),
+                                              const CategoryAxis(),
                                               series: [
                                                 StackedColumnSeries<Data,
                                                     String>(
                                                   dataSource: snapshot.data!,
                                                   xValueMapper:
                                                       (Data sales, _) =>
-                                                          sales.department,
+                                                  sales.department,
                                                   yValueMapper:
                                                       (Data sales, _) =>
-                                                          sales.price,
-                                                  color: Color.fromARGB(
-                                                      255, 227, 185, 117),
+                                                  sales.price,
                                                 ),
                                               ],
                                             );
                                           } else {
-                                            return Center(
-                                              child: Text(
-                                                LocaleData.errorNoData
-                                                    .getString(context),
-                                              ),
-                                            );
+                                            return const Center(
+                                                child: Text(
+                                                    'No data available'));
                                           }
                                         },
                                       ),
                                     ),
                                   ),
                                 ),
-                                SizedBox(width: 10),
                                 Expanded(
                                   child: Card(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                    elevation: 3,
-                                    shadowColor: Colors.black,
-                                    color: Colors.white,
-                                    child: FutureBuilder<List<Data>>(
-                                      future: ExpenseModel.categorySum(
-                                          ExpenseModel.getFinanceData(),
-                                          filterStartDate,
-                                          filterEndDate),
-                                      builder: (context, snapshot) {
-                                        if (snapshot.connectionState ==
-                                            ConnectionState.waiting) {
-                                          return const Center(
-                                            child: CircularProgressIndicator(
-                                              color: Color.fromARGB(
-                                                  255, 227, 185, 117),
-                                            ),
-                                          );
-                                        } else if (snapshot.hasError) {
-                                          return Center(
-                                            child: Text(
-                                              "${LocaleData.error.getString(context)}: ${snapshot.error}",
-                                            ),
-                                          );
-                                        } else if (snapshot.hasData) {
-                                          return SfCircularChart(
-                                            legend:
-                                                const Legend(isVisible: true),
-                                            series: <PieSeries<Data, String>>[
-                                              PieSeries<Data, String>(
-                                                explode: true,
-                                                explodeIndex: 0,
-                                                dataSource: snapshot.data!,
-                                                xValueMapper: (Data data, _) =>
-                                                    data.category,
-                                                yValueMapper: (Data data, _) =>
-                                                    data.price,
-                                                dataLabelSettings:
-                                                    const DataLabelSettings(
-                                                        isVisible: true),
-                                              ),
-                                            ],
-                                          );
-                                        } else {
-                                          return Center(
-                                            child: Text(
-                                              LocaleData.errorNoData
-                                                  .getString(context),
-                                            ),
-                                          );
-                                        }
-                                      },
+                                    color: const Color.fromARGB(
+                                        255, 174, 224, 116),
+                                    child: SizedBox(
+                                      child: FutureBuilder<List<Data>>( //
+                                        future: ExpenseModel.categorySum(
+                                            ExpenseModel.getFinanceData(),
+                                            filterStartDate,
+                                            filterEndDate,
+                                            teamController.text,
+                                            selectedCategory),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.connectionState ==
+                                              ConnectionState.waiting) {
+                                            return const Center(
+                                                child:
+                                                CircularProgressIndicator());
+                                          } else if (snapshot.hasError) {
+                                            return Center(
+                                                child: Text(
+                                                    'Error: ${snapshot.error}'));
+                                          } else if (snapshot.hasData) {
+                                            return SfCircularChart( //pie chart
+                                              legend: const Legend(
+                                                  isVisible: true),
+                                              series: <PieSeries<Data,
+                                                  String>>[
+                                                PieSeries<Data, String>(
+                                                  explode: true,
+                                                  explodeIndex: 0,
+                                                  dataSource: snapshot.data!,
+                                                  xValueMapper:
+                                                      (Data data, _) =>
+                                                  data.category,
+                                                  yValueMapper:
+                                                      (Data data, _) =>
+                                                  data.price,
+                                                  dataLabelSettings:
+                                                  const DataLabelSettings(
+                                                      isVisible: true),
+                                                ),
+                                              ],
+                                            );
+                                          } else {
+                                            return const Center(
+                                                child: Text(
+                                                    'No data available'));
+                                          }
+                                        },
+                                      ),
                                     ),
                                   ),
                                 ),
                               ],
                             ),
+                          ),
+                          StreamBuilder(
+                              stream: ExpenseModel.fetchAllExpenses(selectedTeam, selectedCategory),
+                              builder: (context,snapshot){
+                                if (snapshot.connectionState == ConnectionState.waiting) {
+                                  return const Center(child: CircularProgressIndicator());
+                                } else if (snapshot.hasError) {
+                                  return Center(child: Text('Error: ${snapshot.error}'));
+                                } else if (snapshot.hasData) {
+                                  List<ExpenseModel>? expenses = ExpenseModel.dateSort(snapshot.data!, filterStartDate, filterEndDate);
+                                  double sum=0;
+                                  for(var data in expenses){
+                                    sum+=double.parse(data.price);
+                                  }
+                                  if(selectedTeam==null){
+                                    return Row(
+                                      children: [
+                                        Card( // expense sayısı
+                                          color: const Color.fromARGB(
+                                              255, 255, 255, 255),
+                                          child: Container(
+                                            width: screenWidth * 0.42,
+                                            height: screenWidth * 0.22,
+                                            child: Center(child: Text("${expenses.length}")),
+                                          ),
+                                        ),
+                                        Card( //expense toplamı
+                                          color: const Color.fromARGB(
+                                              255, 255, 255, 255),
+                                          child: Container(
+                                            width: screenWidth * 0.42,
+                                            height: screenWidth * 0.22,
+                                            child: Center(child: Text("$sum")),
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  }else{
+                                    return Row(
+                                      children: [
+                                        Card( // expense sayısı
+                                          color: const Color.fromARGB(
+                                              255, 255, 255, 255),
+                                          child: Container(
+                                            width: screenWidth * 0.27,
+                                            height: screenWidth * 0.22,
+                                            child: Center(child: Text("${expenses.length}")),
+                                          ),
+                                        ),
+                                        Card(// expense toplamı
+                                          color: const Color.fromARGB(
+                                              255, 255, 255, 255),
+                                          child: Container(
+                                            width: screenWidth * 0.27,
+                                            height: screenWidth * 0.22,
+                                            child: Center(child: Text("$sum")),
+                                          ),
+                                        ),
+                                        FutureBuilder(// budget kısmı
+                                            future: TeamModel.getTeamBudget(selectedTeam),
+                                            builder: (context,snapshot){
+                                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                                return const Center(child: CircularProgressIndicator());
+                                              } else if (snapshot.hasError) {
+                                                print(snapshot.error);
+                                                return Center(child: Text('Error: ${snapshot.error}'));
+                                              } else if (snapshot.hasData) {
+                                                return Card(
+                                                  color: const Color.fromARGB(
+                                                      255, 255, 255, 255),
+                                                  child: Container(
+                                                    width: screenWidth * 0.27,
+                                                    height: screenWidth * 0.22,
+                                                    child: Column(
+                                                      children: [
+                                                        Text("${snapshot.data}"),
+                                                        ElevatedButton(
+                                                            onPressed: (){
+                                                              editBudget(context,teamController.text,snapshot.data);
+                                                            },
+                                                            child: Text("Edit")
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                );
+                                              } else {
+                                                return const Center(child: Text('No data available'));
+                                              }
+                                            }
+                                        )
+                                      ],
+                                    );
+                                  }
+                                } else {
+                                  return const Center(child: Text('No data available'));
+                                }
+
+                              }
                           )
                         ],
                       ),
@@ -361,7 +430,7 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontSize: 25,
-                                    color: Color.fromARGB(255, 96, 71, 36),
+                                    color: Color.fromARGB(255, 255, 255, 255),
                                   ),
                                 ),
                               ),
@@ -545,8 +614,6 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
               SizedBox(height: 40),
               categoryDropdownMenu(),
               SizedBox(height: 40),
-              statusDropdownMenu(),
-              SizedBox(height: 40),
               dateRangeButton(context),
             ],
           ),
@@ -707,86 +774,6 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
           label: "Other Expenses",
           leadingIcon: const Icon(
             Icons.attach_money,
-            color: Color.fromARGB(255, 96, 71, 36),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget statusDropdownMenu() {
-    return DropdownMenu<String>(
-      controller: statusController,
-      width: 340,
-      leadingIcon: const Icon(
-        Icons.info,
-        color: Color.fromARGB(255, 96, 71, 36),
-      ),
-      trailingIcon: const Icon(
-        Icons.keyboard_arrow_down,
-        color: Color.fromARGB(255, 96, 71, 36),
-      ),
-      selectedTrailingIcon: const Icon(
-        Icons.keyboard_arrow_up,
-        color: Color.fromARGB(255, 96, 71, 36),
-      ),
-      inputDecorationTheme: InputDecorationTheme(
-        filled: true,
-        fillColor: Colors.white,
-        hintStyle:
-            TextStyle(color: Colors.black38, fontWeight: FontWeight.w500),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15),
-          borderSide: BorderSide(
-            color: Color.fromARGB(255, 227, 185, 117),
-            width: 1.5,
-          ),
-        ),
-      ),
-      hintText: LocaleData.dropdownStatus.getString(context),
-      menuStyle: MenuStyle(
-        shape: WidgetStatePropertyAll(
-          RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
-          ),
-        ),
-        alignment: Alignment.bottomLeft,
-        surfaceTintColor: WidgetStatePropertyAll(Colors.transparent),
-        backgroundColor: WidgetStatePropertyAll(Colors.white),
-      ),
-      onSelected: (_) {
-        setState(() {});
-      },
-      dropdownMenuEntries: [
-        DropdownMenuEntry(
-          value: "waiting",
-          label: "waiting",
-          leadingIcon: const Icon(
-            Icons.info_outline,
-            color: Color.fromARGB(255, 96, 71, 36),
-          ),
-        ),
-        DropdownMenuEntry(
-          value: "acceptedByLeader",
-          label: "acceptedByLeader",
-          leadingIcon: const Icon(
-            Icons.info_outline,
-            color: Color.fromARGB(255, 96, 71, 36),
-          ),
-        ),
-        DropdownMenuEntry(
-          value: "acceptedByLeaderAndFinance",
-          label: "acceptedByLeaderAndFinance",
-          leadingIcon: const Icon(
-            Icons.check,
-            color: Color.fromARGB(255, 96, 71, 36),
-          ),
-        ),
-        DropdownMenuEntry(
-          value: "denied",
-          label: "denied",
-          leadingIcon: const Icon(
-            Icons.close,
             color: Color.fromARGB(255, 96, 71, 36),
           ),
         ),
@@ -1031,6 +1018,67 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
                 ],
               ),
             ),
+          ),
+        ),
+      ),
+    );
+  }
+  Future editBudget(BuildContext context,String teamName,num? currentBudget){
+    print(currentBudget);
+    TextEditingController budget=TextEditingController();
+    return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        surfaceTintColor: Color.fromARGB(255, 227, 185, 117),
+        backgroundColor: Colors.white,
+        shadowColor: Colors.black,
+        insetPadding: EdgeInsets.symmetric(
+          horizontal: 5,
+        ),
+        actions: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              TextButton(
+                style: TextButton.styleFrom(
+                  overlayColor: Color.fromARGB(255, 227, 185, 117),
+                ),
+                onPressed: () {
+                  setState(() {});
+                  TeamModel.setBudget(teamName, double.parse(budget.text));
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  "Set Budget",
+                  style: TextStyle(
+                    color: Color.fromARGB(255, 96, 71, 36),
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          )
+        ],
+        content: SizedBox(
+          height: 130,
+          width: 150,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              TextField(
+                keyboardType: TextInputType.number,
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.digitsOnly,
+                ],
+                controller: budget,
+                decoration: InputDecoration(
+                  labelText: 'Enter the new budget',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              Text("Current budget is:${currentBudget}")
+            ],
           ),
         ),
       ),
