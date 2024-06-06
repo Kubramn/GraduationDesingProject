@@ -282,15 +282,28 @@ class UserModel {
         );
       },
     );
-    if(name==""||surname==""||email==""||password==""||role==""||job==""||department==""||teamName==""){
-      Navigator.pop(context);
-      alertMessage(
-        "There is an empty field has to be filled",
-        Color.fromARGB(255, 0, 255, 0),
-        context,
-      );
-      return false;
+    if(role=="Finance"){
+      if(name==""||surname==""||email==""||password==""||role==""||job==""||department==""){
+        Navigator.pop(context);
+        alertMessage(
+          "There is an empty field has to be filled",
+          Color.fromARGB(255, 0, 255, 0),
+          context,
+        );
+        return false;
+      }
+    }else{
+      if(name==""||surname==""||email==""||password==""||role==""||job==""||department==""||teamName==""){
+        Navigator.pop(context);
+        alertMessage(
+          "There is an empty field has to be filled",
+          Color.fromARGB(255, 0, 255, 0),
+          context,
+        );
+        return false;
+      }
     }
+
     try {
       await UserModel(
         name: name,
