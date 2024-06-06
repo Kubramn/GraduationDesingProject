@@ -30,30 +30,30 @@ class ExpenseModel {
   });
 
   Map<String, dynamic> toJson() => {
-        "id": id,
-        "title": title,
-        "status": status,
-        "price": price,
-        "date": date,
-        "description": description,
-        "userEmail": userEmail,
-        "checkerUserEmail": checkerUserEmail,
-        "category": category,
-        "image":image,
-      };
+    "id": id,
+    "title": title,
+    "status": status,
+    "price": price,
+    "date": date,
+    "description": description,
+    "userEmail": userEmail,
+    "checkerUserEmail": checkerUserEmail,
+    "category": category,
+    "image":image,
+  };
 
   static ExpenseModel fromJson(Map<String, dynamic> json) => ExpenseModel(
-        id: json["id"],
-        title: json["title"],
-        status: json["status"],
-        price: json["price"],
-        date: json["date"],
-        description: json["description"],
-        userEmail: json["userEmail"],
-        checkerUserEmail: json["checkerUserEmail"],
-        category: json["category"],
-        image: json["image"],
-      );
+    id: json["id"],
+    title: json["title"],
+    status: json["status"],
+    price: json["price"],
+    date: json["date"],
+    description: json["description"],
+    userEmail: json["userEmail"],
+    checkerUserEmail: json["checkerUserEmail"],
+    category: json["category"],
+    image: json["image"],
+  );
 
   Future createExpense() async {
     final newExpense = FirebaseFirestore.instance.collection('expenses').doc();
@@ -77,39 +77,39 @@ class ExpenseModel {
   }
 
   static Stream<List<ExpenseModel>> fetchOneMemberExpenses(
-    String status,
-    String? email,
-  ) {
+      String status,
+      String? email,
+      ) {
     if (status == "previous") {
       return FirebaseFirestore.instance
           .collection('expenses')
           .where(
-            Filter.and(
-              Filter("userEmail", isEqualTo: email),
-              Filter.or(
-                Filter("status", isEqualTo: "acceptedByLeaderAndFinance"),
-                Filter("status", isEqualTo: "denied"),
-              ),
-            ),
-          )
+        Filter.and(
+          Filter("userEmail", isEqualTo: email),
+          Filter.or(
+            Filter("status", isEqualTo: "acceptedByLeaderAndFinance"),
+            Filter("status", isEqualTo: "denied"),
+          ),
+        ),
+      )
           .snapshots()
           .map((snapshot) => snapshot.docs
-              .map((doc) => ExpenseModel.fromJson(doc.data()))
-              .toList());
+          .map((doc) => ExpenseModel.fromJson(doc.data()))
+          .toList());
     } else if (status == "waiting") {
       return FirebaseFirestore.instance
           .collection('expenses')
           .where(Filter.and(
-            Filter("userEmail", isEqualTo: email),
-            Filter.or(
-              Filter("status", isEqualTo: "waiting"),
-              Filter("status", isEqualTo: "acceptedByLeader"),
-            ),
-          ))
+        Filter("userEmail", isEqualTo: email),
+        Filter.or(
+          Filter("status", isEqualTo: "waiting"),
+          Filter("status", isEqualTo: "acceptedByLeader"),
+        ),
+      ))
           .snapshots()
           .map((snapshot) => snapshot.docs
-              .map((doc) => ExpenseModel.fromJson(doc.data()))
-              .toList());
+          .map((doc) => ExpenseModel.fromJson(doc.data()))
+          .toList());
     } else {
       return const Stream<List<ExpenseModel>>.empty();
     }
@@ -190,15 +190,15 @@ class ExpenseModel {
     return FirebaseFirestore.instance
         .collection('expenses')
         .where(
-          Filter.and(
-            Filter("checkerUserEmail", isEqualTo: email),
-            Filter("status", isEqualTo: "waiting"),
-          ),
-        )
+      Filter.and(
+        Filter("checkerUserEmail", isEqualTo: email),
+        Filter("status", isEqualTo: "waiting"),
+      ),
+    )
         .snapshots()
         .map((snapshot) => snapshot.docs
-            .map((doc) => ExpenseModel.fromJson(doc.data()))
-            .toList());
+        .map((doc) => ExpenseModel.fromJson(doc.data()))
+        .toList());
   }
 
   static Stream<List<ExpenseModel>> fetchRequestsForFinance(String? email) {
@@ -207,8 +207,8 @@ class ExpenseModel {
         .where("status", isEqualTo: "acceptedByLeader")
         .snapshots()
         .map((snapshot) => snapshot.docs
-            .map((doc) => ExpenseModel.fromJson(doc.data()))
-            .toList());
+        .map((doc) => ExpenseModel.fromJson(doc.data()))
+        .toList());
   }
 
   static Future<void> updateRequestStatus(String id, String status) async {
@@ -236,12 +236,9 @@ class ExpenseModel {
       DateTime date = DateTime(int.parse(ts[2]),int.parse(ts[1]),int.parse(ts[0]));
       double price = double.parse(element.price);
       String category = element.category;
-      if(element.status=="acceptedByLeaderAndFinance"){
-        if (date.isAfter(DateTime(1700)) && date.isBefore(DateTime(2100))) {
-          list.add(Data(date, price, category,teamName,department));
-        }
-      }
+      list.add(Data(date, price, category,teamName,department));
     }
+    print(list.length);
     return list;
   }
 
@@ -258,13 +255,9 @@ class ExpenseModel {
       DateTime date = DateTime(int.parse(ts[2]),int.parse(ts[1]),int.parse(ts[0]));
       double price = double.parse(element.price);
       String category = element.category;
-      if(element.status=="acceptedByLeaderAndFinance"){
-        if (date.isAfter(DateTime(1700)) && date.isBefore(DateTime(2100))) {
-          list.add(Data(date, price, category,teamName,department));
-        }
-      }
-
+      list.add(Data(date, price, category,teamName,department));
     }
+    print(list.length);
     return list;
   }
 

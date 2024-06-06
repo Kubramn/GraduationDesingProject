@@ -284,24 +284,6 @@ class _FinanceRegisterState extends State<FinanceRegister> {
                   ),
                 ),
                 SizedBox(height: screenHeight * 0.04),
-                TextField(
-                  keyboardType: TextInputType.number,
-                  controller: budgetController,
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                        borderSide: BorderSide.none,
-                        borderRadius: BorderRadius.circular(15)),
-                    hintText: LocaleData.budget.getString(context),
-                    hintStyle: TextStyle(color: Colors.black38),
-                    prefixIcon: Icon(
-                      Icons.money,
-                      color: Color.fromARGB(255, 68, 60, 95),
-                    ),
-                  ),
-                ),
-                SizedBox(height: screenHeight * 0.04),
                 registerButton(context),
               ],
             ),
@@ -314,34 +296,22 @@ class _FinanceRegisterState extends State<FinanceRegister> {
   ElevatedButton registerButton(BuildContext context) {
     return ElevatedButton(
       onPressed: () async {
-        if (await UserModel.register(
-          nameController.text,
-          surnameController.text,
-          emailController.text,
-          passwordController.text,
-          roleController.text,
-          jobController.text,
-          departmentController.text,
-          teamNameController.text,
-          context,
-        )) {
-          if (budgetController.text == "") {
-            nameController.clear();
-            surnameController.clear();
-            emailController.clear();
-            passwordController.clear();
-            roleController.clear();
-            jobController.clear();
-            departmentController.clear();
-            teamNameController.clear();
-            budgetController.clear();
-          } else {
-            TeamModel(
-              teamName: teamNameController.text,
-              leaderEmail: emailController.text,
-              budget: double.parse(budgetController.text),
-            ).createTeam(roleController.text);
-
+        if(await TeamModel(
+          teamName: teamNameController.text,
+          leaderEmail: emailController.text,
+          budget: 0,
+        ).createTeam(roleController.text,context)){
+          if (await UserModel.register(
+            nameController.text,
+            surnameController.text,
+            emailController.text,
+            passwordController.text,
+            roleController.text,
+            jobController.text,
+            departmentController.text,
+            teamNameController.text,
+            context,
+          )) {
             nameController.clear();
             surnameController.clear();
             emailController.clear();

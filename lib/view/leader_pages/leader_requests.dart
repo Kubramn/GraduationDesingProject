@@ -6,6 +6,9 @@ import 'package:bitirme/view/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localization/flutter_localization.dart';
 
+import '../../alert_message.dart';
+import '../../models/team_model.dart';
+
 class LeaderRequests extends StatefulWidget {
   const LeaderRequests({super.key});
 
@@ -180,12 +183,20 @@ class _LeaderRequestsState extends State<LeaderRequests> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   ElevatedButton(
-                    onPressed: (() {
-                      ExpenseModel.updateRequestStatus(
-                        request.id,
-                        "acceptedByLeader",
-                      );
-                      Navigator.pop(context);
+                    onPressed: (() async {
+                      try{
+                        if(await TeamModel.checkBudget(LoginPage.currentUserEmail, double.parse(request.price))){
+                          ExpenseModel.updateRequestStatus(
+                            request.id,
+                            "acceptedByLeader",
+                            );
+                          Navigator.pop(context);
+                        }
+                      }catch(e){
+                        Navigator.pop(context);
+                        alertMessage("$e", Color.fromARGB(0, 250, 80, 80), context);
+                        Navigator.pop(context);
+                      }
                     }),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.lightGreen,

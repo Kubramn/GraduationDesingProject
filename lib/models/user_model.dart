@@ -1,4 +1,5 @@
 import "package:bitirme/alert_message.dart";
+import "package:bitirme/models/team_model.dart";
 import "package:cloud_firestore/cloud_firestore.dart";
 import "package:flutter/material.dart";
 
@@ -45,19 +46,26 @@ class UserModel {
         teamName: json["teamName"],
       );
 
-  Future createUser() async {
+  Future createUser(BuildContext context) async {
     final newUser = FirebaseFirestore.instance.collection('users').doc(email);
-    final user = UserModel(
-      name: name,
-      surname: surname,
-      email: email,
-      password: password,
-      role: role,
-      job: job,
-      department: department,
-      teamName: teamName,
-    );
-    await newUser.set(user.toJson());
+    try{
+      (await newUser.get())["email"];
+    }catch(e){
+      print("dsadsadsa");
+      final user = UserModel(
+        name: name,
+        surname: surname,
+        email: email,
+        password: password,
+        role: role,
+        job: job,
+        department: department,
+        teamName: teamName,
+      );
+      await newUser.set(user.toJson());
+      return;
+    }
+    throw Exception("This email already exists");
   }
 
   static Future<String> getNameSurnameByEmail(String email) async {
@@ -143,31 +151,73 @@ class UserModel {
   }
 
   static Future<bool> updateUser(
-    String? email,
-    String name,
-    String surname,
-    String password,
-    String role,
-    String job,
-    String department,
-    String teamName,
-  ) async {
-    try {
-      await FirebaseFirestore.instance.collection("users").doc(email).update({
-        "name": name,
-        "surname": surname,
-        "password": password,
-        "role": role,
-        "job": job,
-        "department": department,
-        "teamName": teamName,
-      });
-      print("User data updated successfully!");
-      return true;
-    } catch (e) {
-      print("Error fetching or updating user data: $e");
-      return false;
+      String? email,
+      String name,
+      String surname,
+      String password,
+      String role,
+      String job,
+      String department,
+      String teamName,
+      ) async {
+    List<String> teamList = await TeamModel.getTeamList();
+    if(role=="Member"){
+      if(teamList.contains(teamName)){
+        try {
+          await FirebaseFirestore.instance.collection("users").doc(email).update({
+            "name": name,
+            "surname": surname,
+            "password": password,
+            "role": role,
+            "job": job,
+            "department": department,
+            "teamName": teamName,
+          });
+          return true;
+        } catch (e) {
+          throw Exception("Error fetching or updating user data");
+        }
+      }else{
+        throw Exception("There is no team with that name");
+      }
+    }else if(role=="Leader"){
+      if(!teamList.contains(teamName)){
+        try {
+          await FirebaseFirestore.instance.collection("users").doc(email).update({
+            "name": name,
+            "surname": surname,
+            "password": password,
+            "role": role,
+            "job": job,
+            "department": department,
+            "teamName": teamName,
+          });
+          return true;
+        } catch (e) {
+          throw Exception("Error fetching or updating user data");
+        }
+      }else{
+        throw Exception("There is a team with that name");
+      }
+    }else{
+      try {
+        await FirebaseFirestore.instance.collection("users").doc(email).update({
+          "name": name,
+          "surname": surname,
+          "password": password,
+          "role": role,
+          "job": job,
+          "department": department,
+          "teamName": teamName,
+        });
+        print("User data updated successfully!");
+        return true;
+      } catch (e) {
+        print("Error fetching or updating user data: $e");
+        return false;
+      }
     }
+
   }
 
   static Future<void> updateTeamNamesOfUsers(
@@ -212,16 +262,16 @@ class UserModel {
   }
 
   static Future<bool> register(
-    String name,
-    String surname,
-    String email,
-    String password,
-    String role,
-    String job,
-    String department,
-    String teamName,
-    BuildContext context,
-  ) async {
+      String name,
+      String surname,
+      String email,
+      String password,
+      String role,
+      String job,
+      String department,
+      String teamName,
+      BuildContext context,
+      ) async {
     showDialog(
       context: context,
       builder: (context) {
@@ -232,15 +282,17 @@ class UserModel {
         );
       },
     );
-
-    try {
-      Navigator.pop(context); //Navigator.of(context).pop;
+    if(name==""||surname==""||email==""||password==""||role==""||job==""||department==""||teamName==""){
+      Navigator.pop(context);
       alertMessage(
-        "${name} ${surname} is registered successfully.",
+        "There is an empty field has to be filled",
         Color.fromARGB(255, 0, 255, 0),
         context,
       );
-      UserModel(
+      return false;
+    }
+    try {
+      await UserModel(
         name: name,
         surname: surname,
         email: email,
@@ -249,18 +301,24 @@ class UserModel {
         job: job,
         department: department,
         teamName: teamName,
-      ).createUser();
-      return true;
+      ).createUser(context);
     } catch (e) {
       Navigator.pop(context);
       alertMessage(
-        "User Registration failed!",
+        "$e",
         const Color.fromARGB(255, 255, 0, 0),
         context,
       );
       print("ERROR -> $e");
       return false;
     }
+    Navigator.pop(context); //Navigator.of(context).pop;
+    alertMessage(
+      "${name} ${surname} is registered successfully.",
+      Color.fromARGB(255, 0, 255, 0),
+      context,
+    );
+    return true;
   }
 
   static Future<String?> login(
