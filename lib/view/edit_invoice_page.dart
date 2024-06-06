@@ -60,89 +60,93 @@ class _EditInvoicePageState extends State<EditInvoicePage> {
         ),
       ),
       backgroundColor: Color.fromARGB(255, 229, 229, 225),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06),
+      body: RawScrollbar(
+        radius: const Radius.circular(100),
+        thumbColor: Color.fromARGB(255, 157, 203, 201),
         child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: screenWidth),
-                child: Image.file(
-                  File(widget.imagePath),
-                ),
-              ),
-              SizedBox(height: screenHeight * 0.04),
-              invoiceInfoTextField(
-                titleController,
-                LocaleData.dialogTitle.getString(context),
-                Icons.title,
-              ),
-              SizedBox(height: screenHeight * 0.02),
-              invoiceInfoTextField(
-                descriptionController,
-                LocaleData.dialogDescription.getString(context),
-                Icons.description_outlined,
-              ),
-              SizedBox(height: screenHeight * 0.02),
-              categoryDropdownMenu(),
-              SizedBox(height: screenHeight * 0.02),
-              invoiceInfoTextField(
-                dateController,
-                LocaleData.dialogDate.getString(context),
-                Icons.date_range,
-              ),
-              SizedBox(height: screenHeight * 0.02),
-              invoiceInfoTextField(
-                priceController,
-                LocaleData.dialogPrice.getString(context),
-                Icons.price_change_outlined,
-              ),
-              SizedBox(height: screenHeight * 0.04),
-              ElevatedButton(
-                onPressed: () async {
-                  addExpense();
-                  String role = await UserModel.getRoleByEmail(
-                      LoginPage.currentUserEmail ?? "");
-
-                  switch (role) {
-                    case "Member":
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const MemberNavBar(),
-                        ),
-                      );
-                      break;
-
-                    case "Leader":
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const LeaderNavBar(),
-                        ),
-                      );
-                      break;
-                  }
-                },
-                child: Text(
-                  LocaleData.addExpenseButton.getString(context),
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: screenWidth),
+                  child: Image.file(
+                    File(widget.imagePath),
                   ),
                 ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color.fromARGB(255, 157, 203, 201),
-                  foregroundColor: Color.fromARGB(255, 49, 102, 101),
-                  fixedSize: Size(500, 60),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
+                SizedBox(height: screenHeight * 0.04),
+                invoiceInfoTextField(
+                  titleController,
+                  LocaleData.dialogTitle.getString(context),
+                  Icons.title,
+                ),
+                SizedBox(height: screenHeight * 0.02),
+                invoiceInfoTextField(
+                  descriptionController,
+                  LocaleData.dialogDescription.getString(context),
+                  Icons.description_outlined,
+                ),
+                SizedBox(height: screenHeight * 0.02),
+                categoryDropdownMenu(),
+                SizedBox(height: screenHeight * 0.02),
+                invoiceInfoTextField(
+                  dateController,
+                  LocaleData.dialogDate.getString(context),
+                  Icons.date_range,
+                ),
+                SizedBox(height: screenHeight * 0.02),
+                invoiceInfoTextField(
+                  priceController,
+                  LocaleData.dialogPrice.getString(context),
+                  Icons.price_change_outlined,
+                ),
+                SizedBox(height: screenHeight * 0.04),
+                ElevatedButton(
+                  onPressed: () async {
+                    addExpense();
+                    String role = await UserModel.getRoleByEmail(
+                        LoginPage.currentUserEmail ?? "");
+
+                    switch (role) {
+                      case "Member":
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const MemberNavBar(),
+                          ),
+                        );
+                        break;
+
+                      case "Leader":
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const LeaderNavBar(),
+                          ),
+                        );
+                        break;
+                    }
+                  },
+                  child: Text(
+                    LocaleData.addExpenseButton.getString(context),
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color.fromARGB(255, 157, 203, 201),
+                    foregroundColor: Color.fromARGB(255, 49, 102, 101),
+                    fixedSize: Size(500, 60),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(height: screenHeight * 0.04),
-            ],
+                SizedBox(height: screenHeight * 0.04),
+              ],
+            ),
           ),
         ),
       ),
@@ -187,26 +191,25 @@ class _EditInvoicePageState extends State<EditInvoicePage> {
       onSelected: (_) {
         setState(() {});
         switch (categoryController.text) {
-          case "Seyahat ve Ulaşım" || "Travel and Transportation":
+          case "Travel and Transportation":
             categoryIcon = Icon(
               Icons.emoji_transportation,
               color: Color.fromARGB(255, 49, 102, 101),
             );
             break;
-          case "Yemek ve Eğlence" || "Meals and Entertainment":
+          case "Meals and Entertainment":
             categoryIcon = Icon(
               Icons.fastfood_outlined,
               color: Color.fromARGB(255, 49, 102, 101),
             );
             break;
-          case "Ofis Malzemeleri ve Ekipmanları" ||
-                "Office Supplies and Equipment":
+          case "Office Supplies and Equipment":
             categoryIcon = Icon(
               Icons.meeting_room_outlined,
               color: Color.fromARGB(255, 49, 102, 101),
             );
             break;
-          case "Diğer Harcamalar" || "Other Expenses":
+          case "Other Expenses":
             categoryIcon = Icon(
               Icons.attach_money,
               color: Color.fromARGB(255, 49, 102, 101),
@@ -214,34 +217,34 @@ class _EditInvoicePageState extends State<EditInvoicePage> {
             break;
         }
       },
-      dropdownMenuEntries: [
+      dropdownMenuEntries: const [
         DropdownMenuEntry(
-          value: LocaleData.categoryTravel.getString(context),
-          label: LocaleData.categoryTravel.getString(context),
+          value: "Travel and Transportation",
+          label: "Travel and Transportation",
           leadingIcon: Icon(
             Icons.emoji_transportation,
             color: Color.fromARGB(255, 49, 102, 101),
           ),
         ),
         DropdownMenuEntry(
-          value: LocaleData.categoryMeal.getString(context),
-          label: LocaleData.categoryMeal.getString(context),
+          value: "Meals and Entertainment",
+          label: "Meals and Entertainment",
           leadingIcon: Icon(
             Icons.fastfood_outlined,
             color: Color.fromARGB(255, 49, 102, 101),
           ),
         ),
         DropdownMenuEntry(
-          value: LocaleData.categoryOffice.getString(context),
-          label: LocaleData.categoryOffice.getString(context),
+          value: "Office Supplies and Equipment",
+          label: "Office Supplies and Equipment",
           leadingIcon: Icon(
             Icons.meeting_room_outlined,
             color: Color.fromARGB(255, 49, 102, 101),
           ),
         ),
         DropdownMenuEntry(
-          value: LocaleData.categoryOther.getString(context),
-          label: LocaleData.categoryOther.getString(context),
+          value: "Other Expenses",
+          label: "Other Expenses",
           leadingIcon: Icon(
             Icons.attach_money,
             color: Color.fromARGB(255, 49, 102, 101),

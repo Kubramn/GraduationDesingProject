@@ -328,7 +328,7 @@ class _ExpensesPageState extends State<ExpensesPage> {
         ),
         insetPadding: EdgeInsets.symmetric(
           horizontal: 30,
-          vertical: previousOrWaiting ? 70 : 50,
+          vertical: 50,
         ),
         actions: [
           TextButton(
@@ -348,72 +348,80 @@ class _ExpensesPageState extends State<ExpensesPage> {
             ),
           )
         ],
-        content: SizedBox(
-          width: double.maxFinite,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Row(
+        content: RawScrollbar(
+          radius: const Radius.circular(100),
+          thumbColor: Color.lerp(
+            statusInfoAndColor(expense)[1],
+            Colors.white,
+            0.6,
+          ),
+          child: SingleChildScrollView(
+            child: SizedBox(
+              width: double.maxFinite,
+              child: Column(
                 children: [
-                  Icon(
-                    Icons.info_outline,
-                    color: statusInfoAndColor(expense)[1],
-                    size: 30,
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Expanded(
-                    child: AutoSizeText(
-                      maxLines: 3,
-                      overflow: TextOverflow.ellipsis,
-                      maxFontSize: 20,
-                      minFontSize: 20,
-                      statusInfoAndColor(expense)[0],
-                      style: TextStyle(
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.info_outline,
                         color: statusInfoAndColor(expense)[1],
-                        fontSize: 20,
+                        size: 30,
                       ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: AutoSizeText(
+                          maxLines: 5,
+                          overflow: TextOverflow.ellipsis,
+                          maxFontSize: 20,
+                          minFontSize: 20,
+                          statusInfoAndColor(expense)[0],
+                          style: TextStyle(
+                            color: statusInfoAndColor(expense)[1],
+                            fontSize: 20,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Divider(
+                    color: statusInfoAndColor(expense)[1],
+                    thickness: 1.5,
+                    height: 25,
+                  ),
+                  const SizedBox(height: 5),
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(maxHeight: 350),
+                    child: Image.network(
+                      expense.image,
                     ),
+                  ),
+                  const SizedBox(height: 15),
+                  infoValuePair(
+                    LocaleData.dialogTitle.getString(context),
+                    expense.title,
+                    expense,
+                  ),
+                  const SizedBox(height: 10),
+                  infoValuePair(
+                    LocaleData.dialogDescription.getString(context),
+                    expense.description,
+                    expense,
+                  ),
+                  const SizedBox(height: 10),
+                  infoValuePair(
+                    LocaleData.dialogDate.getString(context),
+                    expense.date,
+                    expense,
+                  ),
+                  const SizedBox(height: 10),
+                  infoValuePair(
+                    LocaleData.dialogPrice.getString(context),
+                    expense.price,
+                    expense,
                   ),
                 ],
               ),
-              Divider(
-                color: statusInfoAndColor(expense)[1],
-                thickness: 1.5,
-              ),
-              SizedBox(height: 5),
-              ConstrainedBox(
-                constraints: BoxConstraints(maxHeight: 350),
-                child: Image.network(
-                  expense.image,
-                ),
-              ),
-              SizedBox(height: 10),
-              infoValuePair(
-                LocaleData.dialogTitle.getString(context),
-                expense.title,
-                expense,
-              ),
-              SizedBox(height: 2),
-              infoValuePair(
-                LocaleData.dialogDescription.getString(context),
-                expense.description,
-                expense,
-              ),
-              SizedBox(height: 2),
-              infoValuePair(
-                LocaleData.dialogDate.getString(context),
-                expense.date,
-                expense,
-              ),
-              SizedBox(height: 2),
-              infoValuePair(
-                LocaleData.dialogPrice.getString(context),
-                expense.price,
-                expense,
-              ),
-            ],
+            ),
           ),
         ),
       ),
