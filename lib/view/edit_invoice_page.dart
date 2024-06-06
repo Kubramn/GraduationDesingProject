@@ -1,15 +1,12 @@
 import 'dart:io';
-import 'dart:math';
 import 'package:bitirme/localization/locales.dart';
 import 'package:bitirme/models/expense_model.dart';
 import 'package:bitirme/models/user_model.dart';
-import 'package:bitirme/view/expenses_page.dart';
 import 'package:bitirme/view/leader_pages/leader_navbar.dart';
 import 'package:bitirme/view/login_page.dart';
 import 'package:bitirme/view/member_pages/member_navbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localization/flutter_localization.dart';
-import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 
 import '../controller/ocr_controller.dart';
 
