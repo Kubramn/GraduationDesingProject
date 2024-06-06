@@ -1,3 +1,4 @@
+import 'package:bitirme/alert_message.dart';
 import 'package:bitirme/models/team_model.dart';
 import 'package:bitirme/models/user_model.dart';
 import 'package:flutter/material.dart';
@@ -362,28 +363,32 @@ class _FinanceUsersState extends State<FinanceUsers> {
   Widget updateUserButton(double screenWidth) {
     return ElevatedButton(
       onPressed: () async {
-        if (await UserModel.updateUser(
-          _selectedUser?.email,
-          nameController.text,
-          surnameController.text,
-          passwordController.text,
-          roleController.text,
-          jobController.text,
-          departmentController.text,
-          teamNameController.text,
-        )) {
-          if (roleController.text == "Leader") {
-            TeamModel.updateTeamName(
-              _selectedUser!.teamName,
-              teamNameController.text,
-            );
+        try{
+          if (await UserModel.updateUser(
+            _selectedUser?.email,
+            nameController.text,
+            surnameController.text,
+            passwordController.text,
+            roleController.text,
+            jobController.text,
+            departmentController.text,
+            teamNameController.text,
+          )) {
+            if (roleController.text == "Leader") {
+              TeamModel.updateTeamName(
+                _selectedUser!.teamName,
+                teamNameController.text,
+              );
 
-            UserModel.updateTeamNamesOfUsers(
-              _selectedUser!.teamName,
-              teamNameController.text,
-            );
+              UserModel.updateTeamNamesOfUsers(
+                _selectedUser!.teamName,
+                teamNameController.text,
+              );
+            }
+            resetAllFields();
           }
-          resetAllFields();
+        }catch(e){
+          alertMessage("$e", Color.fromARGB(0, 255, 80, 80), context);
         }
       },
       child: Text(

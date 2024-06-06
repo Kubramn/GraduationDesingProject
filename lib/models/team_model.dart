@@ -39,10 +39,7 @@ class TeamModel {
   }
 
   Future<bool> createTeam(String role,BuildContext context) async {
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('teams').get();
-    List<QueryDocumentSnapshot> documents = querySnapshot.docs;
-    List<String> teamList = documents.map((doc) => doc['teamName'] as String).toList();
-
+    List<String> teamList = await getTeamList();
     if (role == "Leader") {
       if (!teamList.contains(teamName)) {
         final newTeam = FirebaseFirestore.instance.collection('teams').doc();
@@ -72,6 +69,12 @@ class TeamModel {
       }
     }
     return true;
+  }
+
+  static Future<List<String>> getTeamList() async {
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('teams').get();
+    List<QueryDocumentSnapshot> documents = querySnapshot.docs;
+    return documents.map((doc) => doc['teamName'] as String).toList();
   }
 
   static Future<String> decideLeaderEmailByTeamName(

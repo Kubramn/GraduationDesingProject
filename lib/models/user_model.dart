@@ -1,4 +1,5 @@
 import "package:bitirme/alert_message.dart";
+import "package:bitirme/models/team_model.dart";
 import "package:cloud_firestore/cloud_firestore.dart";
 import "package:flutter/material.dart";
 
@@ -159,22 +160,64 @@ class UserModel {
     String department,
     String teamName,
   ) async {
-    try {
-      await FirebaseFirestore.instance.collection("users").doc(email).update({
-        "name": name,
-        "surname": surname,
-        "password": password,
-        "role": role,
-        "job": job,
-        "department": department,
-        "teamName": teamName,
-      });
-      print("User data updated successfully!");
-      return true;
-    } catch (e) {
-      print("Error fetching or updating user data: $e");
-      return false;
+    List<String> teamList = await TeamModel.getTeamList();;
+    if(role=="Member"){
+      if(teamList.contains(teamName)){
+        try {
+          await FirebaseFirestore.instance.collection("users").doc(email).update({
+            "name": name,
+            "surname": surname,
+            "password": password,
+            "role": role,
+            "job": job,
+            "department": department,
+            "teamName": teamName,
+          });
+          return true;
+        } catch (e) {
+          throw Exception("Error fetching or updating user data");
+        }
+      }else{
+        throw Exception("There is no team with that name");
+      }
+    }else if(role=="Leader"){
+      if(!teamList.contains(teamName)){
+        try {
+          await FirebaseFirestore.instance.collection("users").doc(email).update({
+            "name": name,
+            "surname": surname,
+            "password": password,
+            "role": role,
+            "job": job,
+            "department": department,
+            "teamName": teamName,
+          });
+          return true;
+        } catch (e) {
+          throw Exception("Error fetching or updating user data");
+        }
+      }else{
+        throw Exception("There is a team with that name");
+      }
+    }else{
+      try {
+        await FirebaseFirestore.instance.collection("users").doc(email).update({
+          "name": name,
+          "surname": surname,
+          "password": password,
+          "role": role,
+          "job": job,
+          "department": department,
+          "teamName": teamName,
+        });
+        print("User data updated successfully!");
+        return true;
+      } catch (e) {
+        print("Error fetching or updating user data: $e");
+        return false;
+      }
     }
+
   }
 
   static Future<void> updateTeamNamesOfUsers(
