@@ -48,7 +48,7 @@ class UserModel {
   Future createUser(BuildContext context) async {
     final newUser = FirebaseFirestore.instance.collection('users').doc(email);
     try{
-      String x=(await newUser.get())["email"];
+      (await newUser.get())["email"];
     }catch(e){
       print("dsadsadsa");
       final user = UserModel(

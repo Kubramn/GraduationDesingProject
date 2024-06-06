@@ -1,7 +1,6 @@
 import 'package:bitirme/models/team_model.dart';
 import 'package:bitirme/models/user_model.dart';
 import 'package:flutter/material.dart';
-import "package:bitirme/alert_message.dart";
 
 class FinanceRegister extends StatefulWidget {
   const FinanceRegister({super.key});
