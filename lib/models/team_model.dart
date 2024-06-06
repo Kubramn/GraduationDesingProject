@@ -1,5 +1,8 @@
 import 'package:bitirme/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
+
+import '../alert_message.dart';
 
 class TeamModel {
   String id;
@@ -35,17 +38,40 @@ class TeamModel {
     return doc.get("budget");
   }
 
-  Future createTeam(String role) async {
+  Future<bool> createTeam(String role,BuildContext context) async {
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('teams').get();
+    List<QueryDocumentSnapshot> documents = querySnapshot.docs;
+    List<String> teamList = documents.map((doc) => doc['teamName'] as String).toList();
+
     if (role == "Leader") {
-      final newTeam = FirebaseFirestore.instance.collection('teams').doc();
-      final team = TeamModel(
-        id: newTeam.id,
-        teamName: teamName,
-        leaderEmail: leaderEmail,
-        budget: budget,
-      );
-      await newTeam.set(team.toJson());
+      if (!teamList.contains(teamName)) {
+        final newTeam = FirebaseFirestore.instance.collection('teams').doc();
+        final team = TeamModel(
+          id: newTeam.id,
+          teamName: teamName,
+          leaderEmail: leaderEmail,
+          budget: budget,
+        );
+        await newTeam.set(team.toJson());
+      } else {
+        alertMessage(
+          "There is a team with this name",
+          Color.fromARGB(255, 0, 255, 0),
+          context,
+        );
+        return false;
+      }
+    } else if (role == "Member") {
+      if (!teamList.contains(teamName)) {
+        alertMessage(
+          "There is no team with this name",
+          Color.fromARGB(255, 0, 255, 0),
+          context,
+        );
+        return false;
+      }
     }
+    return true;
   }
 
   static Future<String> decideLeaderEmailByTeamName(
