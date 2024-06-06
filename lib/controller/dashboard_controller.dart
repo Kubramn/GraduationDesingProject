@@ -22,9 +22,17 @@ class dashboardController{
     for (var element in data) {
       String email = element.userEmail;
       DocumentSnapshot ds = await FirebaseFirestore.instance.collection("users").doc(email).get();
-      Map<String, dynamic> doc = ds.data() as Map<String, dynamic>;
-      String department = doc["department"];
-      String teamName = doc["teamName"];
+      String department;
+      String teamName;
+      try{
+        Map<String, dynamic> doc = ds.data() as Map<String, dynamic>;
+        department = doc["department"];
+        teamName = doc["teamName"];
+      }catch(e){
+        department = "";
+        teamName = "";
+      }
+
       List<String> ts = element.date.split("/");
       DateTime date = DateTime(int.parse(ts[2]),int.parse(ts[1]),int.parse(ts[0]));
       double price = double.parse(element.price);

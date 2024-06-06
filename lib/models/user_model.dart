@@ -250,15 +250,46 @@ class UserModel {
 
   static Future<bool> deleteUser(
     String? email,
+      String? role
   ) async {
-    try {
-      await FirebaseFirestore.instance.collection("users").doc(email).delete();
-      print("User data deleted successfully!");
-      return true;
-    } catch (e) {
-      print("Error fetching or deleting user data: $e");
-      return false;
+    if(role=="Leader"){
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .where("email", isEqualTo: email)
+          .get();
+      String teamName= querySnapshot.docs.first.get("teamName");
+      QuerySnapshot querySnapshot2 = await FirebaseFirestore.instance
+          .collection('users')
+          .where("teamName", isEqualTo: teamName)
+          .get();
+      for(var data in querySnapshot2.docs){
+        String userEmail=data.get("email");
+        await FirebaseFirestore.instance.collection("users").doc(userEmail).delete();
+      }
+      QuerySnapshot qs=await FirebaseFirestore.instance.collection("teams").where("teamName",isEqualTo: teamName).get();
+      QueryDocumentSnapshot doc = qs.docs.first;
+      Map<String, dynamic> map = doc.data() as Map<String, dynamic>;
+      await FirebaseFirestore.instance.collection("teams").doc(map["teamName"]).delete();
+
+      try {
+        await FirebaseFirestore.instance.collection("users").doc(email).delete();
+        print("User data deleted successfully!");
+        return true;
+      } catch (e) {
+        print("Error fetching or deleting user data: $e");
+        return false;
+      }
+    }else{
+      try {
+        await FirebaseFirestore.instance.collection("users").doc(email).delete();
+        print("User data deleted successfully!");
+        return true;
+      } catch (e) {
+        print("Error fetching or deleting user data: $e");
+        return false;
+      }
     }
+
   }
 
   static Future<bool> register(
