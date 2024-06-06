@@ -1,8 +1,10 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:bitirme/localization/locales.dart';
 import 'package:bitirme/models/expense_model.dart';
 import 'package:bitirme/models/user_model.dart';
 import 'package:bitirme/view/login_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 
 class FinanceRequests extends StatefulWidget {
   const FinanceRequests({super.key});
@@ -25,7 +27,6 @@ class _FinanceRequestsState extends State<FinanceRequests> {
           children: [
             SizedBox(height: screenHeight * 0.05),
             SizedBox(
-              //color: Colors.black,
               height: screenHeight * 0.75,
               child: StreamBuilder<List<ExpenseModel>>(
                 stream: ExpenseModel.fetchRequestsForFinance(
@@ -40,14 +41,15 @@ class _FinanceRequestsState extends State<FinanceRequests> {
                     );
                   } else if (snapshot.hasError) {
                     return Center(
-                      child: Text('ERROR!'),
+                      child: Text(LocaleData.error.getString(context)),
                     );
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                     return Center(
                       child: SizedBox(
                         width: screenWidth * 0.8,
                         child: Text(
-                          "There is no expense request from your team right now.",
+                          LocaleData.errorNoTeamRequestFinance
+                              .getString(context),
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 25,
@@ -195,7 +197,7 @@ class _FinanceRequestsState extends State<FinanceRequests> {
                       ),
                     ),
                     child: Text(
-                      "Accept",
+                      LocaleData.dialogAcceptButton.getString(context),
                       style:
                           TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                     ),
@@ -217,14 +219,14 @@ class _FinanceRequestsState extends State<FinanceRequests> {
                       ),
                     ),
                     child: Text(
-                      "Deny",
+                      LocaleData.dialogDenyButton.getString(context),
                       style:
                           TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 15),
+              const SizedBox(height: 15),
               TextButton(
                 style: TextButton.styleFrom(
                   overlayColor: Color.fromARGB(255, 191, 203, 155),
@@ -233,8 +235,8 @@ class _FinanceRequestsState extends State<FinanceRequests> {
                   Navigator.pop(context);
                 },
                 child: Text(
-                  "Close",
-                  style: TextStyle(
+                  LocaleData.dialogCloseButton.getString(context),
+                  style: const TextStyle(
                     color: Color.fromARGB(255, 76, 89, 23),
                     fontSize: 25,
                     fontWeight: FontWeight.bold,
@@ -244,70 +246,90 @@ class _FinanceRequestsState extends State<FinanceRequests> {
             ],
           )
         ],
-        content: SizedBox(
-          width: double.maxFinite,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              FutureBuilder<String>(
-                future: UserModel.getNameSurnameByEmail(request.userEmail),
-                builder: (context, snapshot) {
-                  return Row(
-                    children: [
-                      Icon(
-                        Icons.info_outline,
-                        color: Color.fromARGB(255, 76, 89, 23),
-                        size: 30,
-                      ),
-                      SizedBox(width: 10),
-                      Expanded(
-                        child: AutoSizeText.rich(
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          maxFontSize: 20,
-                          minFontSize: 20,
-                          TextSpan(
-                            children: [
-                              TextSpan(
-                                text: "This expense was incurred by ",
-                              ),
-                              TextSpan(
-                                text: snapshot.data,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
+        content: RawScrollbar(
+          radius: const Radius.circular(100),
+          thumbColor: Color.fromARGB(255, 191, 203, 155),
+          child: SingleChildScrollView(
+            child: SizedBox(
+              width: double.maxFinite,
+              child: Column(
+                children: [
+                  FutureBuilder<String>(
+                    future: UserModel.getNameSurnameByEmail(request.userEmail),
+                    builder: (context, snapshot) {
+                      return Row(
+                        children: [
+                          const Icon(
+                            Icons.info_outline,
+                            color: Color.fromARGB(255, 76, 89, 23),
+                            size: 30,
                           ),
-                          style: TextStyle(
-                            color: Color.fromARGB(255, 52, 52, 52),
-                            fontSize: 20,
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: AutoSizeText.rich(
+                              maxLines: 5,
+                              overflow: TextOverflow.ellipsis,
+                              maxFontSize: 20,
+                              minFontSize: 20,
+                              TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text: LocaleData.statusRequestsIntro
+                                        .getString(context),
+                                  ),
+                                  TextSpan(
+                                    text: snapshot.data,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              style: const TextStyle(
+                                color: Color.fromARGB(255, 52, 52, 52),
+                                fontSize: 20,
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                    ],
-                  );
-                },
+                        ],
+                      );
+                    },
+                  ),
+                  const Divider(
+                    color: Color.fromARGB(255, 76, 89, 23),
+                    thickness: 1.5,
+                    height: 25,
+                  ),
+                  const SizedBox(height: 5),
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(maxHeight: 350),
+                    child: Image.network(
+                      request.image,
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  infoValuePair(
+                    LocaleData.dialogTitle.getString(context),
+                    request.title,
+                  ),
+                  const SizedBox(height: 10),
+                  infoValuePair(
+                    LocaleData.dialogDescription.getString(context),
+                    request.description,
+                  ),
+                  const SizedBox(height: 10),
+                  infoValuePair(
+                    LocaleData.dialogDate.getString(context),
+                    request.date,
+                  ),
+                  const SizedBox(height: 10),
+                  infoValuePair(
+                    LocaleData.dialogPrice.getString(context),
+                    request.price,
+                  ),
+                ],
               ),
-              Divider(
-                color: Color.fromARGB(255, 76, 89, 23),
-                thickness: 1.5,
-              ),
-              SizedBox(height: 5),
-              Image.network(
-                request.image,
-                height: 350,
-                width: double.maxFinite,
-              ),
-              SizedBox(height: 10),
-              infoValuePair("Title", request.title),
-              SizedBox(height: 2),
-              infoValuePair("Description", request.description),
-              SizedBox(height: 2),
-              infoValuePair("Date", request.date),
-              SizedBox(height: 2),
-              infoValuePair("Price", request.price),
-            ],
+            ),
           ),
         ),
       ),
