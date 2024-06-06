@@ -104,7 +104,7 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
                       Column(
                         children: [
                           Card(
-                            color: const Color.fromARGB(255, 185, 185, 132),
+                            color: const Color.fromARGB(255, 255, 255, 255),
                             child: SizedBox(
                               child: FutureBuilder<List<Data>>(
                                 future: ExpenseModel.sortTime(
@@ -201,7 +201,7 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
                                 Expanded(
                                   child: Card(
                                     color: const Color.fromARGB(
-                                        255, 108, 206, 169),
+                                        255, 255, 255, 255),
                                     child: SizedBox(
                                       child: FutureBuilder<List<Data>>(
                                         future: ExpenseModel.departmentSum(
@@ -250,7 +250,7 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
                                 Expanded(
                                   child: Card(
                                     color: const Color.fromARGB(
-                                        255, 174, 224, 116),
+                                        255, 255, 255, 255),
                                     child: SizedBox(
                                       child: FutureBuilder<List<Data>>( //
                                         future: ExpenseModel.categorySum(
@@ -324,7 +324,7 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
                                           color: const Color.fromARGB(
                                               255, 255, 255, 255),
                                           child: Container(
-                                            width: screenWidth * 0.42,
+                                            width: screenWidth * 0.415,
                                             height: screenWidth * 0.22,
                                             child: Center(child: Text("${expenses.length}")),
                                           ),
@@ -333,7 +333,7 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
                                           color: const Color.fromARGB(
                                               255, 255, 255, 255),
                                           child: Container(
-                                            width: screenWidth * 0.42,
+                                            width: screenWidth * 0.415,
                                             height: screenWidth * 0.22,
                                             child: Center(child: Text("$sum")),
                                           ),

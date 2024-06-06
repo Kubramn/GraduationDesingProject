@@ -22,7 +22,6 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
   DateTime? filterEndDate = DateTime(2100);
   TextEditingController teamController = TextEditingController();
   TextEditingController categoryController = TextEditingController();
-  TextEditingController statusController = TextEditingController();
   String? selectedTeam;
   String? selectedCategory;
 
@@ -601,15 +600,13 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
           )
         ],
         content: SizedBox(
-          height: 380,
+          height: 200,
           width: 340,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               SizedBox(height: 15),
               categoryDropdownMenu(),
-              SizedBox(height: 40),
-              statusDropdownMenu(),
               SizedBox(height: 40),
               dateRangeButton(context),
             ],
@@ -771,86 +768,6 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
           label: "Other Expenses",
           leadingIcon: Icon(
             Icons.attach_money,
-            color: Color.fromARGB(255, 96, 71, 36),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget statusDropdownMenu() {
-    return DropdownMenu<String>(
-      controller: statusController,
-      width: 340,
-      leadingIcon: const Icon(
-        Icons.info,
-        color: Color.fromARGB(255, 96, 71, 36),
-      ),
-      trailingIcon: const Icon(
-        Icons.keyboard_arrow_down,
-        color: Color.fromARGB(255, 96, 71, 36),
-      ),
-      selectedTrailingIcon: const Icon(
-        Icons.keyboard_arrow_up,
-        color: Color.fromARGB(255, 96, 71, 36),
-      ),
-      inputDecorationTheme: InputDecorationTheme(
-        filled: true,
-        fillColor: Colors.white,
-        hintStyle:
-            TextStyle(color: Colors.black38, fontWeight: FontWeight.w500),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15),
-          borderSide: BorderSide(
-            color: Color.fromARGB(255, 227, 185, 117),
-            width: 1.5,
-          ),
-        ),
-      ),
-      hintText: LocaleData.dropdownStatus.getString(context),
-      menuStyle: MenuStyle(
-        shape: WidgetStatePropertyAll(
-          RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
-          ),
-        ),
-        alignment: Alignment.bottomLeft,
-        surfaceTintColor: WidgetStatePropertyAll(Colors.transparent),
-        backgroundColor: WidgetStatePropertyAll(Colors.white),
-      ),
-      onSelected: (_) {
-        setState(() {});
-      },
-      dropdownMenuEntries: const [
-        DropdownMenuEntry(
-          value: "waiting",
-          label: "waiting",
-          leadingIcon: Icon(
-            Icons.info_outline,
-            color: Color.fromARGB(255, 96, 71, 36),
-          ),
-        ),
-        DropdownMenuEntry(
-          value: "acceptedByLeader",
-          label: "acceptedByLeader",
-          leadingIcon: Icon(
-            Icons.info_outline,
-            color: Color.fromARGB(255, 96, 71, 36),
-          ),
-        ),
-        DropdownMenuEntry(
-          value: "acceptedByLeaderAndFinance",
-          label: "acceptedByLeaderAndFinance",
-          leadingIcon: Icon(
-            Icons.check,
-            color: Color.fromARGB(255, 96, 71, 36),
-          ),
-        ),
-        DropdownMenuEntry(
-          value: "denied",
-          label: "denied",
-          leadingIcon: Icon(
-            Icons.close,
             color: Color.fromARGB(255, 96, 71, 36),
           ),
         ),
