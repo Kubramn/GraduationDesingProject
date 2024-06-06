@@ -250,15 +250,33 @@ class UserModel {
 
   static Future<bool> deleteUser(
     String? email,
+      String? role
   ) async {
-    try {
-      await FirebaseFirestore.instance.collection("users").doc(email).delete();
-      print("User data deleted successfully!");
-      return true;
-    } catch (e) {
-      print("Error fetching or deleting user data: $e");
-      return false;
+    if(role=="Leader"){
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .where("email", isEqualTo: email)
+          .get();
+
+      try {
+        await FirebaseFirestore.instance.collection("users").doc(email).delete();
+        print("User data deleted successfully!");
+        return true;
+      } catch (e) {
+        print("Error fetching or deleting user data: $e");
+        return false;
+      }
+    }else{
+      try {
+        await FirebaseFirestore.instance.collection("users").doc(email).delete();
+        print("User data deleted successfully!");
+        return true;
+      } catch (e) {
+        print("Error fetching or deleting user data: $e");
+        return false;
+      }
     }
+
   }
 
   static Future<bool> register(

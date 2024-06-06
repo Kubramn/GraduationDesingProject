@@ -365,7 +365,7 @@ class _FinanceUsersState extends State<FinanceUsers> {
   Widget deleteUserButton(double screenWidth) {
     return ElevatedButton(
       onPressed: () async {
-        if (await UserModel.deleteUser(_selectedUser?.email)) {
+        if (await UserModel.deleteUser(_selectedUser?.email,_selectedUser?.role)) {
           resetAllFields();
         }
       },
