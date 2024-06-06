@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:bitirme/models/expense_model.dart';
 import 'package:bitirme/models/user_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 import '../../models/team_model.dart';
@@ -312,8 +313,8 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
                                   } else if (snapshot.hasData) {
                                     List<ExpenseModel>? expenses = ExpenseModel.dateSort(snapshot.data!, filterStartDate, filterEndDate);
                                     double sum=0;
-                                    for(int i=0;i<snapshot.data!.length;i++){
-                                      sum+=double.parse(expenses[i].price);
+                                    for(var data in expenses){
+                                      sum+=double.parse(data.price);
                                     }
                                     if(selectedTeam==null){
                                       return Row(
@@ -375,7 +376,7 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
                                                           Text("${snapshot.data}"),
                                                           ElevatedButton(
                                                               onPressed: (){
-                                                                //edit budget popup
+                                                                editBudget(context,teamController.text,snapshot.data);
                                                               },
                                                               child: Text("Edit")
                                                           )
@@ -771,6 +772,68 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
           ),
         ),
       ],
+    );
+  }
+
+  Future editBudget(BuildContext context,String teamName,num? currentBudget){
+    print(currentBudget);
+    TextEditingController budget=TextEditingController();
+    return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        surfaceTintColor: Color.fromARGB(255, 227, 185, 117),
+        backgroundColor: Colors.white,
+        shadowColor: Colors.black,
+        insetPadding: EdgeInsets.symmetric(
+          horizontal: 5,
+        ),
+        actions: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              TextButton(
+                style: TextButton.styleFrom(
+                  overlayColor: Color.fromARGB(255, 227, 185, 117),
+                ),
+                onPressed: () {
+                  setState(() {});
+                  TeamModel.setBudget(teamName, double.parse(budget.text));
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  "Set Budget",
+                  style: TextStyle(
+                    color: Color.fromARGB(255, 96, 71, 36),
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          )
+        ],
+        content: SizedBox(
+          height: 130,
+          width: 150,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              TextField(
+                keyboardType: TextInputType.number,
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.digitsOnly,
+                ],
+                controller: budget,
+                decoration: InputDecoration(
+                  labelText: 'Enter the new budget',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              Text("Current budget is:${currentBudget}")
+            ],
+          ),
+        ),
+      ),
     );
   }
 

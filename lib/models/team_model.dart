@@ -115,4 +115,27 @@ class TeamModel {
       print('Failed to update team name: $e');
     }
   }
+  static setBudget(
+      String teamName,
+      double budget
+      ) async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection("teams")
+          .where("teamName", isEqualTo: teamName)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        String docId = querySnapshot.docs.first.id;
+        await FirebaseFirestore.instance.collection('teams').doc(docId).update({
+          "budget": budget ,
+        });
+        print('Team name updated successfully');
+      } else {
+        print('No team found with the name $teamName');
+      }
+    } catch (e) {
+      print('Failed to update team name: $e');
+    }
+  }
 }

@@ -341,8 +341,8 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
                                       } else if (snapshot.hasData) {
                                         List<ExpenseModel>? expenses = ExpenseModel.dateSort(snapshot.data!, filterStartDate, filterEndDate);
                                         double sum=0;
-                                        for(int i=0;i<snapshot.data!.length;i++){
-                                          sum+=double.parse(expenses[i].price);
+                                        for(var data in expenses){
+                                          sum+=double.parse(data.price);
                                         }
                                         return Row(
                                           children: [
