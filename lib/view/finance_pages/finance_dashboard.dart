@@ -124,9 +124,9 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
                                       if (snapshot.data!.length < 2) {
                                         return Text("Not Enough Data");
                                       } else {
-                                        return SfCartesianChart(
+                                        return SfCartesianChart( // çizgi grafiği
                                           series: <LineSeries<Data, DateTime>>[
-                                            LineSeries<Data, DateTime>(
+                                            LineSeries<Data, DateTime>( // asıl veri
                                               dataSource: snapshot.data!,
                                               color: const Color.fromRGBO(
                                                   192, 108, 132, 1),
@@ -135,7 +135,7 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
                                               yValueMapper: (Data sales, _) =>
                                                   sales.price,
                                             ),
-                                            LineSeries<Data, DateTime>(
+                                            LineSeries<Data, DateTime>( // alt regression
                                               dataSource:
                                                   ExpenseModel.regression(
                                                       snapshot.data!)[0],
@@ -146,7 +146,7 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
                                               yValueMapper: (Data sales, _) =>
                                                   sales.price,
                                             ),
-                                            LineSeries<Data, DateTime>(
+                                            LineSeries<Data, DateTime>( // üst regression
                                               dataSource:
                                                   ExpenseModel.regression(
                                                       snapshot.data!)[1],
@@ -159,7 +159,7 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
                                             ),
                                             LineSeries<Data, DateTime>(
                                               dataSource:
-                                                  ExpenseModel.regression(
+                                                  ExpenseModel.regression( // orta regression
                                                       snapshot.data!)[2],
                                               color: const Color.fromRGBO(
                                                   41, 252, 83, 1.0),
@@ -219,7 +219,7 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
                                                   child: Text(
                                                       'Error: ${snapshot.error}'));
                                             } else if (snapshot.hasData) {
-                                              return SfCartesianChart(
+                                              return SfCartesianChart( // sütun chart
                                                 primaryXAxis:
                                                     const CategoryAxis(),
                                                 series: [
@@ -250,7 +250,7 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
                                       color: const Color.fromARGB(
                                           255, 174, 224, 116),
                                       child: SizedBox(
-                                        child: FutureBuilder<List<Data>>(
+                                        child: FutureBuilder<List<Data>>( //
                                           future: ExpenseModel.categorySum(
                                               ExpenseModel.getFinanceData(),
                                               filterStartDate,
@@ -268,7 +268,7 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
                                                   child: Text(
                                                       'Error: ${snapshot.error}'));
                                             } else if (snapshot.hasData) {
-                                              return SfCircularChart(
+                                              return SfCircularChart( //pie chart
                                                 legend: const Legend(
                                                     isVisible: true),
                                                 series: <PieSeries<Data,
@@ -318,7 +318,7 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
                                     if(selectedTeam==null){
                                       return Row(
                                         children: [
-                                          Card(
+                                          Card( // expense sayısı
                                             color: const Color.fromARGB(255, 174, 224, 116),
                                             child: Container(
                                               width: screenWidth * 0.42,
@@ -326,7 +326,7 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
                                               child: Center(child: Text("${expenses.length}")),
                                             ),
                                           ),
-                                          Card(
+                                          Card( //expense toplamı
                                             color: const Color.fromARGB(255, 174, 224, 116),
                                             child: Container(
                                               width: screenWidth * 0.42,
@@ -339,7 +339,7 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
                                     }else{
                                       return Row(
                                         children: [
-                                          Card(
+                                          Card( // expense sayısı
                                             color: const Color.fromARGB(255, 174, 224, 116),
                                             child: Container(
                                               width: screenWidth * 0.27,
@@ -347,7 +347,7 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
                                               child: Center(child: Text("${expenses.length}")),
                                             ),
                                           ),
-                                          Card(
+                                          Card(// expense toplamı
                                             color: const Color.fromARGB(255, 174, 224, 116),
                                             child: Container(
                                               width: screenWidth * 0.27,
@@ -355,7 +355,7 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
                                               child: Center(child: Text("$sum")),
                                             ),
                                           ),
-                                          FutureBuilder(
+                                          FutureBuilder(// budget kısmı
                                               future: TeamModel.getTeamBudget(selectedTeam),
                                               builder: (context,snapshot){
                                                 if (snapshot.connectionState == ConnectionState.waiting) {
@@ -370,7 +370,17 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
                                                     child: Container(
                                                       width: screenWidth * 0.27,
                                                       height: screenWidth * 0.22,
-                                                      child: Center(child: Text("${snapshot.data}")),
+                                                      child: Column(
+                                                        children: [
+                                                          Text("${snapshot.data}"),
+                                                          ElevatedButton(
+                                                              onPressed: (){
+                                                                //edit budget popup
+                                                              },
+                                                              child: Text("Edit")
+                                                          )
+                                                        ],
+                                                      ),
                                                     ),
                                                   );
                                                 } else {

@@ -305,7 +305,7 @@ class UserModel {
     } catch (e) {
       Navigator.pop(context);
       alertMessage(
-        "User Registration failed!",
+        "$e",
         const Color.fromARGB(255, 255, 0, 0),
         context,
       );
