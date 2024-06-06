@@ -177,6 +177,7 @@ class _EditInvoicePageState extends State<EditInvoicePage> {
       ),
       hintText: LocaleData.dialogCategory.getString(context),
       width: 394,
+
       menuStyle: MenuStyle(
         shape: WidgetStatePropertyAll(
           RoundedRectangleBorder(
@@ -333,7 +334,7 @@ class _EditInvoicePageState extends State<EditInvoicePage> {
         // Eğer sözcüğün üst sol köşesi mevcut satırın üst kısmı ile aynıysa, mevcut satıra ekle
         if ((wordBox.boundingBox.top - currentLine.first.boundingBox.top)
                 .abs() <=
-            10) {
+            100) {
           currentLine.add(wordBox);
         } else {
           // Mevcut satırı tamamla ve yeni satıra başla

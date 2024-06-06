@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localization/flutter_localization.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
+import '../../models/team_model.dart';
+
 class FinanceDashboard extends StatefulWidget {
   const FinanceDashboard({super.key});
 
@@ -335,7 +337,7 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
                         ],
                       ),
                       StreamBuilder<List<ExpenseModel>>(
-                        stream: ExpenseModel.fetchAllExpenses(),
+                        stream: ExpenseModel.fetchAllExpenses(selectedTeam,selectedCategory),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
@@ -365,7 +367,7 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
                               ),
                             );
                           } else {
-                            final expenses = snapshot.data!;
+                            final expenses = ExpenseModel.dateFilter(snapshot.data!, filterStartDate, filterEndDate);
                             return ListView.builder(
                                 padding: EdgeInsets.zero,
                                 itemCount: expenses.length,
@@ -480,6 +482,7 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
                   overlayColor: Color.fromARGB(255, 227, 185, 117),
                 ),
                 onPressed: () {
+                  setState(() {});
                   Navigator.pop(context);
                 },
                 child: Text(
@@ -500,6 +503,8 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
                   categoryController.clear();
                   filterStartDate = DateTime(2000);
                   filterEndDate = DateTime.now();
+                  selectedTeam=null;
+                  selectedCategory=null;
                 },
                 child: Text(
                   LocaleData.dialogResetButton.getString(context),
@@ -594,19 +599,8 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
               surfaceTintColor: WidgetStatePropertyAll(Colors.transparent),
               backgroundColor: WidgetStatePropertyAll(Colors.white),
             ),
-            onSelected: (_) {
-              setState(() {});
-              /*
-
-
-
-
-                      İŞLEMLEEEEEERRRRRRR
-
-
-
-
-         */
+            onSelected: (String? team) {
+              selectedTeam= team;
             },
             dropdownMenuEntries: leaders.map((UserModel leader) {
               return DropdownMenuEntry<String>(
@@ -680,8 +674,8 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
         surfaceTintColor: WidgetStatePropertyAll(Colors.transparent),
         backgroundColor: WidgetStatePropertyAll(Colors.white),
       ),
-      onSelected: (_) {
-        setState(() {});
+      onSelected: (String? category) {
+        selectedCategory= category;
       },
       dropdownMenuEntries: const [
         DropdownMenuEntry(

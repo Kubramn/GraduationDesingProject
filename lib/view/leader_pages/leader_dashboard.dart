@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localization/flutter_localization.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
+import '../../models/team_model.dart';
+
 class LeaderDashboard extends StatefulWidget {
   const LeaderDashboard({super.key});
 
@@ -340,7 +342,7 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
                       ),
                       StreamBuilder<List<ExpenseModel>>(
                         stream: ExpenseModel.fetchTeamExpenses(
-                            LoginPage.currentUserEmail),
+                            LoginPage.currentUserEmail,selectedCategory),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
@@ -370,7 +372,7 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
                               ),
                             );
                           } else {
-                            final expenses = snapshot.data!;
+                            final expenses = ExpenseModel.dateFilter(snapshot.data!, filterStartDate, filterEndDate);
                             return ListView.builder(
                                 padding: EdgeInsets.zero,
                                 itemCount: expenses.length,
@@ -485,6 +487,9 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
                   overlayColor: Color.fromARGB(255, 227, 185, 117),
                 ),
                 onPressed: () {
+                  setState(() {
+
+                  });
                   Navigator.pop(context);
                 },
                 child: Text(
@@ -505,6 +510,8 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
                   categoryController.clear();
                   filterStartDate = DateTime(2000);
                   filterEndDate = DateTime.now();
+                  selectedCategory=null;
+                  selectedTeam=null;
                 },
                 child: Text(
                   LocaleData.dialogResetButton.getString(context),
@@ -541,8 +548,6 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               SizedBox(height: 15),
-              teamDropdownMenu(screenWidth),
-              SizedBox(height: 40),
               categoryDropdownMenu(),
               SizedBox(height: 40),
               statusDropdownMenu(),
@@ -599,19 +604,8 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
               surfaceTintColor: WidgetStatePropertyAll(Colors.transparent),
               backgroundColor: WidgetStatePropertyAll(Colors.white),
             ),
-            onSelected: (_) {
-              setState(() {});
-              /*
-
-
-
-
-                      İŞLEMLEEEEEERRRRRRR
-
-
-
-
-         */
+            onSelected: (String? team) {
+              selectedTeam=team;
             },
             dropdownMenuEntries: leaders.map((UserModel leader) {
               return DropdownMenuEntry<String>(
@@ -685,8 +679,8 @@ class _LeaderDashboardState extends State<LeaderDashboard> {
         surfaceTintColor: WidgetStatePropertyAll(Colors.transparent),
         backgroundColor: WidgetStatePropertyAll(Colors.white),
       ),
-      onSelected: (_) {
-        setState(() {});
+      onSelected: (String? category) {
+        selectedCategory=category;
       },
       dropdownMenuEntries: const [
         DropdownMenuEntry(
