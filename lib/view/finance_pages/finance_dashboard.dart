@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:bitirme/controller/dashboard_controller.dart';
 import 'package:bitirme/localization/locales.dart';
 import 'package:bitirme/models/expense_model.dart';
 import 'package:bitirme/models/user_model.dart';
@@ -107,8 +108,8 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
                             color: const Color.fromARGB(255, 255, 255, 255),
                             child: SizedBox(
                               child: FutureBuilder<List<Data>>(
-                                future: ExpenseModel.sortTime(
-                                    ExpenseModel.getFinanceData(),
+                                future: dashboardController.sortTime(
+                                    dashboardController.getFinanceData(),
                                     filterStartDate,
                                     filterEndDate,
                                     teamController.text,
@@ -139,7 +140,7 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
                                           ),
                                           LineSeries<Data, DateTime>( // alt regression
                                             dataSource:
-                                            ExpenseModel.regression(
+                                            dashboardController.regression(
                                                 snapshot.data!)[0],
                                             color: const Color.fromRGBO(
                                                 41, 252, 83, 1.0),
@@ -150,7 +151,7 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
                                           ),
                                           LineSeries<Data, DateTime>( // üst regression
                                             dataSource:
-                                            ExpenseModel.regression(
+                                            dashboardController.regression(
                                                 snapshot.data!)[1],
                                             color: const Color.fromRGBO(
                                                 41, 252, 83, 1.0),
@@ -161,7 +162,7 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
                                           ),
                                           LineSeries<Data, DateTime>(
                                             dataSource:
-                                            ExpenseModel.regression( // orta regression
+                                            dashboardController.regression( // orta regression
                                                 snapshot.data!)[2],
                                             color: const Color.fromRGBO(
                                                 41, 252, 83, 1.0),
@@ -204,8 +205,8 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
                                         255, 255, 255, 255),
                                     child: SizedBox(
                                       child: FutureBuilder<List<Data>>(
-                                        future: ExpenseModel.departmentSum(
-                                            ExpenseModel.getFinanceData(),
+                                        future: dashboardController.departmentSum(
+                                            dashboardController.getFinanceData(),
                                             filterStartDate,
                                             filterEndDate,
                                             teamController.text,
@@ -253,8 +254,8 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
                                         255, 255, 255, 255),
                                     child: SizedBox(
                                       child: FutureBuilder<List<Data>>( //
-                                        future: ExpenseModel.categorySum(
-                                            ExpenseModel.getFinanceData(),
+                                        future: dashboardController.categorySum(
+                                            dashboardController.getFinanceData(),
                                             filterStartDate,
                                             filterEndDate,
                                             teamController.text,
@@ -312,7 +313,7 @@ class _FinanceDashboardState extends State<FinanceDashboard> {
                                 } else if (snapshot.hasError) {
                                   return Center(child: Text('Error: ${snapshot.error}'));
                                 } else if (snapshot.hasData) {
-                                  List<ExpenseModel>? expenses = ExpenseModel.dateSort(snapshot.data!, filterStartDate, filterEndDate);
+                                  List<ExpenseModel>? expenses = dashboardController.dateSort(snapshot.data!, filterStartDate, filterEndDate);
                                   double sum=0;
                                   for(var data in expenses){
                                     sum+=double.parse(data.price);
